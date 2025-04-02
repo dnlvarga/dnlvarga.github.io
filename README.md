@@ -1,5 +1,3 @@
-
-
 # Transfering files
 ## HTTP
 
@@ -92,6 +90,8 @@ if __name__ == '__main__':
 
 
 ## TFTP
+
+TFTP (Trivial File Transfer Protocol)	TFTP uses UDP for simple file transfers, commonly used by older Windows systems and others.
 
 Use metaspoit framework:
 ```
