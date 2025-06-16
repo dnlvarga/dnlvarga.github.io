@@ -1,23 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ site.lang | default: 'en-US' }}">
   <head>
     <meta charset="UTF-8">
-    <title>{{ page.title }}</title>
+    <title>{{ page.title | escape }} | {{ site.title | escape }}</title>
     <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
     <style>
-      body { display: flex; }
+      body {
+        display: flex;
+        margin: 0;
+        padding: 0;
+        background-color: #0f0f0f;
+        color: #f8f8f2;
+        font-family: 'Courier New', monospace;
+      }
       #sidebar {
         width: 200px;
-        background-color: #111;
-        padding: 10px;
-        color: white;
+        background-color: #1a1a1a;
+        padding: 20px;
+        box-sizing: border-box;
         min-height: 100vh;
       }
-      #sidebar a { color: white; text-decoration: none; display: block; margin: 5px 0; }
+      #sidebar a {
+        color: #50fa7b;
+        text-decoration: none;
+        display: block;
+        margin-bottom: 10px;
+      }
       #main {
         flex: 1;
         padding: 20px;
-        background-color: #fff;
+        box-sizing: border-box;
       }
     </style>
   </head>
