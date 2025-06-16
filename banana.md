@@ -1,6 +1,7 @@
 ---
+layout: default
 title: Banana
 permalink: /banana/
 ---
 
-Bananas are yellow and tasty.
+Banana is a fruit.
