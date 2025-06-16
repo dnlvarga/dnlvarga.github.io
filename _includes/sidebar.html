@@ -1,14 +1,6 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>{{ page.title }}</title>
-    <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
-  </head>
-  <body>
-    {% include sidebar.html %}
-    <div id="main">
-      {{ content }}
-    </div>
-  </body>
-</html>
+<div id="sidebar">
+  <ul>
+    <li><a href="{{ site.baseurl }}/banana/">Banana</a></li>
+    <li><a href="{{ site.baseurl }}/apple/">Apple</a></li>
+  </ul>
+</div>
