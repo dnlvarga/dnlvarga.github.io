@@ -14,6 +14,26 @@
         flex-direction: row;
       }
 
+      .header-with-image {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .profile-banner {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;      /* Ensures the image doesn't stretch */
+        border-radius: 50%;
+        background-color: #0f0f0f;       /* Optional: fallback for transparent PNG */
+        border: 3px solid #50fa7b;       /* Optional: green border like Hacker theme */
+      }
+
+      .header-text {
+        flex: 1;
+      }
+
+
       #sidebar {
         width: 200px;
         background-color: #1a1a1a;
@@ -62,21 +82,28 @@
   <body>
 
     <header>
-      <div class="container">
-        <a id="a-title" href="{{ '/' | relative_url }}">
-          <h1>{{ site.title | default: site.github.repository_name }}</h1>
-        </a>
-        <h2>{{ site.description | default: site.github.project_tagline }}</h2>
+      <div class="container header-with-image">
+        <img src="{{ '/assets/img/me.jpg' | relative_url }}" alt="My Photo" class="profile-banner">
 
-        <section id="downloads">
-          {% if site.show_downloads %}
-            <a href="{{ site.github.zip_url }}" class="btn">Download as .zip</a>
-            <a href="{{ site.github.tar_url }}" class="btn">Download as .tar.gz</a>
-          {% endif %}
-          <a href="{{ site.github.repository_url }}" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
-        </section>
+        <div class="header-text">
+          <a id="a-title" href="{{ '/' | relative_url }}">
+            <h1>{{ site.title | default: site.github.repository_name }}</h1>
+          </a>
+          <h2>{{ site.description | default: site.github.project_tagline }}</h2>
+
+          <section id="downloads">
+            {% if site.show_downloads %}
+              <a href="{{ site.github.zip_url }}" class="btn">Download as .zip</a>
+              <a href="{{ site.github.tar_url }}" class="btn">Download as .tar.gz</a>
+            {% endif %}
+            <a href="{{ site.github.repository_url }}" class="btn btn-github">
+              <span class="icon"></span>View on GitHub
+            </a>
+          </section>
+        </div>
       </div>
     </header>
+
 
     <div class="page-wrapper">
       {% include sidebar.html %}
