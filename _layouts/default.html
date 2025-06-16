@@ -14,6 +14,20 @@
         flex-direction: row;
       }
 
+      .header-banner {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .header-left {
+        flex-shrink: 0;
+      }
+
+      .header-right {
+        flex: 1;
+      }
+
       .header-with-image {
         display: flex;
         align-items: center;
@@ -82,10 +96,11 @@
   <body>
 
     <header>
-      <div class="container header-with-image">
-        <img src="{{ '/assets/img/bob_cut_rect.png' | relative_url }}" alt="My Photo" class="profile-banner">
-
-        <div class="header-text">
+      <div class="container header-banner">
+        <div class="header-left">
+          <img src="{{ '/assets/img/me.png' | relative_url }}" alt="My Photo" class="profile-banner">
+        </div>
+        <div class="header-right">
           <a id="a-title" href="{{ '/' | relative_url }}">
             <h1>{{ site.title | default: site.github.repository_name }}</h1>
           </a>
@@ -103,6 +118,7 @@
         </div>
       </div>
     </header>
+
 
 
     <div class="page-wrapper">
