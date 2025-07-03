@@ -65,14 +65,6 @@
         color: #8affc1;
       }
 
-      code {
-        color: #ffffff;
-        background-color: #000000;
-        padding: 2px 4px;
-        border-radius: 4px;
-        font-family: monospace;
-      }
-
       #main-panel {
         flex: 1;
         padding: 20px;
@@ -83,6 +75,16 @@
       #main_content {
         color: #f8f8f2;
       }
+
+      /* Force override of Hacker theme's inline code styling */
+    body code {
+      color: #ffffff !important;           
+      background-color: #000000 !important;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.95em;
+    }
     </style>
   </head>
 
