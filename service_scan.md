@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Service scan
-permalink: /service scan/
+permalink: /service_scan/
 ---
 # Nmap
 Tips:
