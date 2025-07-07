@@ -4,7 +4,6 @@ title: Web
 permalink: /web/
 ---
 
-# Gobuster
 ## Directory/File Enumaration
 ```
 gobuster dir -u http://$ip/ -w /usr/share/seclists/Discovery/Web-Content/common.txt
@@ -30,6 +29,8 @@ After you found subdomains, you can add them to your local dns:
 echo "$ip $subdomain.$domain" | sudo tee -a /etc/hosts
 ```
 
+You can always repeat the file enumeration on a new found subdomain.
+
 # Whatweb
 ```
 whatweb $ip
@@ -38,4 +39,19 @@ whatweb $ip
 # Banner Grabbing
 ```
 curl -IL http://$domain
+```
+
+# Git Dumping
+
+If a `.git` directory is exposed, you can use a tool like [gitdumper](https://github.com/arthaud/git-dumper).
+```
+python3 git_dumper.py http://dev.$domain gitdump
+```
+After that you can navigate to the gitdump directory and check the git status:
+```
+cd gitdump && git status
+```
+If we see changes have been made, we can view it by restoring the staged changes and see the differences:
+```
+git restore --staged . && git diff
 ```
