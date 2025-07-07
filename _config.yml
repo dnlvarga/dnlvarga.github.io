@@ -8,3 +8,7 @@ defaults:
       type: "pages"
     values:
       layout: "default"
+
+markdown: kramdown
+kramdown:
+  input: GFM  # GitHub Flavored Markdown (supports tables)
