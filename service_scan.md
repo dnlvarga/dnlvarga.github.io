@@ -15,6 +15,7 @@ ports=$(nmap -p- -T4 --min-rate=1000 -Pn $ip | grep ^[0-9] | cut -d '/' -f1 | tr
 ```
 nmap -T4 -A -v -p$ports $ip -oA tcp_scan_$ip
 ```
+If you are scanning an IP address and e.g. the result shows that on a port a web server running and it shows you that it 'Did not follow redirect to ...', then add the domain to local DNS with `echo "$ip $domain" | sudo tee -a /etc/hosts` and repeat the scan.
 
 ## UDP Scan
 Tips:
