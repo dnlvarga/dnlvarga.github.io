@@ -9,6 +9,12 @@ permalink: /web/
 ```
 gobuster dir -u http://$ip/ -w /usr/share/seclists/Discovery/Web-Content/common.txt
 ```
+```
+ffuf -w /usr/share/seclists/Discovery/Web-Content/common.txt -u http://$sub.$domain/FUZZ -ic -t 20
+```
+-ic : Ignore wordlist comments.
+-t : Number of concurrent threads. (default: 40)
+
 ## DNS Subdomain Enumeration
 ```
 gobuster dns -d $domain -w /usr/share/seclists/Discovery/DNS/namelist.txt
