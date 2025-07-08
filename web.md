@@ -55,3 +55,7 @@ If we see changes have been made, we can view it by restoring the staged changes
 ```
 git restore --staged . && git diff
 ```
+
+# Check source code
+
+Merely type `ctrl + u` when you are in the browser or put `view-source:` before the URL in the URL bar. This could reveal sensitive data, like test credentials.
