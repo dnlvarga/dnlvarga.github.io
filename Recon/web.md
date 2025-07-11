@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Web
-permalink: /web/
+permalink: /Recon/web/
 ---
 
 ## Directory/File Enumaration
