@@ -6,7 +6,6 @@ permalink: /Web/burpsuite/
 
 # Intercept Request
 Intercept and send the request edit it and forward it.
-You can also send it to Intruder [CTRL+I]. Then you can edit the request in the Intruder tab [CTRL+SHIFT+I].
 
 # Intercept Response
 In Proxy settings search for Intercept response.
@@ -24,3 +23,9 @@ Send the request to Repeater [CTRL+R]. Then you can edit the request in the Repe
 - There is a Decoder tab in Burp [CTRL+E]. Here we can quickly encode or decode however we want.
 - You can also use Burp Inspector which can be found in various places like Burp Proxy or Burp Repeater.
 
+# Web Fuzzing
+We can go to the Proxy History, locate our request, then right-click on the request and select Send to Intruder, or use the shortcut [CTRL+I] to send it to Intruder. We can then go to Intruder by clicking on its tab or with the shortcut [CTRL+SHIFT+I], which takes us right to Burp Intruder.
+- We can place payload position pointers, which are the points where words from our wordlist will be placed and iterated over. We will need to select a part of the request as the payload position, by either wrapping it with § or by selecting the part and clicking on the Add § button.
+- Select an Attack Type.
+- Configure the payloads on the Payloads part.
+- Start the attack.
