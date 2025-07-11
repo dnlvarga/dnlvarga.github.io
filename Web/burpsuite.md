@@ -20,4 +20,7 @@ Select the request in Proxy>HTTP History, which you want to repeat.
 Send the request to Repeater [CTRL+R]. Then you can edit the request in the Repeater tab [CTRL+SHIFT+R] and resend it.
 
 # URL Encoding/Decoding
-In Repeater we can easily URL encode, just select a text and CTRL+U or right-click on the selected text, then select Convert Selection>URL>URL encode key characters.
+- In Repeater we can easily URL encode, just select a text and CTRL+U or right-click on the selected text, then select Convert Selection>URL>URL encode key characters (or select another type of encoding).
+- There is a Decoder tab in Burp [CTRL+E]. Here we can quickly encode or decode however we want.
+- You can also use Burp Inspector which can be found in various places like Burp Proxy or Burp Repeater.
+
