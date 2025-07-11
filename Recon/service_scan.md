@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Service scan
-permalink: /service_scan/
+permalink: /Recon/service_scan/
 ---
 # Nmap
 ## TCP Scan
