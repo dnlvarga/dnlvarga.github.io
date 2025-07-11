@@ -44,3 +44,5 @@ msf6 auxiliary(scanner/http/robots_txt) > run
 [*] Scanned 1 of 1 hosts (100% complete)
 [*] Auxiliary module execution completed
 ```
+
+You should see the requests in HTTP History inside Brup.
