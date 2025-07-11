@@ -27,5 +27,11 @@ Send the request to Repeater [CTRL+R]. Then you can edit the request in the Repe
 We can go to the Proxy History, locate our request, then right-click on the request and select Send to Intruder, or use the shortcut [CTRL+I] to send it to Intruder. We can then go to Intruder by clicking on its tab or with the shortcut [CTRL+SHIFT+I], which takes us right to Burp Intruder.
 - We can place payload position pointers, which are the points where words from our wordlist will be placed and iterated over. We will need to select a part of the request as the payload position, by either wrapping it with § or by selecting the part and clicking on the Add § button.
 - Select an Attack Type.
-- Configure the payloads on the Payloads part.
+- Configure the payloads on the Payloads part. E.g. in the Payload Processing part you can skip lines with "Skip if matches regex" option.
+- In the Settings, we can also set up a lot of useful things, e.g. with the "Grep - Match" option we can flag specific requestes depending of the response or with the "Grep - Extract" option is useful when the HTTP responses are lengthy and we're only interested in a certain part of the response.
 - Start the attack.
+
+  Note that the Community Version is very slow, don't use long wordlists, if you don't want to wait forever.
+
+
+  > **Note:** We can use ZAP which is not throttled as Brup Community Version. Start it by typing `zaproxy` in the commandline.
