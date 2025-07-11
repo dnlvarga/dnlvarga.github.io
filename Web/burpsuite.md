@@ -34,4 +34,4 @@ We can go to the Proxy History, locate our request, then right-click on the requ
   Note that the Community Version is very slow, don't use long wordlists, if you don't want to wait forever.
 
 
-  > **Note:** We can use ZAP which is not throttled as Brup Community Version. Start it by typing `zaproxy` in the commandline.
+  > **Note:** We can use ZAP which is not throttled as Brup Community Version. Start it by typing `zaproxy` in the commandline. ZAP Scanner is capable of building site maps using ZAP Spider and performing both passive and active scans to look for various types of vulnerabilities.
