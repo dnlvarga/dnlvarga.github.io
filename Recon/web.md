@@ -64,6 +64,31 @@ Other useful flags:
 -k: This flag can ignore SSL/TLS certificate errors.
 -o: To save the output to a file for later analysis.
 
+## Fingerprinting
+
+Fingerprinting focuses on extracting technical details about the technologies powering a website or web application.
+
+### Banner Grabbing
+```
+curl -I $domian
+```
+If it's also trying to redirect to somewhere, grab those banners too.
+
+## Identifying Web Application Firewalls (WAFs)
+```
+wafw00f $domain
+```
+
+## Nikto
+Nikto is an open-source web server scanner. Its primary function is vulnerability assessment. Its fingerprinting capabilities provide insights into a website's technology stack.
+```
+nikto -h $domain -Tuning b
+```
+-h: This flag specifies the target host. 
+-Tuning b: This flag tells Nikto to only run the Software Identification modules.
+
+*Note: You can use Wappalyzer Browser Extension too for fingerprinting.* 
+
 # Whatweb
 ```
 whatweb $ip
