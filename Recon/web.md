@@ -90,6 +90,7 @@ nikto -h $domain -Tuning b
 *Note: You can use Wappalyzer Browser Extension too for fingerprinting.* 
 
 ### Whatweb
+Uses a database of signatures to identify various web technologies.
 ```
 whatweb $ip
 ```
