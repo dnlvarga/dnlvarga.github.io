@@ -51,10 +51,11 @@ curl -s "https://crt.sh/?q=facebook.com&output=json" | jq -r '.[] | select(.name
 `jq -r '.[] | select(.name_value | contains("dev")) | .name_value'`: This part filters the JSON results, selecting only entries where the name_value field (which contains the domain or subdomain) includes the string "dev". The -r flag tells jq to output raw strings. <br>
 `sort -u`: This sorts the results alphabetically and removes duplicates.
 
-## Google it 
-```
-site:example.com
-```
+### Google it 
+`site:example.com` in the search bar.
+
+### Check the robots.txt file
+`example.com/robots.txt` in the URL bar of the browser.
 
 ## Virtual Host Enumeration
 ```
