@@ -13,6 +13,10 @@ ffuf -w /usr/share/seclists/Discovery/Web-Content/common.txt -u http://$sub.$dom
 ```
 -ic : Ignore wordlist comments.
 -t : Number of concurrent threads. (default: 40)
+```
+dnsenum --enum $domain -f /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt -r
+```
+-r: This option enables recursive subdomain brute-forcing, meaning that if dnsenum finds a subdomain, it will then try to enumerate subdomains of that subdomain.
 
 ## DNS Subdomain Enumeration
 ```
