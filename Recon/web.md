@@ -45,7 +45,10 @@ This command instructs dig to request a full zone transfer (axfr) from the DNS s
 
 ## Virtual Host Enumeration
 ```
-gobuster vhost -u http://$domain:81 -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt --append-domain
+gobuster vhost -u http://$domain:$port -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt --append-domain
+```
+```
+gobuster vhost -u http://$ip:$port -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt --append-domain --domain $domain
 ```
 --append-domain: Appends the base domain to each word in the wordlist. <br>
 Other useful flags:
