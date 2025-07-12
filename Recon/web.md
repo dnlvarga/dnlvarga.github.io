@@ -36,12 +36,22 @@ dnsenum --enum $domain -f /usr/share/seclists/Discovery/DNS/subdomains-top1milli
 ```
 -r: This option enables recursive subdomain brute-forcing, meaning that if dnsenum finds a subdomain, it will then try to enumerate subdomains of that subdomain.
 
-### zone transfer enumeration
+### Zone Transfer Enumeration
 ```
 dig axfr @$NS $domain
 ```
 @$NS - The DNS nameserver to query. The @ syntax tells dig to query this specific server. E.g. `@nsztm1.digi.ninja` or `@$ip`. You can query the authoritative name servers for the domain with `dig $domain NS`<br> 
 This command instructs dig to request a full zone transfer (axfr) from the DNS server responsible for zonetransfer.me. If the server is misconfigured and allows the transfer, you'll receive a complete list of DNS records for the domain, including all subdomains.
+
+## Virtual Host Enumeration
+```
+gobuster vhost -u http://$domain:81 -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt --append-domain
+```
+--append-domain: Appends the base domain to each word in the wordlist. <br>
+Other useful flags:
+-t: To increase the number of threads for faster scanning.
+-k: This flag can ignore SSL/TLS certificate errors.
+-o: To save the output to a file for later analysis.
 
 # Whatweb
 ```
