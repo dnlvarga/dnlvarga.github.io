@@ -69,7 +69,21 @@ Some examples:
 | `..` (range)        | Finds results in a numeric range.               | `site:ecommerce.com "price" 100..500`                    |
 | `"` `" (quotes)     | Matches an exact phrase.                        | `"information security policy"`                          |
 | `-` (minus)         | Excludes a term from the results.               | `site:news.com -inurl:sports`                            |
+#### Google Dorking
+Finding Login Pages:
+- site:example.com inurl:login
+- site:example.com (inurl:login OR inurl:admin)
+Identifying Exposed Files:
+- site:example.com filetype:pdf
+- site:example.com (filetype:xls OR filetype:docx)
+Uncovering Configuration Files:
+- site:example.com inurl:config.php
+- site:example.com (ext:conf OR ext:cnf) (searches for extensions commonly used for configuration files)
+Locating Database Backups:
+- site:example.com inurl:backup
+- site:example.com filetype:sql
 
+More examples on [Google Hacking Database](https://www.exploit-db.com/google-hacking-database).
 ### Check the robots.txt file
 `example.com/robots.txt` in the URL bar of the browser.
 
