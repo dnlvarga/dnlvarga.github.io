@@ -51,14 +51,40 @@ curl -s "https://crt.sh/?q=facebook.com&output=json" | jq -r '.[] | select(.name
 `jq -r '.[] | select(.name_value | contains("dev")) | .name_value'`: This part filters the JSON results, selecting only entries where the name_value field (which contains the domain or subdomain) includes the string "dev". The -r flag tells jq to output raw strings. <br>
 `sort -u`: This sorts the results alphabetically and removes duplicates.
 
-### Google it 
-`site:example.com` in the search bar.
+### Search Engine Discovery
+#### Search Operators
+The exact syntax may vary slightly between search engines.
+Some examples:
+| Operator            | Description                                     | Example                                                  |
+|---------------------|-------------------------------------------------|----------------------------------------------------------|
+| `site:`             | Limits results to a specific site or domain.    | `site:example.com`                                       |
+| `inurl:`            | Finds pages with a term in the URL.             | `inurl:login`                                            |
+| `filetype:`         | Searches for specific file types.               | `filetype:pdf`                                           |
+| `intitle:`          | Searches for a term in the title.               | `intitle:"confidential report"`                          |
+| `intext:`/`inbody:` | Searches within body text.                      | `intext:"password reset"`                                |
+| `AND`               | Requires all terms to be present.               | `site:example.com AND (inurl:admin OR inurl:login)`      |
+| `OR`                | Includes pages with any listed terms.           | `"linux" OR "ubuntu" OR "debian"`                        |
+| `NOT`               | Excludes results containing a term.             | `site:bank.com NOT inurl:login`                          |
+| `*` (wildcard)      | Represents any word or character.               | `site:socialnetwork.com filetype:pdf user* manual`       |
+| `..` (range)        | Finds results in a numeric range.               | `site:ecommerce.com "price" 100..500`                    |
+| `"` `" (quotes)     | Matches an exact phrase.                        | `"information security policy"`                          |
+| `-` (minus)         | Excludes a term from the results.               | `site:news.com -inurl:sports`                            |
 
 ### Check the robots.txt file
 `example.com/robots.txt` in the URL bar of the browser.
 
 ### Check well-konwn URIs
 A website's critical metadata, including configuration files and information related to its services, protocols, and security mechanisms typically accessible via the /.well-known/ path on a web server.
+
+### Crawling/Spidering
+There are several popular web crawlers like Burp Suite Spider, OWASP ZAP or Scrapy
+#### Scrapy
+```
+pip3 install scrapy
+wget -O ReconSpider.zip https://academy.hackthebox.com/storage/modules/144/ReconSpider.v1.2.zip
+unzip ReconSpider.zip
+python3 ReconSpider.py http://$domain
+```
 
 ## Virtual Host Enumeration
 ```
