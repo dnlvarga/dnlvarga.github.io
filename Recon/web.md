@@ -40,7 +40,7 @@ dnsenum --enum $domain -f /usr/share/seclists/Discovery/DNS/subdomains-top1milli
 ```
 dig axfr @nsztm1.digi.ninja $domain
 ```
-@nsztm1.digi.ninja -	The DNS nameserver to query. The @ syntax tells dig to query this specific server.<br>
+@$NS - The DNS nameserver to query. The @ syntax tells dig to query this specific server. E.g. `@nsztm1.digi.ninja`. You can query the authoritative name servers for the domain with `dig $domain NS`<br> 
 This command instructs dig to request a full zone transfer (axfr) from the DNS server responsible for zonetransfer.me. If the server is misconfigured and allows the transfer, you'll receive a complete list of DNS records for the domain, including all subdomains.
 
 # Whatweb
