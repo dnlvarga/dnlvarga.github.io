@@ -43,6 +43,14 @@ dig axfr @$NS $domain
 @$NS - The DNS nameserver to query. The @ syntax tells dig to query this specific server. E.g. `@nsztm1.digi.ninja` or `@$ip`. You can query the authoritative name servers for the domain with `dig $domain NS`<br> 
 This command instructs dig to request a full zone transfer (axfr) from the DNS server responsible for zonetransfer.me. If the server is misconfigured and allows the transfer, you'll receive a complete list of DNS records for the domain, including all subdomains.
 
+### Certificate Transparency (CT) Logs Recon
+```
+curl -s "https://crt.sh/?q=facebook.com&output=json" | jq -r '.[] | select(.name_value | contains("dev")) | .name_value' | sort -u
+```
+curl -s "https://crt.sh/?q=facebook.com&output=json": This command fetches the JSON output from crt.sh for certificates matching the domain facebook.com. <br>
+jq -r '.[] | select(.name_value | contains("dev")) | .name_value': This part filters the JSON results, selecting only entries where the name_value field (which contains the domain or subdomain) includes the string "dev". The -r flag tells jq to output raw strings. <br>
+sort -u: This sorts the results alphabetically and removes duplicates.
+
 ## Virtual Host Enumeration
 ```
 gobuster vhost -u http://$domain:$port -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt --append-domain
