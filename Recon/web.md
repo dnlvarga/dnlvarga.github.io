@@ -55,6 +55,79 @@ curl -s "https://crt.sh/?q=facebook.com&output=json" | jq -r '.[] | select(.name
 #### Search Operators
 The exact syntax may vary slightly between search engines.
 Some examples:
+<table>
+  <thead>
+    <tr>
+      <th>Operator</th>
+      <th>Description</th>
+      <th>Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>site:</code></td>
+      <td>Limits results to a specific site or domain.</td>
+      <td><code>site:example.com</code></td>
+    </tr>
+    <tr>
+      <td><code>inurl:</code></td>
+      <td>Finds pages with a term in the URL.</td>
+      <td><code>inurl:login</code></td>
+    </tr>
+    <tr>
+      <td><code>filetype:</code></td>
+      <td>Searches for specific file types.</td>
+      <td><code>filetype:pdf</code></td>
+    </tr>
+    <tr>
+      <td><code>intitle:</code></td>
+      <td>Searches for a term in the title.</td>
+      <td><code>intitle:"confidential report"</code></td>
+    </tr>
+    <tr>
+      <td><code>intext:</code>/<code>inbody:</code></td>
+      <td>Searches within body text.</td>
+      <td><code>intext:"password reset"</code></td>
+    </tr>
+    <tr>
+      <td><code>AND</code></td>
+      <td>Requires all terms to be present.</td>
+      <td><code>site:example.com AND (inurl:admin OR inurl:login)</code></td>
+    </tr>
+    <tr>
+      <td><code>OR</code></td>
+      <td>Includes pages with any listed terms.</td>
+      <td><code>"linux" OR "ubuntu" OR "debian"</code></td>
+    </tr>
+    <tr>
+      <td><code>NOT</code></td>
+      <td>Excludes results containing a term.</td>
+      <td><code>site:bank.com NOT inurl:login</code></td>
+    </tr>
+    <tr>
+      <td><code>*</code> (wildcard)</td>
+      <td>Represents any word or character.</td>
+      <td><code>site:socialnetwork.com filetype:pdf user* manual</code></td>
+    </tr>
+    <tr>
+      <td><code>..</code> (range)</td>
+      <td>Finds results in a numeric range.</td>
+      <td><code>site:ecommerce.com "price" 100..500</code></td>
+    </tr>
+    <tr>
+      <td><code>" "</code> (quotes)</td>
+      <td>Matches an exact phrase.</td>
+      <td><code>"information security policy"</code></td>
+    </tr>
+    <tr>
+      <td><code>-</code> (minus)</td>
+      <td>Excludes a term from the results.</td>
+      <td><code>site:news.com -inurl:sports</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<!--
 | Operator            | Description                                     | Example                                                  |
 |---------------------|-------------------------------------------------|----------------------------------------------------------|
 | `site:`             | Limits results to a specific site or domain.    | `site:example.com`                                       |
@@ -69,17 +142,18 @@ Some examples:
 | `..` (range)        | Finds results in a numeric range.               | `site:ecommerce.com "price" 100..500`                    |
 | `"` `" (quotes)     | Matches an exact phrase.                        | `"information security policy"`                          |
 | `-` (minus)         | Excludes a term from the results.               | `site:news.com -inurl:sports`                            |
+-->
 #### Google Dorking
-Finding Login Pages:
+<br>Finding Login Pages:
 - site:example.com inurl:login
 - site:example.com (inurl:login OR inurl:admin)
-Identifying Exposed Files:
+<br>Identifying Exposed Files:
 - site:example.com filetype:pdf
 - site:example.com (filetype:xls OR filetype:docx)
-Uncovering Configuration Files:
+<br>Uncovering Configuration Files:
 - site:example.com inurl:config.php
 - site:example.com (ext:conf OR ext:cnf) (searches for extensions commonly used for configuration files)
-Locating Database Backups:
+<br>Locating Database Backups:
 - site:example.com inurl:backup
 - site:example.com filetype:sql
 
