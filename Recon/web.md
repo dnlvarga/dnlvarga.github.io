@@ -13,10 +13,6 @@ ffuf -w /usr/share/seclists/Discovery/Web-Content/common.txt -u http://$sub.$dom
 ```
 -ic : Ignore wordlist comments.
 -t : Number of concurrent threads. (default: 40)
-```
-dnsenum --enum $domain -f /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt -r
-```
--r: This option enables recursive subdomain brute-forcing, meaning that if dnsenum finds a subdomain, it will then try to enumerate subdomains of that subdomain.
 
 ## DNS Subdomain Enumeration
 ```
@@ -34,6 +30,18 @@ echo "$ip $subdomain.$domain" | sudo tee -a /etc/hosts
 ```
 
 You can always repeat the file enumeration on a new found subdomain.
+
+```
+dnsenum --enum $domain -f /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt -r
+```
+-r: This option enables recursive subdomain brute-forcing, meaning that if dnsenum finds a subdomain, it will then try to enumerate subdomains of that subdomain.
+
+### zone transfer enumeration
+```
+dig axfr @nsztm1.digi.ninja $domain
+```
+@nsztm1.digi.ninja -	The DNS nameserver to query. The @ syntax tells dig to query this specific server.<br>
+This command instructs dig to request a full zone transfer (axfr) from the DNS server responsible for zonetransfer.me. If the server is misconfigured and allows the transfer, you'll receive a complete list of DNS records for the domain, including all subdomains.
 
 # Whatweb
 ```
