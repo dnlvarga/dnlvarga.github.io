@@ -74,12 +74,12 @@ curl -I $domian
 ```
 If it's also trying to redirect to somewhere, grab those banners too.
 
-## Identifying Web Application Firewalls (WAFs)
+### Identifying Web Application Firewalls (WAFs)
 ```
 wafw00f $domain
 ```
 
-## Nikto
+### Nikto
 Nikto is an open-source web server scanner. Its primary function is vulnerability assessment. Its fingerprinting capabilities provide insights into a website's technology stack.
 ```
 nikto -h $domain -Tuning b
@@ -89,17 +89,15 @@ nikto -h $domain -Tuning b
 
 *Note: You can use Wappalyzer Browser Extension too for fingerprinting.* 
 
-# Whatweb
+### Whatweb
 ```
 whatweb $ip
 ```
-
-# Banner Grabbing
 ```
-curl -IL http://$domain
+whatweb $domain
 ```
 
-# Git Dumping
+## Git Dumping
 
 If a `.git` directory is exposed, you can use a tool like [gitdumper](https://github.com/arthaud/git-dumper).
 ```
@@ -114,6 +112,6 @@ If we see changes have been made, we can view it by restoring the staged changes
 git restore --staged . && git diff
 ```
 
-# Check source code
+## Check source code
 
 Merely type `ctrl + u` when you are in the browser or put `view-source:` before the URL in the URL bar. This could reveal sensitive data, like test credentials.
