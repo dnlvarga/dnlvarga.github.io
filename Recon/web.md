@@ -57,6 +57,9 @@ curl -s "https://crt.sh/?q=facebook.com&output=json" | jq -r '.[] | select(.name
 ### Check the robots.txt file
 `example.com/robots.txt` in the URL bar of the browser.
 
+### Check well-konwn URIs
+A website's critical metadata, including configuration files and information related to its services, protocols, and security mechanisms typically accessible via the /.well-known/ path on a web server.
+
 ## Virtual Host Enumeration
 ```
 gobuster vhost -u http://$domain:$port -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt --append-domain
