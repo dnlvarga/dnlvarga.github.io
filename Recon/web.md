@@ -51,6 +51,11 @@ curl -s "https://crt.sh/?q=facebook.com&output=json" | jq -r '.[] | select(.name
 `jq -r '.[] | select(.name_value | contains("dev")) | .name_value'`: This part filters the JSON results, selecting only entries where the name_value field (which contains the domain or subdomain) includes the string "dev". The -r flag tells jq to output raw strings. <br>
 `sort -u`: This sorts the results alphabetically and removes duplicates.
 
+## Google it 
+```
+site:example.com
+```
+
 ## Virtual Host Enumeration
 ```
 gobuster vhost -u http://$domain:$port -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt --append-domain
