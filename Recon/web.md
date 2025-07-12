@@ -96,6 +96,7 @@ whatweb $ip
 ```
 whatweb $domain
 ```
+Can reveal e.g. the CMS.
 
 ## Git Dumping
 
