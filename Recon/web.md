@@ -28,7 +28,7 @@ ffuf -w /opt/useful/seclists/Discovery/Web-Content/web-extensions.txt:FUZZ -u ht
 ```
 If we get hit, e.g. `.php` gives us response with code 200, we can continue with:
 ```
-ffuf -w /opt/useful/seclists/Discovery/Web-Content/directory-list-2.3-small.txt:FUZZ -u http://%ip:$port/blog/FUZZ.php
+ffuf -w /opt/useful/seclists/Discovery/Web-Content/directory-list-2.3-small.txt:FUZZ -u http://$ip:$port/blog/FUZZ.php
 ```
 *Note: We can always use two wordlists and have a unique keyword for each, and then do FUZZ_1.FUZZ_2 to fuzz for both.*
 
