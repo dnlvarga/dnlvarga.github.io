@@ -225,7 +225,7 @@ We see that all words in the wordlist are returning 200 OK! This is expected, as
 
 ## Parameter Fuzzing
 ```
-ffuf -w /opt/useful/seclists/Discovery/Web-Content/burp-parameter-names.txt:FUZZ -u http://$sub.$domain.htb:$port/$dir/$file.$ext?FUZZ=key -fs xxx
+ffuf -w /opt/useful/seclists/Discovery/Web-Content/burp-parameter-names.txt:FUZZ -u http://$sub.$domain:$port/$dir/$file.$ext?FUZZ=key -fs 986
 ```
 
 ## Fingerprinting
