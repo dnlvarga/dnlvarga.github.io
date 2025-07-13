@@ -192,6 +192,8 @@ Other useful flags:
 -k: This flag can ignore SSL/TLS certificate errors.
 -o: To save the output to a file for later analysis.
 
+*Note: Once we've found a vhost, we can run the same command on that, to find additional subdomains.* 
+
 ## Fingerprinting
 
 Fingerprinting focuses on extracting technical details about the technologies powering a website or web application.
