@@ -175,7 +175,9 @@ pip3 install scrapy
 wget -O ReconSpider.zip https://academy.hackthebox.com/storage/modules/144/ReconSpider.v1.2.zip
 unzip ReconSpider.zip
 python3 ReconSpider.py http://$domain
+cat results.json | jq
 ```
+After running ReconSpider.py, the data will be saved in a JSON file, results.json. 
 
 ## Virtual Host Enumeration
 ```
