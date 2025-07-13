@@ -14,6 +14,17 @@ ffuf -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-small.txt:F
 -ic : Ignore wordlist comments.
 -t : Number of concurrent threads. (default: 40)
 
+## Page Fuzzing
+Maybe we found the /blog directory, but it returns an empty page. The directory may contains hidden pages.
+```
+ffuf -w /opt/useful/seclists/Discovery/Web-Content/web-extensions.txt:FUZZ -u http://$ip:$port/blog/indexFUZZ
+```
+If we get hit, e.g. `.php` gives us response with code 200, we can continue with:
+```
+ffuf -w /opt/useful/seclists/Discovery/Web-Content/directory-list-2.3-small.txt:FUZZ -u http://%ip:$port/blog/FUZZ.php
+```
+*Note: We can always use two wordlists and have a unique keyword for each, and then do FUZZ_1.FUZZ_2 to fuzz for both.*
+
 ## DNS Subdomain Enumeration
 ```
 gobuster dns -d $domain -w /usr/share/seclists/Discovery/DNS/namelist.txt
