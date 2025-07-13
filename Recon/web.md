@@ -223,6 +223,11 @@ We see that all words in the wordlist are returning 200 OK! This is expected, as
 
 *Note: Once we've found a vhost, we can run the same command on that, to find additional virtual hosts.*
 
+## Parameter Fuzzing
+```
+ffuf -w /opt/useful/seclists/Discovery/Web-Content/burp-parameter-names.txt:FUZZ -u http://$sub.$domain.htb:$port/$dir/$file.$ext?FUZZ=key -fs xxx
+```
+
 ## Fingerprinting
 
 Fingerprinting focuses on extracting technical details about the technologies powering a website or web application.
