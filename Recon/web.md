@@ -42,8 +42,7 @@ ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -
 -ic : Ignore wordlist comments.
 -fs : Filter HTTP response size. Comma separated list of sizes and ranges.
 
-*Note: We can fuzz the header with `-H "Host: FUZZ.$domain"`*
-*Note: If there is no hit, this only means that there are no public sub-domains under the domain*
+*Note: If there is no hit, this only means that there are no public DNS records for sub-domains under the domain. When it came to fuzzing sub-domains that do not have a public DNS record or sub-domains under websites that are not public, we should do vhost fuzzing*
 
 After you found subdomains, you can add them to your local dns:
 ```
@@ -201,7 +200,7 @@ cat results.json | jq
 After running ReconSpider.py, the data will be saved in a JSON file, results.json. 
 
 ## Virtual Host Enumeration
-Discover virtual hosts configured on a single IP that are not resolvable via DNS, but still reachable by sending a crafted Host: header.
+Discover virtual hosts configured on a single IP that are not resolvable via DNS, but still reachable by sending a crafted Host: header. When it came to fuzzing sub-domains that do not have a public DNS record or sub-domains under websites that are not public, we should do vhost fuzzing.
 ```
 gobuster vhost -u http://$domain:$port -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt --append-domain
 ```
@@ -213,6 +212,10 @@ Other useful flags:
 -t: To increase the number of threads for faster scanning.
 -k: This flag can ignore SSL/TLS certificate errors.
 -o: To save the output to a file for later analysis.
+
+```
+ffuf -w /opt/useful/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -u http://$domain:$port/ -H 'Host: FUZZ.academy.htb'
+```
 
 *Note: Once we've found a vhost, we can run the same command on that, to find additional virtual hosts.*
 
