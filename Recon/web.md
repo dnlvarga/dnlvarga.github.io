@@ -37,17 +37,20 @@ ffuf -w /opt/useful/seclists/Discovery/Web-Content/directory-list-2.3-small.txt:
 gobuster dns -d $domain -w /usr/share/seclists/Discovery/DNS/namelist.txt
 ```
 ```
-ffuf -w /usr/share/seclists/Discovery/DNS/bitquark-subdomains-top100000.txt -H "Host:FUZZ.$domain" -u http://$domain -ic -fs 230
+ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -u http://FUZZ.$domain -ic -fs 230
 ```
 -ic : Ignore wordlist comments.
 -fs : Filter HTTP response size. Comma separated list of sizes and ranges.
+
+*Note: We can fuzz the header with `-H "Host: FUZZ.$domain"`*
+*Note: If there is no hit, this only means that there are no public sub-domains under the domain*
 
 After you found subdomains, you can add them to your local dns:
 ```
 echo "$ip $subdomain.$domain" | sudo tee -a /etc/hosts
 ```
 
-You can always repeat the file enumeration on a new found subdomain.
+*Note: You can always repeat the file enumeration on a new found subdomain.*
 
 ```
 dnsenum --enum $domain -f /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt -r
