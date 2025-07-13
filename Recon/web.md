@@ -231,10 +231,6 @@ ffuf -w /opt/useful/seclists/Discovery/Web-Content/burp-parameter-names.txt:FUZZ
 ```
 ffuf -w /opt/useful/seclists/Discovery/Web-Content/burp-parameter-names.txt:FUZZ -u http://$sub.$domain:$port/$dir/$file.$ext -X POST -d 'FUZZ=key' -H 'Content-Type: application/x-www-form-urlencoded' -fs xxx
 ```
-We can send POST request with curl:
-```
-curl http://$sub.$domain:$port/$folder/$file.php -X POST -d 'id=key' -H 'Content-Type: application/x-www-form-urlencoded'
-```
 *Note: In PHP, "POST" data "content-type" can only accept "application/x-www-form-urlencoded". So, we can set that in "ffuf" with "-H 'Content-Type: application/x-www-form-urlencoded'".*
 
 #### Value Fuzzing
@@ -245,6 +241,10 @@ for i in $(seq 1 1000); do echo $i >> ids.txt; done
 ```
 ```
 ffuf -w ids.txt:FUZZ -u http://$sub.$domain:$port/$directory/$file.php -X POST -d 'id=FUZZ' -H 'Content-Type: application/x-www-form-urlencoded' -fs 798
+```
+After that we can send POST request with the found `id` value with `curl`:
+```
+curl http://$sub.$domain:$port/$folder/$file.php -X POST -d 'id=$num' -H 'Content-Type: application/x-www-form-urlencoded'
 ```
 
 
