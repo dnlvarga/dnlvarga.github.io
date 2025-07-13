@@ -225,6 +225,10 @@ whatweb $domain
 ```
 Can reveal e.g. OS or the CMS.
 
+## Web Archives
+
+We can check previous versions of the website at [The Wayback Machine](https://web.archive.org/). This can also reveal valuable information.
+
 ## Git Dumping
 
 If a `.git` directory is exposed, you can use a tool like [gitdumper](https://github.com/arthaud/git-dumper).
