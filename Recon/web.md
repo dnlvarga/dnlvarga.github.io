@@ -23,6 +23,7 @@ ffuf -w /opt/useful/seclists/Discovery/Web-Content/directory-list-2.3-small.txt:
 
 ## Page Fuzzing
 Maybe we found the /blog directory, but it returns an empty page. The directory may contains hidden pages.
+### Extension Fuzzing
 ```
 ffuf -w /opt/useful/seclists/Discovery/Web-Content/web-extensions.txt:FUZZ -u http://$ip:$port/blog/indexFUZZ
 ```
