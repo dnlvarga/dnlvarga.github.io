@@ -227,6 +227,12 @@ We see that all words in the wordlist are returning 200 OK! This is expected, as
 ```
 ffuf -w /opt/useful/seclists/Discovery/Web-Content/burp-parameter-names.txt:FUZZ -u http://$sub.$domain:$port/$dir/$file.$ext?FUZZ=key -fs 986
 ```
+### Parameter Fuzzing - POST
+```
+ffuf -w /opt/useful/seclists/Discovery/Web-Content/burp-parameter-names.txt:FUZZ -u http://$sub.$domain:$port/$dir/$file.$ext -X POST -d 'FUZZ=key' -H 'Content-Type: application/x-www-form-urlencoded' -fs xxx
+```
+
+*Note: In PHP, "POST" data "content-type" can only accept "application/x-www-form-urlencoded". So, we can set that in "ffuf" with "-H 'Content-Type: application/x-www-form-urlencoded'".*
 
 ## Fingerprinting
 
