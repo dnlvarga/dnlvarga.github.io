@@ -201,6 +201,8 @@ After running ReconSpider.py, the data will be saved in a JSON file, results.jso
 
 ## Virtual Host Enumeration
 Discover virtual hosts configured on a single IP that are not resolvable via DNS, but still reachable by sending a crafted Host: header. When it came to fuzzing sub-domains that do not have a public DNS record or sub-domains under websites that are not public, we should do vhost fuzzing.
+In many cases, many websites would actually have sub-domains that are not public and will not publish them in public DNS records, and hence if we visit them in a browser, we would fail to connect, as the public DNS would not know their IP. Once again, if we use the sub-domain fuzzing, we would only be able to identify public sub-domains but will not identify any sub-domains that are not public.
+This is where we utilize VHosts Fuzzing on an IP we already have. We will run a scan and test for scans on the same IP, and then we will be able to identify both public and non-public sub-domains and VHosts.
 ```
 gobuster vhost -u http://$domain:$port -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt --append-domain
 ```
@@ -214,8 +216,10 @@ Other useful flags:
 -o: To save the output to a file for later analysis.
 
 ```
-ffuf -w /opt/useful/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -u http://$domain:$port/ -H 'Host: FUZZ.academy.htb'
+ffuf -w /opt/useful/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -u http://$domain:$port/ -H 'Host: FUZZ.academy.htb -fs 900'
 ```
+-fs: This flag filters for response size.
+We see that all words in the wordlist are returning 200 OK! This is expected, as we are simply changing the header while visiting http://$domain:$port/. So, we know that we will always get 200 OK. However, if the VHost does exist and we send a correct one in the header, we should get a different response size, as in that case, we would be getting the page from that VHosts, which is likely to show a different page. So it is critical to use filtering.
 
 *Note: Once we've found a vhost, we can run the same command on that, to find additional virtual hosts.*
 
