@@ -180,6 +180,7 @@ cat results.json | jq
 After running ReconSpider.py, the data will be saved in a JSON file, results.json. 
 
 ## Virtual Host Enumeration
+Discover virtual hosts configured on a single IP that are not resolvable via DNS, but still reachable by sending a crafted Host: header.
 ```
 gobuster vhost -u http://$domain:$port -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt --append-domain
 ```
@@ -192,7 +193,7 @@ Other useful flags:
 -k: This flag can ignore SSL/TLS certificate errors.
 -o: To save the output to a file for later analysis.
 
-*Note: Once we've found a vhost, we can run the same command on that, to find additional subdomains.* 
+*Note: Once we've found a vhost, we can run the same command on that, to find additional virtual hosts.*
 
 ## Fingerprinting
 
