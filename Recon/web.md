@@ -15,7 +15,7 @@ ffuf -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-small.txt:F
 -t : Number of concurrent threads. (default: 40)
 ### Recursive Scanning
 ```
-ffuf -w /opt/useful/seclists/Discovery/Web-Content/directory-list-2.3-small.txt:FUZZ -u http://SERVER_IP:PORT/FUZZ -recursion -recursion-depth 1 -e .php -v
+ffuf -w /opt/useful/seclists/Discovery/Web-Content/directory-list-2.3-small.txt:FUZZ -u http://$ip:$port/FUZZ -recursion -recursion-depth 1 -e .php -v
 ```
 - It is always advised to specify a depth to our recursive scan as some websites may have a big tree of sub-directories and it will take a very long time to scan them all.
 - When using recursion in ffuf, we can specify our extension with -e .php
