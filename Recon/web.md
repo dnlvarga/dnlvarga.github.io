@@ -247,3 +247,17 @@ git restore --staged . && git diff
 ## Check source code
 
 Merely type `ctrl + u` when you are in the browser or put `view-source:` before the URL in the URL bar. This could reveal sensitive data, like test credentials.
+
+## Automating Recon
+
+There are reconnaissance frameworks to automate recon.
+
+### FinalRecon
+```
+git clone https://github.com/thewhiteh4t/FinalRecon.git
+cd FinalRecon
+pip3 install -r requirements.txt
+chmod +x ./finalrecon.py
+./finalrecon.py --help
+./finalrecon.py --headers --whois --url http://$domain
+```
