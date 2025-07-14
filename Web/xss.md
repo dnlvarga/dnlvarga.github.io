@@ -46,7 +46,27 @@ As XSS attacks execute JavaScript code within the browser, they are limited to t
 <script>alert(window.origin)</script>
 ```
 *Note: Many modern web applications utilize cross-domain IFrames to handle user input, so that even if the web form is vulnerable to XSS, it would not be a vulnerability on the main web application. This is why we are showing the value of window.origin in the alert box, instead of a static value like 1. In this case, the alert box would reveal the URL it is being executed on, and will confirm which form is the vulnerable one.*
-As some modern browsers may block the alert() JavaScript function in specific locations, it may be handy to know a few other basic XSS payloads to verify the existence of XSS. One such XSS payload is <plaintext>, which will stop rendering the HTML code that comes after it and display it as plaintext. Another easy-to-spot payload is <script>print()</script> that will pop up the browser print dialog, which is unlikely to be blocked by any browsers. 
+As some modern browsers may block the `alert()` JavaScript function in specific locations, it may be handy to know a few other basic XSS payloads to verify the existence of XSS. One such XSS payload is `<plaintext>`, which will stop rendering the HTML code that comes after it and display it as plaintext. Another easy-to-spot payload is `<script>print()</script>` that will pop up the browser print dialog, which is unlikely to be blocked by any browsers.
+If the `<script>` tags are not allowed, we can use `<img src="" onerror=alert(window.origin)>`
+
+### Automated Discovery
+Almost all Web Application Vulnerability Scanners (like Nessus, Burp Pro, or ZAP) have various capabilities for detecting all three types of XSS vulnerabilities.
+
+#### XSS Strike
+```
+git clone https://github.com/s0md3v/XSStrike.git
+cd XSStrike
+pip install -r requirements.txt
+python xsstrike.py
+```
+```
+python xsstrike.py -u "http://SERVER_IP:PORT/index.php?task=test"
+```
+
+### Manual Discovery
+
+We can find huge lists of XSS payloads online, like the one on [PayloadAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/XSS%20Injection/README.md) or the one in [PayloadBox](https://github.com/payloadbox/xss-payload-list). We can then begin testing these payloads one by one by copying each one and adding it in our form, and seeing whether an alert box pops up, but it is unefficient.<br>
+The most reliable method of detecting XSS vulnerabilities is manual code review, which should cover both back-end and front-end code. If we understand precisely how our input is being handled all the way until it reaches the web browser, we can write a custom payload that should work with high confidence.
 
 ## Reflected XSS
 If this XSS vulnerability is Non-Persistent, how would we target victims with it?
@@ -55,3 +75,8 @@ If our request was a GET request, the parameters and data is part of the URL, so
 ```
 http://94.237.61.242:53290/index.php?task=payload
 ```
+
+## DOM XSS
+DOM XSS occurs when JavaScript is used to change the page source through the Document Object Model (DOM).
+There will be no network traffic and We the input parameter in the URL is using a hashtag # for the item we added, which means that the parameter is a client-side parameter that is completely processed on the browser.
+To target a user with this DOM XSS vulnerability, we can once again copy the URL from the browser and share it with them, and once they visit it, the JavaScript code should execute. 
