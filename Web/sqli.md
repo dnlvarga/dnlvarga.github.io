@@ -1,3 +1,9 @@
+---
+layout: default
+title: SQL Injection
+permalink: /Web/sqli/
+---
+
 # SQL Injection
 
 When user-supplied information is used to construct the query to the database, malicious users can trick the query into being used for something other than what the original programmer intended.
