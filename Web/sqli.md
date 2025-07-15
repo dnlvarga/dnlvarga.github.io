@@ -82,5 +82,5 @@ The AND, OR and NOT operators can also be represented as &&, || and !, respectiv
 ```
 SELECT * FROM logins WHERE username != 'john' AND id > 1;
 ```
-
+## Database Enumeration
 
