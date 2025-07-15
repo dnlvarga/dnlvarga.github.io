@@ -33,4 +33,54 @@ SHOW TABLES;
 ```
 DESCRIBE table_name;
 ```
+## Few SQL Statements
+### INSERT
+Add new records to a given table.
+```
+INSERT INTO logins VALUES(1, 'admin', 'password', '2025-07-15');
+```
+```
+INSERT INTO logins(username, password) VALUES('administrator', 'adm1n_p@ss');
+```
+### SELECT
+Retrieve data.
+```
+SELECT * FROM table_name;
+```
+### UPDATE
+update specific records.
+```
+UPDATE logins SET password = 'change_password' WHERE id > 1;
+```
+### LIMIT
+In case our query returns a large number of records, we can limit the results.
+```
+SELECT * FROM logins LIMIT 2;
+```
+### WHERE
+To filter or search.
+```
+SELECT * FROM logins WHERE id > 1;
+```
+### LIKE
+Enables selecting records by matching a certain pattern.
+Records  with usernames starting with admin:
+```
+SELECT * FROM logins WHERE username LIKE 'admin%';
+```
+### SQL Operators
+```
+SELECT 1 = 1 AND 'test' = 'test';
+```
+```
+SELECT 1 = 1 OR 'test' = 'abc';
+```
+```
+SELECT NOT 1 = 1;
+```
+The AND, OR and NOT operators can also be represented as &&, || and !, respectively.
+```
+SELECT * FROM logins WHERE username != 'john' AND id > 1;
+```
+
 
