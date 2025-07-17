@@ -157,5 +157,5 @@ Then:
 cn' UNION select 1,2,3,4-- -
 ```
 *Note: It is very common that not every column will be displayed back to the user. This is the benefit of using numbers as our junk data, as it makes it easy to track which columns are printed, so we know at which column to place our query.*
-*Note: We can also use `@@version` in our SQL query in the place of a cloumn to get data from the database or `user()` to get data about the user, etc.*
+*Note: We can also use `@@version` in our SQL query in the place of a cloumn to get data from the database. In MSSQL it returns MSSQL version. Error with other DBMS. We can also try `user()` to get data about the user, etc.*
 
