@@ -253,7 +253,7 @@ If we need to specify a complex HTTP request with lots of different header value
 ```
 sqlmap -r req.txt
 ```
-*Note: similarly to the case with the '--data' option, within the saved request file, we can specify the parameter we want to inject in with an asterisk (*), such as '/?id=*'.*
+*Note: similarly to the case with the '--data' option, within the saved request file, we can specify the parameter we want to inject in with an asterisk (\*), such as '/?id=\*'.*
 
 
 
