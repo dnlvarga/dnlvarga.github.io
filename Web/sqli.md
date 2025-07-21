@@ -336,5 +336,32 @@ We can use the option `--where` to retrieve certain rows based on a known WHERE 
 
 *Note: Instead of retrieving content per single-table basis, we can retrieve all tables inside the database of interest by skipping the usage of option -T altogether (e.g. --dump -D testdb). By simply using the switch --dump without specifying a table with -T, all of the current database content will be retrieved. As for the --dump-all switch, all the content from all the databases will be retrieved. In such cases, a user is also advised to include the switch --exclude-sysdbs (e.g. --dump-all --exclude-sysdbs), which will instruct SQLMap to skip the retrieval of content from system databases, as it is usually of little interest for pentesters.*
 
+#### DB Schema Enumeration
+```
+sqlmap -u "http://www.example.com/?id=1" --schema
+```
+We could use the switch `--schema` to retrieve the structure of all of the tables so that we can have a complete overview of the database architecture.
 
+#### Searching for Data
+We can search for databases, tables, and columns of interest, by using the `--search` option.<br>
+If we are looking for all of the table names containing the keyword 'user', we can run SQLMap as follows:
+```
+sqlmap -u "http://www.example.com/?id=1" --search -T user
+```
+If we search for all column names based on the 'pass' keyword:
+```
+sqlmap -u "http://www.example.com/?id=1" --search -C pass
+```
+#### Password Enumeration and Cracking
+SQLMap has automatic password hashes cracking capabilities.
+```
+sqlmap -u "http://www.example.com/?id=1" --dump -D master -T users
+```
+If the `masters.users` table containing passwords, SQLMap prompts us to perform a dictionary-based attack on the found hashes.
+<br>
+We can also attempt to dump the content of system tables containing database-specific credentials (e.g., connection credentials). To ease the whole process, SQLMap has a special switch --passwords designed especially for such a task:
+```
+sqlmap -u "http://www.example.com/?id=1" --passwords --batch
+```
+*Note: The `--all` switch in combination with the `--batch` switch, will automatically do the whole enumeration process, and provide the entire enumeration details. This means that everything accessible will be retrieved, potentially running for a very long time. We will need to find the data of interest in the output files manually.*
 
