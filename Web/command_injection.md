@@ -71,4 +71,62 @@ A Command Injection vulnerability is among the most critical types of vulnerabil
   </tbody>
 </table>
 
+If user input validation is happening on the front-end, we can bypass it by sending custom HTTP requests directly to the back-end. E.g. using a proxy like Burp Suite or ZAP.
+
+<table>
+  <thead>
+    <tr>
+      <th>Injection Type</th>
+      <th>Operators</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>SQL Injection</td>
+      <td><code>'</code>, <code>;</code>, <code>--</code>, <code>/* */</code></td>
+    </tr>
+    <tr>
+      <td>Command Injection</td>
+      <td><code>;</code>, <code>&amp;&amp;</code></td>
+    </tr>
+    <tr>
+      <td>LDAP Injection</td>
+      <td><code>*</code>, <code>()</code>, <code>&amp;</code>, <code>|</code></td>
+    </tr>
+    <tr>
+      <td>XPath Injection</td>
+      <td><code>'</code>, <code>or</code>, <code>and</code>, <code>not</code>, <code>substring</code>, <code>concat</code>, <code>count</code></td>
+    </tr>
+    <tr>
+      <td>OS Command Injection</td>
+      <td><code>;</code>, <code>&amp;</code>, <code>|</code></td>
+    </tr>
+    <tr>
+      <td>Code Injection</td>
+      <td><code>'</code>, <code>;</code>, <code>--</code>, <code>/* */</code>, <code>$()</code>, <code>${}</code>, <code>#{}</code>, <code>%{}</code>, <code>^</code></td>
+    </tr>
+    <tr>
+      <td>Directory Traversal/File Path Traversal</td>
+      <td><code>../</code>, <code>..\\</code>, <code>%00</code></td>
+    </tr>
+    <tr>
+      <td>Object Injection</td>
+      <td><code>;</code>, <code>&amp;</code>, <code>|</code></td>
+    </tr>
+    <tr>
+      <td>XQuery Injection</td>
+      <td><code>'</code>, <code>;</code>, <code>--</code>, <code>/* */</code></td>
+    </tr>
+    <tr>
+      <td>Shellcode Injection</td>
+      <td><code>\x</code>, <code>\u</code>, <code>%u</code>, <code>%n</code></td>
+    </tr>
+    <tr>
+      <td>Header Injection</td>
+      <td><code>\n</code>, <code>\r\n</code>, <code>\t</code>, <code>%0d</code>, <code>%0a</code>, <code>%09</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
 
