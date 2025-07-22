@@ -71,6 +71,7 @@ A Command Injection vulnerability is among the most critical types of vulnerabil
   </tbody>
 </table>
 
+*Note: If we URL encode a new-line, we have to encode a literal newline character (Enter). We get a different result if we encode a literal backslash followed by "n"*
 If user input validation is happening on the front-end, we can bypass it by sending custom HTTP requests directly to the back-end. E.g. using a proxy like Burp Suite or ZAP.
 
 <table>
