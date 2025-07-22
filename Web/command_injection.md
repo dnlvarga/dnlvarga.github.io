@@ -139,9 +139,15 @@ The new-line character is usually not blacklisted, as it may be needed in the pa
 - We can use the Bash Brace Expansion feature, which automatically adds spaces between arguments wrapped between braces, as follows: `{ls,-la}`.
 
 ### Bypass Specail Characters
+#### Linux
 - One technique we can use for replacing characters is through Linux Environment Variables. While ${IFS} is directly replaced with a space, other characters may be used in other environment variables, and we can specify start and length of our string to exactly match the desired character. E.g. `${PATH:0:1}` is probably a `/`, `${LS_COLORS:10:1}` is probably a `;`. Other candidates: `$HOME` or `$PWD`.
 
 *Note: The `printenv` command prints all environment variables in Linux, so you can look which ones may contain useful characters, and then try to reduce the string to that character only.*
+#### Windows
+- The same concept works on Windows as well: `%HOMEPATH:~6,-11%`
+- With PowerShell, a word is considered an array, so we have to specify the index of the character we need. E.g. `$env:HOMEPATH[0]`
+
+*Note: We can also use the `Get-ChildItem Env:` PowerShell command to print all environment variables and then pick one of them to produce a character we need.*
 
 
 
