@@ -135,7 +135,7 @@ The new-line character is usually not blacklisted, as it may be needed in the pa
 
 ### Bypass Space
 - Using tabs (%09) instead of spaces is a technique that may work.
-- Using the ($IFS) Linux Environment Variable may also work since its default value is a space and a tab, which would work between command arguments. So, if we use ${IFS} where the spaces should be, the variable should be automatically replaced with a space.
+- Using the ($IFS) Linux Environment Variable may also work since its default value is a space and a tab, which would work between command arguments. So, if we use `${IFS}` where the spaces should be, the variable should be automatically replaced with a space.
 - We can use the Bash Brace Expansion feature, which automatically adds spaces between arguments wrapped between braces, as follows: `{ls,-la}`.
 
 ### Bypass Specail Characters
