@@ -162,7 +162,7 @@ We can also get inspiration from [PayloadAllTheThings](https://github.com/swissk
 - Case manipulation is another techinque we can use (e.g. WhOaMi). Linux systems are case-sensitive, so we have to get a bit creative and find a command that turns the command into an all-lowercase word. E.g. `$(tr "[A-Z]" "[a-z]"<<<"WhOaMi")` or `$(a="WhOaMi";printf %s "${a,,}")`. If we are dealing with a Windows server, we can change the casing of the characters of the command and send it. In Windows, commands for PowerShell and CMD are case-insensitive, meaning they will execute the command regardless of what case it is written in. E.g. `WhOaMi`.
 - Reversed commands:  `$(rev<<<'imaohw')` in Linux or `iex "$('imaohw'[-1..-20] -join '')"` in Windows.
   *Note: If we wanted to bypass a character filter with this method, we'd have to reverse them as well, or include them when reversing the original command.
-- Encoded Commands: We can utilize various encoding tools, like base64 (for b64 encoding) or xxd (for hex encoding). `bash<<<$(base64 -d<<<Y2F0IC9ldGMvcGFzc3dkIHwgZ3JlcCAzMw==)` in Linux (we are using `<<<` to avoid using a pipe `|`, which is a filtered character).
+- Encoded Commands: We can utilize various encoding tools, like base64 (for b64 encoding) or xxd (for hex encoding). E.g. executing the `cat /etc/passwd | grep 33` command would be: `bash<<<$(base64 -d<<<Y2F0IC9ldGMvcGFzc3dkIHwgZ3JlcCAzMw==)` in Linux (we are using `<<<` to avoid using a pipe `|`, which is a filtered character).
   In Windows:
   ```
   [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes('whoami'))
