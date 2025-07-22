@@ -143,11 +143,42 @@ The new-line character is usually not blacklisted, as it may be needed in the pa
 - One technique we can use for replacing characters is through Linux Environment Variables. While ${IFS} is directly replaced with a space, other characters may be used in other environment variables, and we can specify start and length of our string to exactly match the desired character. E.g. `${PATH:0:1}` is probably a `/`, `${LS_COLORS:10:1}` is probably a `;`. Other candidates: `$HOME` or `$PWD`.
 
 *Note: The `printenv` command prints all environment variables in Linux, so you can look which ones may contain useful characters, and then try to reduce the string to that character only.*
+
+- Character Shifting: The `$(tr '!-}' '"-~'<<<[)` Linux command shifts the character we passed by 1. So, all we have to do is find the character in the ASCII table that is just before our needed character (we can get it with `man ascii`), then add it instead of `[`.
+- 
 #### Windows
 - The same concept works on Windows as well: `%HOMEPATH:~6,-11%`
 - With PowerShell, a word is considered an array, so we have to specify the index of the character we need. E.g. `$env:HOMEPATH[0]`
 
 *Note: We can also use the `Get-ChildItem Env:` PowerShell command to print all environment variables and then pick one of them to produce a character we need.*
+
+### Bypass Blocklisted Commands
+If we can obfuscate our commands and make them look different, we may be able to bypass the filters.
+*Note: we can (and probably need to) combinde these techinques with the previous ones!*
+We can also get inspiration from [PayloadAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Command%20Injection#bypass-with-variable-expansion).
+#### Linux & Windows
+- One very common and easy obfuscation technique is inserting certain characters within our command that are usually ignored by command shells like Bash or PowerShell and will execute the same command as if they were not there. Some of these characters are a single-quote `'` and a double-quote `"`, in addition to a few others. E.g. `w'h'o'am'i` or `w"h"o"am"i`
+  *Note: we cannot mix types of quotes and the number of quotes must be even!*
+- Case manipulation is another techinque we can use (e.g. WhOaMi). Linux systems are case-sensitive, so we have to get a bit creative and find a command that turns the command into an all-lowercase word. E.g. `$(tr "[A-Z]" "[a-z]"<<<"WhOaMi")` or `$(a="WhOaMi";printf %s "${a,,}")`. If we are dealing with a Windows server, we can change the casing of the characters of the command and send it. In Windows, commands for PowerShell and CMD are case-insensitive, meaning they will execute the command regardless of what case it is written in. E.g. `WhOaMi`.
+- Reversed commands:  `$(rev<<<'imaohw')` in Linux or `iex "$('imaohw'[-1..-20] -join '')"` in Windows.
+  *Note: If we wanted to bypass a character filter with this method, we'd have to reverse them as well, or include them when reversing the original command.
+- Encoded Commands: We can utilize various encoding tools, like base64 (for b64 encoding) or xxd (for hex encoding). `bash<<<$(base64 -d<<<Y2F0IC9ldGMvcGFzc3dkIHwgZ3JlcCAzMw==)` in Linux (we are using `<<<` to avoid using a pipe `|`, which is a filtered character).
+  In Windows:
+  ```
+  [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes('whoami'))
+  ```
+  to get the encoded string adn then:
+  ```
+  iex "$([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String('ENCODED_STRING')))"
+  ```
+  We may also achieve the same thing on Linux, but we would have to convert the string from utf-8 to utf-16 before we base64 it, as follows:
+  ```
+  echo -n whoami | iconv -f utf-8 -t utf-16le | base64
+  ```
+#### Linux
+- We can insert a few other Linux-only characters in the middle of commands, and the bash shell would ignore them and execute the command. These characters include the backslash `\` and the positional parameter character `$@`. This works exactly as it did with the quotes, but in this case, the number of characters do not have to be even. E.g. `who$@ami`, `w\ho\am\i`
+#### Windows
+- There are also some Windows-only characters we can insert in the middle of commands that do not affect the outcome, like a caret `^` character. E.g. `who^ami`
 
 
 
