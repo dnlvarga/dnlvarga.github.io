@@ -67,8 +67,17 @@ done
 ```
 ## Type Filters
 If the web application is testing the file content for type validation, this can be either in the Content-Type Header or the File Content.
+### Content-Type Header
 Our browsers automatically set the Content-Type header and this operation is a client-side operation, so we can manipulate it.
 We may start by fuzzing the Content-Type header with SecLists' [Content-Type Wordlist](https://github.com/danielmiessler/SecLists/blob/master/Discovery/Web-Content/web-all-content-types.txt) through Burp Intruder, to see which types are allowed.
 *Note: A file upload HTTP request has two Content-Type headers, one for the attached file (at the bottom), and one for the full request (at the top). We usually need to modify the file's Content-Type header, but in some cases the request will only contain the main Content-Type header (e.g. if the uploaded content was sent as POST data), in which case we will need to modify the main Content-Type header.*
-
+### MIME-Type
+Multipurpose Internet Mail Extensions (MIME) is an internet standard that determines the type of a file through its general format and bytes structure.
+Many other image types have non-printable bytes for their file signatures, while a GIF image starts with ASCII printable bytes (as shown above), so it is the easiest to imitate. Furthermore, as the string GIF8 is common between both GIF signatures, it is usually enough to imitate a GIF image.
+You can check the MIME Type with the `file` command:
+```
+file <file_name.extension>
+```
+So just put the 'GIF8' string before your script and change the content-type header and see what happens.
+Similarly, we can attempt other combinations and permutations to try to confuse the web server, and depending on the level of code security, we may be able to bypass various filters.
 
