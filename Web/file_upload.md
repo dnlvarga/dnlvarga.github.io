@@ -30,3 +30,36 @@ There are many lists of extensions we can utilize in a fuzzing scan. PayloadsAll
 
 *Note: to trigger the uploaded file, we have to determine, where was it uploaded. Sometimes it is enough to upload a file and click on it after pressing [CTRL+SHIFT+C] and see the location in Page Inspector.*
 
+## Whitelist Filters
+### Double Extensions
+- If the .jpg extension is allowed, we can add it in our uploaded file name and still end our filename with another extension (e.g. shell.jpg.php). In some cases we are be able to pass the whitelist test with this technique. Usually comprehensive extension list contains these double extensions.
+- Sometimes the file name (shell.php.jpg) pass a whitelist test and it would be able to execute PHP code due to misconfigurations.
+### Character Injection
+We can inject several characters before or after the final extension to cause the web application to misinterpret the filename and execute the uploaded file as a PHP script. Examples:
+
+- %20
+- %0a
+- %00
+- %0d0a
+- /
+- .\
+- .
+- …
+- :
+
+For example, (shell.php%00.jpg) works with PHP servers with version 5.X or earlier, as it causes the PHP web server to end the file name after the (%00), and store it as (shell.php), while still passing the whitelist. The same may be used with web applications hosted on a Windows server by injecting a colon (:) before the allowed file extension (e.g. shell.aspx:.jpg), which should also write the file as (shell.aspx). Similarly, each of the other characters has a use case that may allow us to upload a PHP script while bypassing the type validation test.
+
+#### Bash script to generate these extensions
+```
+for char in '%20' '%0a' '%00' '%0d0a' '/' '.\\' '.' '…' ':'; do
+    for ext in '.php' '.phps'; do
+        echo "shell$char$ext.jpg" >> wordlist.txt
+        echo "shell$ext$char.jpg" >> wordlist.txt
+        echo "shell.jpg$char$ext" >> wordlist.txt
+        echo "shell.jpg$ext$char" >> wordlist.txt
+    done
+done
+```
+
+
+
