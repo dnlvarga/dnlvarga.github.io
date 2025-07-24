@@ -105,3 +105,23 @@ Many file types may allow us to introduce a Stored XSS vulnerability to the web 
   ```
   Once we upload the image to the web application, the XSS payload will be triggered whenever the image is displayed.
 
+### XEE
+With SVG images, we can also include malicious XML data to leak the source code of the web application, and other internal documents within the server.
+- The following example can be used for an SVG image that leaks the content of (/etc/passwd):
+  ```
+  <?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE svg [ <!ENTITY xxe SYSTEM "file:///etc/passwd"> ]>
+  <svg>&xxe;</svg>
+  ```
+  Once the above SVG image is uploaded and viewed, the XML document would get processed, and we should get the info of (/etc/passwd) printed on the page or shown in the page source. It also allows us to read the web application's source files, which is significant. Access to the source code will enable us to find more vulnerabilities to exploit within the web application through Whitebox Penetration Testing. For File Upload exploitation, it may allow us to locate the upload directory, identify allowed extensions, or find the file naming scheme, which may become handy for further exploitation.
+  To use XXE to read source code in PHP web applications, we can use the following payload in our SVG image:
+  ```
+  <?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE svg [ <!ENTITY xxe SYSTEM "php://filter/convert.base64-encode/resource=index.php"> ]>
+  <svg>&xxe;</svg>
+  ```
+  Once the SVG image is displayed, we should get the base64 encoded content of index.php, which we can decode to read the source code.
+
+Using XML data is not unique to SVG images, as it is also utilized by many types of documents, like PDF, Word Documents, PowerPoint Documents, among many others. 
+We may utilize the XXE vulnerability to enumerate the internally available services or even call private APIs to perform private actions (type of SSRF attack).
+
