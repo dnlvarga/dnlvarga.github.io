@@ -49,7 +49,7 @@ We can inject several characters before or after the final extension to cause th
 
 For example, (shell.php%00.jpg) works with PHP servers with version 5.X or earlier, as it causes the PHP web server to end the file name after the (%00), and store it as (shell.php), while still passing the whitelist. The same may be used with web applications hosted on a Windows server by injecting a colon (:) before the allowed file extension (e.g. shell.aspx:.jpg), which should also write the file as (shell.aspx). Similarly, each of the other characters has a use case that may allow us to upload a PHP script while bypassing the type validation test.
 
-#### Bash script to generate these extensions
+### Bash script to generate these extensions
 ```
 for char in '%20' '%0a' '%00' '%0d0a' '/' '.\\' '.' '…' ':' ''; do
     for ext in '.php' '.phps' '.phar' '.phtml'; do
@@ -65,6 +65,10 @@ for char in '%20' '%0a' '%00' '%0d0a' '/' '.\\' '.' '…' ':' ''; do
     done
 done
 ```
-
+## Type Filters
+If the web application is testing the file content for type validation, this can be either in the Content-Type Header or the File Content.
+Our browsers automatically set the Content-Type header and this operation is a client-side operation, so we can manipulate it.
+We may start by fuzzing the Content-Type header with SecLists' [Content-Type Wordlist](https://github.com/danielmiessler/SecLists/blob/master/Discovery/Web-Content/web-all-content-types.txt) through Burp Intruder, to see which types are allowed.
+*Note: A file upload HTTP request has two Content-Type headers, one for the attached file (at the bottom), and one for the full request (at the top). We usually need to modify the file's Content-Type header, but in some cases the request will only contain the main Content-Type header (e.g. if the uploaded content was sent as POST data), in which case we will need to modify the main Content-Type header.*
 
 
