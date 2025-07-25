@@ -7,14 +7,40 @@ permalink: /web_shells/
 # Web Shell
 A Web Shell is typically a web script, that accepts our command through HTTP request parameters such as GET or POST request parameters, executes our command, and prints its output back on the web page.
 We need to place our web shell script into the remote host's web directory (webroot) to execute the script. This can be through a vulnerability.
-<br>
+<!--
 | Web Server | Default Webroot           |
 |------------|---------------------------|
 | Apache     | `/var/www/html/`          |
 | Nginx      | `/usr/local/nginx/html/`  |
 | IIS        | `c:\inetpub\wwwroot\`     |
 | XAMPP      | `C:\xampp\htdocs\`        |
-<br>
+-->
+<table>
+  <thead>
+    <tr>
+      <th>Web Server</th>
+      <th>Default Webroot</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Apache</td>
+      <td><code>/var/www/html/</code></td>
+    </tr>
+    <tr>
+      <td>Nginx</td>
+      <td><code>/usr/local/nginx/html/</code></td>
+    </tr>
+    <tr>
+      <td>IIS</td>
+      <td><code>c:\inetpub\wwwroot\</code></td>
+    </tr>
+    <tr>
+      <td>XAMPP</td>
+      <td><code>C:\xampp\htdocs\</code></td>
+    </tr>
+  </tbody>
+</table>
 We can check these directories to see which webroot is in use and then use echo to write out our web shell. <br>
 
 [SecLists](https://github.com/danielmiessler/SecLists/tree/master/Web-Shells) provides a plethora of web shells for different frameworks and languages. <br>
