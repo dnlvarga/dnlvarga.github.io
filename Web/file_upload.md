@@ -105,7 +105,7 @@ Many file types may allow us to introduce a Stored XSS vulnerability to the web 
     <script type="text/javascript">alert(window.origin);</script>
   </svg>
   ```
-  Once we upload the image to the web application, the XSS payload will be triggered whenever the image is displayed.
+  Once we upload the image to the web application, the XSS payload will be triggered whenever the image is displayed. Funny enough, this payload executes, when we visit this page. :D
 
 ### XEE
 With SVG images, we can also include malicious XML data to leak the source code of the web application, and other internal documents within the server.
@@ -123,6 +123,8 @@ With SVG images, we can also include malicious XML data to leak the source code 
   <svg>&xxe;</svg>
   ```
   Once the SVG image is displayed, we should get the base64 encoded content of index.php, which we can decode to read the source code. We can use that to find out where does the web app upload the files.
+
+  *Note: If we uploaded files with these payloads, then we have to visit the URL, where the file is displayed and hopefully the payload is executed. This URL is not necessarily the directory, where the file was uploaded and stored, but where this file is displayed.*
 
 Using XML data is not unique to SVG images, as it is also utilized by many types of documents, like PDF, Word Documents, PowerPoint Documents, among many others. 
 We may utilize the XXE vulnerability to enumerate the internally available services or even call private APIs to perform private actions (type of SSRF attack).
