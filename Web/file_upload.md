@@ -81,6 +81,8 @@ file <file_name.extension>
 So just put the 'GIF8' string before your script and change the content-type header and see what happens.
 Similarly, we can attempt other combinations and permutations to try to confuse the web server, and depending on the level of code security, we may be able to bypass various filters.
 
+JPG signature: ÿØÿÛ
+
 ## Limited File Uploads
 If we are dealing with a limited (i.e., non-arbitrary) file upload form, which only allows us to upload specific file types, we may still be able to perform some attacks on the web application.
 
