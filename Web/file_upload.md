@@ -122,7 +122,7 @@ With SVG images, we can also include malicious XML data to leak the source code 
   <!DOCTYPE svg [ <!ENTITY xxe SYSTEM "php://filter/convert.base64-encode/resource=index.php"> ]>
   <svg>&xxe;</svg>
   ```
-  Once the SVG image is displayed, we should get the base64 encoded content of index.php, which we can decode to read the source code.
+  Once the SVG image is displayed, we should get the base64 encoded content of index.php, which we can decode to read the source code. We can use that to find out where does the web app upload the files.
 
 Using XML data is not unique to SVG images, as it is also utilized by many types of documents, like PDF, Word Documents, PowerPoint Documents, among many others. 
 We may utilize the XXE vulnerability to enumerate the internally available services or even call private APIs to perform private actions (type of SSRF attack).
