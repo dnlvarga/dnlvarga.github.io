@@ -19,19 +19,21 @@ Hello {{ name }}!
 {% rawend %}
 It contains a single variable called `name`, which is replaced with a dynamic value during rendering.
 For-loop over all elements in the `names` variable (if is like `names=["name", "name2", "name3"]`):
+{% raw %}
 ```
 {% for name in names %}
 Hello {{ name }}!
 {% endfor %}
 ```
-
+{% rawend %}
 ## Confirming SSTI
 The most effective way is to inject special characters with semantic meaning in template engines and observe the web application's behavior.
 Example:
+{% raw %}
 ```
 ${{<%[%'"}}%\.
 ```
-
+{% rawend %}
 ## Identifying the Template Engine
 We can utilize slight variations in the behavior of different template engines. We can use this decision tree by following the green sign in case of successful code execution and the red cross in case of the payload wasn't executed:
 {% raw %}
@@ -52,6 +54,7 @@ ${7*7}
 {% endraw %}
 *Note: There are also SSTI cheat sheets that bundle payloads for popular template engines, such as the [PayloadsAllTheThings SSTI CheatSheet](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Server%20Side%20Template%20Injection/README.md).
 ## Exploiting SSTI in Jinja2
+{% raw %}
 ### Information Disclosure
 Payload to dump the entire web application configuration:
 ```
@@ -85,6 +88,7 @@ The PHP web framework Symfony defines additional Twig filters. One of these filt
 ```
 {{ ['id'] | filter('system') }}
 ```
+{% rawend %}
 ## Tools of the Trade
 Popular tools for identifying and exploiting SSTI vulnerabilities are [tplmap](https://github.com/epinna/tplmap) and [SSTImap](https://github.com/vladko312/SSTImap).
 ### SSTImap
