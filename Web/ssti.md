@@ -33,7 +33,7 @@ ${{<%[%'"}}%\.
 ## Identifying the Template Engine
 We can utilize slight variations in the behavior of different template engines.
 ```
-$(7*7)
+${7*7}
 ├── ✅ a{*comment*}b
 │   ├── ✅ Smarty
 │   └── ❌ ${"z".join("ab")}
