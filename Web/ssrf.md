@@ -70,4 +70,15 @@ Example:
 python2.7 gopherus.py --exploit smtp
 ```
 
+## Blind SSRF
+In many SSRF vulnerabilities, the response is not directly displayed to us.
+
+### Detection
+We can identify blind SSRF with the same method as mentioned earlier (supplying a URL to a system under our control and setting up a netcat listener).
+
+### Enumeration
+We might be able to conduct a (restricted) local port scan of the system, provided the response differs for open and closed ports or sometimes the web application responds with a distinguishable text for closed ports. <br>
+If the error message is different for existing and non-existing files, we can use the same technique to identify existing files on the filesystem.
+
+
 
