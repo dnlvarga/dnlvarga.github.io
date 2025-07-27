@@ -18,7 +18,7 @@ As XSS attacks execute JavaScript code within the browser, we are limited to the
 | DOM-based XSS               | Another Non-Persistent XSS type that occurs when user input is directly shown in the browser and is completely processed on the client-side, without reaching the back-end server (e.g., through client-side HTTP parameters or anchor tags). |
 {% endraw %}
 <!--
--->
+
 <table>
   <thead>
     <tr>
@@ -41,7 +41,7 @@ As XSS attacks execute JavaScript code within the browser, we are limited to the
     </tr>
   </tbody>
 </table>
-
+-->
 These attacks can be used for defacing, phishing or session hijacking attacks.
 
 ## Testing Payloads
