@@ -32,6 +32,7 @@ ${{<%[%'"}}%\.
 
 ## Identifying the Template Engine
 We can utilize slight variations in the behavior of different template engines. We can use this decision tree by following the green sign in case of successful code execution and the red cross in case of the payload wasn't executed:
+{% raw %}
 ```
 ${7*7}
 ├── ✅ a{*comment*}b
@@ -46,6 +47,7 @@ ${7*7}
     │       └── ❌ Unknown
     └── ❌ Not vulnerable
 ```
+{% endraw %}
 
 
 
