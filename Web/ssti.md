@@ -12,9 +12,11 @@ Popular examples of template engines are Jinja and Twig.
 ## Templating
 ### Jinja2
 Example:
+{% raw %}
 ```
 Hello {{ name }}!
 ```
+{% rawend %}
 It contains a single variable called `name`, which is replaced with a dynamic value during rendering.
 For-loop over all elements in the `names` variable (if is like `names=["name", "name2", "name3"]`):
 ```
