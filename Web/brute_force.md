@@ -87,6 +87,10 @@ Few examples:
 - MySQL: `hydra -l root -P /path/to/password_list.txt mysql://$ip`
 - RDP: `hydra -l admin -P /path/to/password_list.txt rdp://$ip`, `hydra -l administrator -x 6:8:abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 $ip rdp`
 
-
+### Constructing the params String (HTTP-POST)
+This string encapsulates the data that will be sent to the server with each login attempt, mimicking a legitimate form submission.
+- Form Parameters: These are the essential fields that hold the username and password. Hydra will dynamically replace placeholders (^USER^ and ^PASS^) within these parameters with values from your wordlists.
+- Additional Fields: If the form includes other hidden fields or tokens (e.g., CSRF tokens), they must also be included in the params string.
+- Success Condition: This defines the criteria Hydra will use to identify a successful login. It can be an HTTP status code (like S=302 for a redirect) or the presence or absence of specific text in the server's response (e.g., F=Invalid credentials or S=Welcome).
 
 
