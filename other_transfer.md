@@ -39,8 +39,13 @@ ftp 192.168.31.141
 dir
 get ignite.txt
 ```
+```
+ftp ftp://$ftpuser:$password@localhost
+```
 
-`python3 -m pyftpdlib -w -p 21 -u ignite -P 123`
+```
+python3 -m pyftpdlib -w -p 21 -u ignite -P 123
+```
 
 ```
 ftp 192.168.31.141
