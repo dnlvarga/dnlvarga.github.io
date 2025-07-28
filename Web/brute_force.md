@@ -79,7 +79,7 @@ hydra [login_options] [password_options] [attack_options] [service_options]
 Few examples:
 - FTP: `hydra -l admin -P /path/to/password_list.txt ftp://$ip`, `hydra -L usernames.txt -P passwords.txt -s $port -V ftp.example.com ftp`
 - SSH: `hydra -l root -P /path/to/password_list.txt ssh://$ip`, `hydra -l root -p toor -M targets.txt ssh`
-- HTTP-GET: `hydra -L usernames.txt -P passwords.txt www.example.com http-get`, `hydra -l basic-auth-user -P 2023-200_most_used_passwords.txt $ip http-get / -s $port`
+- HTTP-GET (Basic HTTP Authentication): `hydra -L usernames.txt -P passwords.txt www.example.com http-get`, `hydra -l basic-auth-user -P 2023-200_most_used_passwords.txt $ip http-get / -s $port`
 - HTTP-POST: `hydra -l admin -P passwords.txt www.example.com http-post-form "/login:user=^USER^&pass=^PASS^:S=302"`,`hydra -l admin -P /path/to/password_list.txt $ip http-post-form "/login.php:user=^USER^&pass=^PASS^:F=incorrect"`
 - SMTP: `hydra -l admin -P /path/to/password_list.txt smtp://mail.server.com`
 - POP3: `hydra -l user@example.com -P /path/to/password_list.txt pop3://mail.server.com`
@@ -92,5 +92,14 @@ This string encapsulates the data that will be sent to the server with each logi
 - Form Parameters: These are the essential fields that hold the username and password. Hydra will dynamically replace placeholders (^USER^ and ^PASS^) within these parameters with values from your wordlists.
 - Additional Fields: If the form includes other hidden fields or tokens (e.g., CSRF tokens), they must also be included in the params string.
 - Success Condition: This defines the criteria Hydra will use to identify a successful login. It can be an HTTP status code (like S=302 for a redirect) or the presence or absence of specific text in the server's response (e.g., F=Invalid credentials or S=Welcome).
+
+## Medusa
+```
+medusa [target_options] [credential_options] -M module [module_options]
+```
+Few examples:
+- SSH: `medusa -h $ip -U usernames.txt -P passwords.txt -M ssh `
+- HTTP-GET (Basic HTTP Authentication): `medusa -H web_servers.txt -U usernames.txt -P passwords.txt -M http -m GET`
+- `medusa -h $ip -U usernames.txt -e ns -M service_name`: Perform checks for empty passwords (-e n) and passwords matching the username (-e s).
 
 
