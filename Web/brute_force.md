@@ -32,6 +32,8 @@ SecLists maintains a list of common usernames at [top-usernames-shortlist.txt](h
 - Publicly Available Lists: Repositories like [SecLists](https://github.com/danielmiessler/SecLists/tree/master/Passwords) offer various wordlists catering to various attack scenarios.
 - Custom-Built Lists: We can craft our wordlists by leveraging information gleaned during reconnaissance.
 
+### Dictionary Attack
+
 Example python script for dictionary attack:
 ```
 import requests
@@ -70,6 +72,35 @@ These commands:
 
 *Note: Many users reuse passwords across multiple online accounts, so breached passwords can be useful.*
 
+### Custom Wordlists
+#### Username Anarchy
+```
+sudo apt install ruby -y
+git clone https://github.com/urbanadventurer/username-anarchy.git
+cd username-anarchy
+```
+```
+./username-anarchy Jane Smith > jane_smith_usernames.txt
+```
+#### CUPP
+After we employed Username Anarchy to generate a list of potential usernames, we can use CUPP to complement this with a targeted password list.
+```
+sudo apt install cupp -y
+```
+We can one gather this valuable intelligence for a target:
+- Social Media
+- Company Websites
+- Public Records
+- News Articles and Blogs
+
+Open interactive mode:
+```
+cupp -i
+```
+After we generated a list, we can use grep to filter that password list to match a certain policy:
+```
+grep -E '^.{6,}$' jane.txt | grep -E '[A-Z]' | grep -E '[a-z]' | grep -E '[0-9]' | grep -E '([!@#$%^&*].*){2,}' > jane-filtered.txt
+```
 ## Hydra
 It is a versatile tool that can brute-force a wide range of services, including web applications, remote login services like SSH and FTP, and even databases.
 Hydra's basic syntax:
@@ -101,5 +132,3 @@ Few examples:
 - SSH: `medusa -h $ip -n $port -U usernames.txt -P passwords.txt -M ssh -t 3`, `medusa -h $ip -u user -P passwords.txt -M ssh`
 - HTTP-GET (Basic HTTP Authentication): `medusa -H web_servers.txt -U usernames.txt -P passwords.txt -M http -m GET`
 - `medusa -h $ip -U usernames.txt -e ns -M service_name`: Perform checks for empty passwords (-e n) and passwords matching the username (-e s).
-
-
