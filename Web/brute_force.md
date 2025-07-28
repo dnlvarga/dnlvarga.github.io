@@ -55,5 +55,21 @@ for password in passwords:
         print(f"Flag: {response.json()['flag']}")
         break
 ```
+We can costumize wordlists based on the password policy:
+```
+grep -E '^.{8,}$' darkweb2017-top10000.txt > darkweb2017-minlength.txt
+grep -E '[A-Z]' darkweb2017-minlength.txt > darkweb2017-uppercase.txt
+grep -E '[a-z]' darkweb2017-uppercase.txt > darkweb2017-lowercase.txt
+grep -E '[0-9]' darkweb2017-lowercase.txt > darkweb2017-number.txt
+```
+These commands:
+- Filter for passwords containing at least 8 characters.
+- Enforces at least one uppercase letter.
+- Enforces at least one lowercase letter.
+- Enforces that passwords containing at least one numerical digit.
+
+*Note: Many users reuse passwords across multiple online accounts, so breached passwords can be useful.*
+
+
 
 
