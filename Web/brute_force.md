@@ -98,7 +98,7 @@ This string encapsulates the data that will be sent to the server with each logi
 medusa [target_options] [credential_options] -M module [module_options]
 ```
 Few examples:
-- SSH: `medusa -h $ip -U usernames.txt -P passwords.txt -M ssh `
+- SSH: `medusa -h $ip -n $port -U usernames.txt -P passwords.txt -M ssh -t 3`, `medusa -h $ip -u user -P passwords.txt -M ssh`
 - HTTP-GET (Basic HTTP Authentication): `medusa -H web_servers.txt -U usernames.txt -P passwords.txt -M http -m GET`
 - `medusa -h $ip -U usernames.txt -e ns -M service_name`: Perform checks for empty passwords (-e n) and passwords matching the username (-e s).
 
