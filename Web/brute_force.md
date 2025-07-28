@@ -25,3 +25,4 @@ Some examples of default passwords:
 | Honeywell Thermostat   | admin            | 1234             | Smart Thermostat                |
 | Panasonic DVR          | admin            | 12345            | Digital Video Recorder (DVR)   |
 {% endraw %}
+SecLists maintains a list of common usernames at [top-usernames-shortlist.txt](https://github.com/danielmiessler/SecLists/blob/master/Usernames/top-usernames-shortlist.txt).
