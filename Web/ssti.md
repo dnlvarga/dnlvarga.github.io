@@ -81,6 +81,7 @@ We can use functions provided by the os library, such as system or popen. Howeve
 {{ self.__init__.__globals__.__builtins__.__import__('os').popen('id').read() }}
 ```
 {% endraw %}
+*Note: if you have to put spaces in the command and get errors, try also hexadecimal encoding them with `\x20`.*
 ## Exploiting SSTI in Twig
 ### Information Disclosure
 Payload to get information about the current template:
@@ -102,6 +103,7 @@ The PHP web framework Symfony defines additional Twig filters. One of these filt
 {{ ['id'] | filter('system') }}
 ```
 {% endraw %}
+*Note: if you have to put spaces in the command and get errors, try also hexadecimal encoding them with `\x20`.*
 ## Tools of the Trade
 Popular tools for identifying and exploiting SSTI vulnerabilities are [tplmap](https://github.com/epinna/tplmap) and [SSTImap](https://github.com/vladko312/SSTImap).
 ### SSTImap
