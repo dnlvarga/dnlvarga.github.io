@@ -39,3 +39,9 @@ smbclient -N -L \\\\$ip\\users
 ```
 smbclient -U bob \\\\$ip\\users
 ```
+
+# Expanding the Attack Surface
+
+Once inside the system, the next step is identifying other potential attack surfaces.
+- Use `netstat` to list open ports and listening services.
+- Further reconnaissance with `nmap localhost`.
