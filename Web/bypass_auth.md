@@ -26,3 +26,16 @@ wc -l custom_wordlist.txt
 ```
 ffuf -w ./custom_wordlist.txt -u http://$ip/index.php -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "username=admin&password=FUZZ" -fr "Invalid username"
 ```
+# Brute-Forcing Password Reset Tokens
+Many web applications implement a password-recovery functionality if a user forgets their password. This password-recovery functionality typically relies on a one-time reset token, which is transmitted to the user, for instance, via SMS or E-Mail. The user can then authenticate using this token, enabling them to reset their password and access their account.
+As such, a weak password-reset token may be brute-forced or predicted by an attacker to take over a victim's account. <br>
+To identify weak reset tokens, we typically need to create an account on the target web application, request a password reset token, and then analyze it. <br>
+In case of 4 digit reset token:
+```
+seq -w 0 9999 > tokens.txt
+```
+The -w flag pads all numbers to the same length by prepending zeroes.
+Verify with `head token.txt`.
+```
+ffuf -w ./tokens.txt -u http://$domain/reset_password.php?token=FUZZ -fr "The provided token is invalid"
+```
