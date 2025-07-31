@@ -125,3 +125,14 @@ echo -n 'user=htb-stdnt;role=admin' | xxd -p
 ```
 
 To decode a session token you can use [CyberChef](https://gchq.github.io/CyberChef/), copy-paste the session token and try the 'Magic' operation.
+
+# Session Fixation
+A web application vulnerable to session fixation does not assign a new session token after a successful authentication. If an attacker can coerce the victim into using a session token chosen by the attacker, session fixation enables an attacker to steal the victim's session and access their account.
+A session fixation attack could look like this:
+- An attacker obtains a valid session token by authenticating to the web application. For instance, let us assume the session token is a1b2c3d4e5f6. Afterward, the attacker invalidates their session by logging out.
+- The attacker tricks the victim to use the known session token by sending the following link: http://vulnerable.htb/?sid=a1b2c3d4e5f6. When the victim clicks this link, the web application sets the session cookie to the provided value.
+- The victim authenticates to the vulnerable web application. The victim's browser already stores the attacker-provided session cookie, so it is sent along with the login request. The victim uses the attacker-provided session token since the web application does not assign a new one.
+- Since the attacker knows the victim's session token a1b2c3d4e5f6, they can hijack the victim's session.
+
+# Improper Session Timeout
+If a web application does not define a session timeout, the session token would be valid infinitely, enabling an attacker to use a hijacked session effectively forever.
