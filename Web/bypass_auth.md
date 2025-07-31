@@ -50,3 +50,13 @@ seq -w 0 9999 > tokens.txt
 ffuf -w ./tokens.txt -u http://$domain/2fa.php -X POST -H "Content-Type: application/x-www-form-urlencoded" -b "PHPSESSID=mrjm73bh8e53qcej2744h7k44p" -d "otp=FUZZ" -fr "Invalid 2FA Code"
 ```
 With that we will get hits after the session successfully passed the 2FA check because we had supplied the correct TOTP. The first hit was the correct TOTP. Afterward, our session is marked as fully authenticated, so all requests using our session cookie are redirected to the logged in page.
+## Rate Limits
+A rate limit should only be enforced on an attacker, not regular users, to prevent DoS scenarios. Many rate limit implementation rely on the IP address to identify the attacker. However, there are middleboxes such as reverse proxies, load balancers, or web caches, a request's source IP address will belong to the middlebox, not the attacker. Thus, some rate limits rely on HTTP headers such as X-Forwarded-For to obtain the actual source IP address. This causes an issue as an attacker can set arbitrary HTTP headers in request, bypassing the rate limit entirely.
+## CAPTCHAs
+The abbreviation stands for: Completely Automated Public Turing test to tell Computers and Humans Apart, although these test could be solved with AI nowadays (see this [link](https://arstechnica.com/information-technology/2025/07/openais-chatgpt-agent-casually-clicks-through-i-am-not-a-robot-verification-test/)). There are many open-source CAPTCHA solvers too.
+
+# Testing Default Credentials
+[CIRT.net](https://www.cirt.net/passwords) is a database for default credentials. Further resources include [SecLists Default Credentials](https://github.com/danielmiessler/SecLists/tree/master/Passwords/Default-Credentials) as well as the [SCADA](https://github.com/scadastrangelove/SCADAPASS/tree/master) GitHub repository which contains a list of default passwords for a variety of different vendors.
+You should always search for default credentials in case you find the used technology/device.
+
+
