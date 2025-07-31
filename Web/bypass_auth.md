@@ -124,4 +124,4 @@ or
 echo -n 'user=htb-stdnt;role=admin' | xxd -p
 ```
 
-
+To decode a session token you can use [CyberChef](https://gchq.github.io/CyberChef/), copy-paste the session token and try the 'Magic' operation.
