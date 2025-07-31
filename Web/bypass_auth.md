@@ -112,4 +112,16 @@ To do this, enable Intercept in Burp. Afterward, browse to the /admin.php endpoi
 Let's say after logging in as a user, we are redirected to `/admin.php?user_id=183`. To investigate the purpose of the user_id parameter, let us remove it from our request to /admin.php. When doing so, we are redirected back to the login screen at /index.php, even though our session provided in the PHPSESSID cookie is still valid.<br>
 Based on the parameter name user_id, we can infer that the parameter specifies the ID of the user accessing the page. If we can guess or brute-force the user ID of an administrator, we might be able to access the page with administrative privileges.
 
+# Attacking Session Tokens
+The session token is tied to the user's session. If an attacker can obtain a valid session token of another user, the attacker can impersonate the user to the web application as long as the session token is valid. If a session token does not provide sufficient randomness and is cryptographically weak, we can brute-force valid session tokens. <br>
+We can send the login request multiple times and take note of the session tokens assigned by the web application so see any pattern. <br>
+While this session token might seem random at first, a simple analysis could reveal that it is just encoded data of e.g. user and role. In that case we can create our own session token, like
+```
+echo -n 'user=htb-stdnt;role=admin' | base64
+```
+or
+```
+echo -n 'user=htb-stdnt;role=admin' | xxd -p
+```
+
 
