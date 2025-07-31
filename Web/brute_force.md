@@ -26,6 +26,7 @@ Some examples of default passwords:
 | Panasonic DVR          | admin            | 12345            | Digital Video Recorder (DVR)   |
 {% endraw %}
 [CIRT.net](https://www.cirt.net/passwords) is a database for default credentials. Further resources include [SecLists Default Credentials](https://github.com/danielmiessler/SecLists/tree/master/Passwords/Default-Credentials) as well as the [SCADA](https://github.com/scadastrangelove/SCADAPASS/tree/master) GitHub repository which contains a list of default passwords for a variety of different vendors.
+You should always search for default credentials in case you find the used technology/device.
 
 ## Utilizing Wordlists
 
