@@ -25,9 +25,7 @@ Some examples of default passwords:
 | Honeywell Thermostat   | admin            | 1234             | Smart Thermostat                |
 | Panasonic DVR          | admin            | 12345            | Digital Video Recorder (DVR)   |
 {% endraw %}
-[CIRT.net](https://www.cirt.net/passwords) is a database for default credentials. <br>
-
-SecLists maintains a list of common usernames at [top-usernames-shortlist.txt](https://github.com/danielmiessler/SecLists/blob/master/Usernames/top-usernames-shortlist.txt).
+[CIRT.net](https://www.cirt.net/passwords) is a database for default credentials. Further resources include [SecLists Default Credentials](https://github.com/danielmiessler/SecLists/tree/master/Passwords/Default-Credentials) as well as the [SCADA](https://github.com/scadastrangelove/SCADAPASS/tree/master) GitHub repository which contains a list of default passwords for a variety of different vendors.
 
 ## Utilizing Wordlists
 
