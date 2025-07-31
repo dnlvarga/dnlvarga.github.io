@@ -101,3 +101,15 @@ Cookie: PHPSESSID=39b54j201u3rhu4tab1pvdb4pv
 password=P@$$w0rd&username=htb-stdnt
 ```
 Like the previous request, the request contains the username in a separate POST parameter. Suppose the web application does properly verify that the usernames in both requests match. In that case, we can skip the security question or supply the answer to our security question and then set the password of an entirely different account.
+
+# Direct Access
+The most straightforward way of bypassing authentication checks is to request the protected resource directly from an unauthenticated context. It might work if the web application does not properly verify that the request is authenticated. <br>
+To illustrate the vulnerability, let us assume the web application redirects the user to /index.php if the session is not active, i.e., if the user is not authenticated. However, the PHP script does not stop execution, resulting in protected information within the page being sent in the response body, so the entire admin page is contained in the response body. If we attempt to access the page in our web browser, the browser follows the redirect and displays the login prompt instead of the protected admin page. We can easily trick the browser into displaying the admin page by intercepting the response and changing the status code from 302 to 200. <br>
+To do this, enable Intercept in Burp. Afterward, browse to the /admin.php endpoint in the web browser. Next, right-click on the request and select Do intercept > Response to this request to intercept the response. Afterward, forward the request by clicking on Forward. Since we intercepted the response, we can now edit it. To force the browser to display the content, we need to change the status code from 302 Found to 200 OK.
+
+# Parameter Modification
+
+Let's say after logging in as a user, we are redirected to `/admin.php?user_id=183`. To investigate the purpose of the user_id parameter, let us remove it from our request to /admin.php. When doing so, we are redirected back to the login screen at /index.php, even though our session provided in the PHPSESSID cookie is still valid.<br>
+Based on the parameter name user_id, we can infer that the parameter specifies the ID of the user accessing the page. If we can guess or brute-force the user ID of an administrator, we might be able to access the page with administrative privileges.
+
+
