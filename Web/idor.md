@@ -66,3 +66,6 @@ done
 ## Bypassing Encoded References
 We cutilize Burp Comparer and fuzz various values and then compare each to our hash to see if we find any matches.
 If the hash was being calculated on the front-end, we can study the function and then replicate what it's doing to calculate the same hash.
+
+## IDOR Insecure Function Calls
+While IDOR Information Disclosure Vulnerabilities allow us to read various types of resources, IDOR Insecure Function Calls enable us to call APIs or execute functions as another user. Such functions and APIs can be used to change another user's private information, reset another user's password, or even buy items using another user's payment information. In many cases, we may be obtaining certain information through an information disclosure IDOR vulnerability and then using this information with IDOR insecure function call vulnerabilities.
