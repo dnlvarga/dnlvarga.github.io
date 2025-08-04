@@ -62,3 +62,7 @@ for i in {0..25}; do
 done
 
 ```
+
+## Bypassing Encoded References
+We cutilize Burp Comparer and fuzz various values and then compare each to our hash to see if we find any matches.
+If the hash was being calculated on the front-end, we can study the function and then replicate what it's doing to calculate the same hash.
