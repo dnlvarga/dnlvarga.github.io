@@ -135,5 +135,7 @@ Then reference it as an external entitiy on the target web applicaiton:
 ...
 <email>&joined;</email> <!-- reference the &joined; entity to print the file content -->
 ```
+### Error Based XXE
+The web application might not write any output. However, if the web application displays runtime errors (e.g., PHP errors) and does not have proper exception handling for the XML input, then we can use this flaw to read the output of the XXE exploit.
 
 
