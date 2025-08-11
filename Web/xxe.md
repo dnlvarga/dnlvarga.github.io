@@ -190,7 +190,7 @@ Then we can initiate our attack with a payload like this:
     ```
     git clone https://github.com/enjoiz/XXEinjector.git
     ```
-2. Copy the HTTP request from Burp and write it to a file for the tool to use, like:
+2. Copy the HTTP request from Burp and write it to a file for the tool to use, like (We should not include the full XML data, only the first line, and write XXEINJECT after it as a position locator for the tool):
    ```
    POST /blind/submitDetails.php HTTP/1.1
    Host: 10.129.201.94
