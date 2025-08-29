@@ -5,14 +5,13 @@ permalink: /Web/idor/
 ---
 
 # Insecure Direct Object Reference (IDOR)
-IDOR vulnerabilities occur when a web application exposes a direct reference to an object, like a file or a database resource, which the end-user can directly control to obtain access to other similar objects. 
-IDOR vulnerability mainly exists due to the lack of an access control on the back-end.
+IDOR vulnerabilities occur when a web application exposes a direct reference to an object, like a file or a database resource, which the end-user can directly control to obtain access to other similar objects.
 
 ## Identifying IDORs
-- Whenever we receive a specific file or resource, we should study the HTTP requests to look for URL parameters or APIs with an object reference (e.g. ?uid=1 or ?filename=file_1.pdf). These are mostly found in URL parameters or APIs but may also be found in other HTTP headers, like cookies. We can use a fuzzing application to try thousands of variations and see if they return any data. Any successful hits to files that are not our own would indicate an IDOR vulnerability.
+- Whenever we receive a specific file or resource, we should study the HTTP requests to look for URL parameters or APIs with an object reference (e.g. `?uid=1` or `?filename=file_1.pdf`). These are mostly found in URL parameters or APIs but may also be found in other HTTP headers, like cookies. We can use a fuzzing application to try thousands of variations and see if they return any data.
 - We may also be able to identify unused parameters or APIs in the front-end code in the form of JavaScript AJAX calls.
 - Some web applications may not use simple sequential numbers as object references but may encode the reference or hash it instead.
-- If we want to perform more advanced IDOR attacks, we may need to register multiple users and compare their HTTP requests and object references. This may allow us to understand how the URL parameters and unique identifiers are being calculated and then calculate them for other users to gather their data. We can try repeating the same API calls while logged in as the other user to see if the web application returns anything.
+- If we want to perform more advanced IDOR attacks, we may need to register multiple users and compare their HTTP requests and object references. This may allow us to understand how the URL parameters and unique identifiers are being calculated and then calculate them for other users to gather their data.
 
 ## Mass Enumeration
 We can either use a tool like Burp Intruder or ZAP Fuzzer to retrieve all files or write a small bash script to download all files.
@@ -63,11 +62,7 @@ done
 
 ```
 
-## Bypassing Encoded References
-We cutilize Burp Comparer and fuzz various values and then compare each to our hash to see if we find any matches.
-If the hash was being calculated on the front-end, we can study the function and then replicate what it's doing to calculate the same hash.
-
 ## IDOR Insecure Function Calls
 While IDOR Information Disclosure Vulnerabilities allow us to read various types of resources, IDOR Insecure Function Calls enable us to call APIs or execute functions as another user. Such functions and APIs can be used to change another user's private information, reset another user's password, or even buy items using another user's payment information. In many cases, we may be obtaining certain information through an information disclosure IDOR vulnerability and then using this information with IDOR insecure function call vulnerabilities. <br>
-The ability to modify another user's details also enables us to perform several other attacks. One type of attack is modifying a user's email address and then requesting a password reset link, which will be sent to the email address we specified, thus allowing us to take control over their account. Another potential attack is placing an XSS payload in the 'about' field, which would get executed once the user visits their Edit profile page, enabling us to attack the user in different ways. <br>
-On many occasions, the information we leak through IDOR vulnerabilities can be utilized in other attacks, like IDOR or XSS, leading to more sophisticated attacks or bypassing existing security mechanisms.
+- The ability to modify another user's details also enables us to perform several other attacks. One type of attack is modifying a user's email address and then requesting a password reset link, which will be sent to the email address we specified, thus allowing us to take control over their account.
+- Another potential attack is placing an XSS payload in the 'about' field, which would get executed once the user visits their Edit profile page, enabling us to attack the user in different ways.
