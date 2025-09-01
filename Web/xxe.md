@@ -46,7 +46,7 @@ If a file contains some of XML's special characters (e.g. </>/&), it would break
 However, PHP provides wrapper filters that allow us to base64 encode certain resources 'including files', in which case the final base64 output should not break the XML format. To do so, instead of using `file://` as our reference, we will use PHP's `php://filter/` wrapper. With this filter, we can specify the convert.base64-encode encoder as our filter, and then add an input resource (e.g. resource=index.php), as follows:
 ```
 <!DOCTYPE email [
-  <!ENTITY company SYSTEM "php://filter/convert.base64-encode/resource=index.php">
+  <!ENTITY company SYSTEM "php://filter/convert.base64-encode/resource=/index.php">
 ]>
 ```
 *Note: This trick only works with PHP web applications.*
