@@ -20,3 +20,10 @@ A web application may allow us to download our avatar through a URL like (/profi
 <br>
 The only variance is that we need to spot a function that pulls a file based on a value we indirectly control and then try to control that value to exploit the vulnerability.
 
+## Basic Bypsasses
+
+### Non-Recursive Path Traversal Filters
+One of the most basic filters against LFI is a search and replace filter, where it simply deletes substrings of `../`. However, this filter is very insecure, as it is not recursively removing the `../` substring. For example, if we use `....//` as our payload, then the filter would remove `../` and the output string would be `../`.
+
+### Encoding
+Some web filters may prevent input filters that include certain LFI-related characters, like a dot . or a slash / used for path traversals. However, some of these filters may be bypassed by URL encoding our input.
