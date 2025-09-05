@@ -44,4 +44,4 @@ There are a couple of other techniques we may use, but they are obsolete with mo
   *Note: if we use this method, we should calculate the full length of the string to ensure only `.php` gets truncated and not our requested file at the end of the string `/etc/passwd`.*
 
 #### Null Bytes
-PHP versions before 5.5 were vulnerable to null byte injection, which means that adding a null byte (%00) at the end of the string would terminate the string and not consider anything after it. 
+PHP versions before 5.5 were vulnerable to null byte injection, which means that adding a null byte (%00) at the end of the string would terminate the string and not consider anything after it (e.g. `/etc/passwd%00`).
