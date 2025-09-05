@@ -26,4 +26,13 @@ The only variance is that we need to spot a function that pulls a file based on 
 One of the most basic filters against LFI is a search and replace filter, where it simply deletes substrings of `../`. However, this filter is very insecure, as it is not recursively removing the `../` substring. For example, if we use `....//` as our payload, then the filter would remove `../` and the output string would be `../`.
 
 ### Encoding
-Some web filters may prevent input filters that include certain LFI-related characters, like a dot . or a slash / used for path traversals. However, some of these filters may be bypassed by URL encoding our input.
+Some web filters may prevent input filters that include certain LFI-related characters, like a dot `.` or a slash `/` used for path traversals. However, some of these filters may be bypassed by URL encoding our input. Furthermore, we may also encode the encoded string once again to have a double encoded string, which may also bypass other types of filters.
+*Note: For this to work we must URL encode all characters, including the dots. Some URL encoders may not encode dots as they are considered to be part of the URL scheme.*
+
+### Approved Paths
+Some web applications may also use Regular Expressions to ensure that the file being included is under a specific path. To find the approved path, we can examine the requests sent by the existing forms, and see what path they use for the normal web functionality. Furthermore, we can fuzz web directories under the same path, and try different ones until we get a match. To bypass this, we may use path traversal and start our payload with the approved path, and then use ../ to go back to the root directory and read the file we specify.
+
+### Appended Extension
+There are a couple of other techniques we may use, but they are obsolete with modern versions of PHP and only work with PHP versions before 5.3/5.4. However, it may still be beneficial to mention them, as some web applications may still be running on older servers, and these techniques may be the only bypasses possible.
+
+#### Path Truncation
