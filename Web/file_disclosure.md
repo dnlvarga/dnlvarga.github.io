@@ -36,3 +36,12 @@ Some web applications may also use Regular Expressions to ensure that the file b
 There are a couple of other techniques we may use, but they are obsolete with modern versions of PHP and only work with PHP versions before 5.3/5.4. However, it may still be beneficial to mention them, as some web applications may still be running on older servers, and these techniques may be the only bypasses possible.
 
 #### Path Truncation
+- In earlier versions of PHP, defined strings have a maximum length of 4096 characters. If a longer string is passed, it will simply be truncated.
+- PHP also used to remove trailing slashes and single dots in path names, so if we call (`/etc/passwd/.`) then the `/.` would also be truncated, and PHP would call `/etc/passwd`.
+- PHP, and Linux systems in general, also disregard multiple slashes in the path (e.g. `////etc/passwd` is the same as `/etc/passwd`). Similarly, a current directory shortcut `.` in the middle of the path would also be disregarded (e.g. `/etc/./passwd`). If we combine both of these PHP limitations together, we can create very long strings that evaluate to a correct path.
+  *Note: It is also important to note that we would also need to start the path with a non-existing directory for this technique to work: `?language=non_existing_directory/../../../etc/passwd/./././././ REPEATED ~2048 times]`.*
+  Bash script for that: `echo -n "non_existing_directory/../../../etc/passwd/" && for i in {1..2048}; do echo -n "./"; done`
+  *Note: if we use this method, we should calculate the full length of the string to ensure only `.php` gets truncated and not our requested file at the end of the string `/etc/passwd`.*
+
+#### Null Bytes
+PHP versions before 5.5 were vulnerable to null byte injection, which means that adding a null byte (%00) at the end of the string would terminate the string and not consider anything after it. 
