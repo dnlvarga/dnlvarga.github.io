@@ -45,3 +45,23 @@ There are a couple of other techniques we may use, but they are obsolete with mo
 
 #### Null Bytes
 PHP versions before 5.5 were vulnerable to null byte injection, which means that adding a null byte (%00) at the end of the string would terminate the string and not consider anything after it (e.g. `/etc/passwd%00`).
+
+## PHP Filters
+If we identify an LFI vulnerability in PHP web applications, then we can utilize different PHP Wrappers to be able to extend our LFI exploitation, and even potentially reach remote code execution.
+
+### PHP Filters
+PHP Filters are a type of PHP wrappers, where we can pass different types of input and have it filtered by the filter we specify. To use PHP wrapper streams, we can use the `php://` scheme in our string, and we can access the PHP filter wrapper with `php://filter/`. The filter wrapper has several parameters, like `resource` and `read`. The filter that is useful for LFI attacks is the `convert.base64-encode` filter.
+
+### Fuzzing for PHP Files
+```
+ffuf -w /opt/useful/seclists/Discovery/Web-Content/directory-list-2.3-small.txt:FUZZ -u http://<SERVER_IP>:<PORT>/FUZZ.php
+```
+*Note: we should be scanning for all codes, including `301`, `302` and `403` pages.*
+
+### Source Code Disclosure
+```
+http://<SERVER_IP>:<PORT>/index.php?language=php://filter/read=convert.base64-encode/resource=config
+```
+*Note: The `.php` extension is automatically appended to the end of the input string.*
+
+
