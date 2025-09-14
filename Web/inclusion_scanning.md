@@ -1,7 +1,7 @@
 ---
 layout: default
-title: File Inclusion
-permalink: /Web/RCE/
+title: Inclusion Scanning
+permalink: /Web/inclusion_scanning/
 ---
 
 # Automated Scanning
