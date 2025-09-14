@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Inclusion Scanning
+title: LFI Scanning
 permalink: /Web/inclusion_scanning/
 ---
 
