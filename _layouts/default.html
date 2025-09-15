@@ -9,9 +9,10 @@
     {% seo %}
 
     <style>
-      .code-block {
+      pre {
         position: relative;
-        margin: 1em 0;
+        overflow-x: auto;
+        padding-right: 50px; /* reserve space on the right for the button */
       }
 
       .copy-btn {
@@ -26,11 +27,6 @@
         color: #000;
         border: none;
         border-radius: 4px;
-      }
-
-      .code-block pre {
-        overflow-x: auto;
-        padding-right: 50px; /* ensures text doesn’t run under the button */
       }
 
       .page-wrapper {
@@ -143,18 +139,12 @@
     document.querySelectorAll("pre > code").forEach((codeBlock) => {
       const pre = codeBlock.parentNode;
 
-      // Create wrapper div
-      const wrapper = document.createElement("div");
-      wrapper.className = "code-block";
-      pre.parentNode.insertBefore(wrapper, pre);
-      wrapper.appendChild(pre);
-
       // Create copy button
       const button = document.createElement("button");
       button.className = "copy-btn";
       button.textContent = "Copy";
 
-      wrapper.insertBefore(button, pre);
+      pre.appendChild(button);
 
       button.addEventListener("click", () => {
         navigator.clipboard.writeText(codeBlock.innerText).then(() => {
@@ -165,6 +155,7 @@
     });
   });
   </script>
+
 
   <body>
 
