@@ -9,10 +9,16 @@
     {% seo %}
 
     <style>
+      .code-block {
+        position: relative;
+        margin: 1em 0;
+      }
+
       .copy-btn {
         position: absolute;
         top: 5px;
         right: 5px;
+        z-index: 10;
         padding: 4px 8px;
         font-size: 12px;
         cursor: pointer;
@@ -22,8 +28,9 @@
         border-radius: 4px;
       }
 
-      .code-container {
-        position: relative;
+      .code-block pre {
+        overflow-x: auto;
+        padding-right: 50px; /* ensures text doesn’t run under the button */
       }
 
       .page-wrapper {
@@ -132,30 +139,32 @@
   </head>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll("pre > code").forEach((codeBlock) => {
-      const container = document.createElement("div");
-      container.className = "code-container";
-
       const pre = codeBlock.parentNode;
-      pre.parentNode.insertBefore(container, pre);
-      container.appendChild(pre);
 
+      // Create wrapper div
+      const wrapper = document.createElement("div");
+      wrapper.className = "code-block";
+      pre.parentNode.insertBefore(wrapper, pre);
+      wrapper.appendChild(pre);
+
+      // Create copy button
       const button = document.createElement("button");
-      button.innerText = "Copy";
       button.className = "copy-btn";
-      container.appendChild(button);
+      button.textContent = "Copy";
+
+      wrapper.insertBefore(button, pre);
 
       button.addEventListener("click", () => {
         navigator.clipboard.writeText(codeBlock.innerText).then(() => {
-          button.innerText = "Copied!";
-          setTimeout(() => (button.innerText = "Copy"), 2000);
+          button.textContent = "Copied!";
+          setTimeout(() => (button.textContent = "Copy"), 2000);
         });
       });
     });
   });
   </script>
-
 
   <body>
 
