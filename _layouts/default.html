@@ -131,6 +131,32 @@
     </style>
   </head>
 
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("pre > code").forEach((codeBlock) => {
+      const container = document.createElement("div");
+      container.className = "code-container";
+
+      const pre = codeBlock.parentNode;
+      pre.parentNode.insertBefore(container, pre);
+      container.appendChild(pre);
+
+      const button = document.createElement("button");
+      button.innerText = "Copy";
+      button.className = "copy-btn";
+      container.appendChild(button);
+
+      button.addEventListener("click", () => {
+        navigator.clipboard.writeText(codeBlock.innerText).then(() => {
+          button.innerText = "Copied!";
+          setTimeout(() => (button.innerText = "Copy"), 2000);
+        });
+      });
+    });
+  });
+  </script>
+
+
   <body>
 
     <header class="header-with-avatar">
