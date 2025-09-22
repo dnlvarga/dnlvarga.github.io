@@ -223,7 +223,7 @@ function handleResponse(d) {
 
 ## Exploiting Weak CSRF Tokens
 When assessing how robust a CSRF token generation mechanism is, make sure you spend a small amount of time trying to come up with the CSRF token generation mechanism. It can be as easy as md5(username), sha1(username), md5(current date + username) etc.
-Then we can create a malicious site which trigger the right action upon visiting it.
+Then we can create a malicious site which calculates the csrf token and triggers the right action upon visiting it. 
 
 
 
