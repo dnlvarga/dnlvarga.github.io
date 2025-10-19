@@ -95,3 +95,24 @@ After finding the value, we can validate with `curl`:
 ```
 curl -d "y=<value>" http://IP:PORT/post.php
 ```
+
+# Virtual Host and Subdomain Fuzzing
+Virtual hosts are identified by the Host header in HTTP requests, while subdomains are	identified by DNS records, pointing to specific IP addresses.
+
+## VHost Fuzzing
+First add the specified vhost to our hosts file:
+```
+echo "IP example.com" | sudo tee -a /etc/hosts
+```
+Then:
+```
+gobuster vhost -u http://example.com:$port -w /usr/share/seclists/Discovery/Web-Content/common.txt --append-domain
+```
+- `--append-domain`: append the base domain to each word in the wordlist.
+
+## Subdomain Fuzzing
+```
+gobuster dns -d example.com -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt
+```
+
+
