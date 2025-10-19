@@ -114,5 +114,5 @@ gobuster vhost -u http://example.com:$port -w /usr/share/seclists/Discovery/Web-
 ```
 gobuster dns -d example.com -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt
 ```
-
+ If a subdomain resolves to an IP address, it is considered valid and included in the output.
 
