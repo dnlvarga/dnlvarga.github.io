@@ -73,3 +73,25 @@ Other useful options:
 ```
 ffuf -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -ic -u http://IP:PORT/FUZZ -e .html -recursion -recursion-depth 2 -rate 500
 ```
+
+# Parameter and Value Fuzzing
+
+## wenum
+installation:
+```
+pipx install git+https://github.com/WebFuzzForge/wenum
+pipx runpip wenum install setuptools
+```
+Fuzz the "x" GET paramter's value:
+```
+wenum -w /usr/share/seclists/Discovery/Web-Content/common.txt --hc 404 -u "http://IP:PORT/get.php?x=FUZZ"
+```
+- `--hc 404`: Hides responses with the 404 status code
+Fuzz the "y" POST parameter's value and search for 200 OK status code:
+```
+ffuf -u http://IP:PORT/post.php -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "y=FUZZ" -w /usr/share/seclists/Discovery/Web-Content/common.txt -mc 200 -v
+```
+After finding the value, we can validate with `curl`:
+```
+curl -d "y=<value>" http://IP:PORT/post.php
+```
