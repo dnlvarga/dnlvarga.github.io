@@ -116,3 +116,18 @@ gobuster dns -d example.com -w /usr/share/seclists/Discovery/DNS/subdomains-top1
 ```
  If a subdomain resolves to an IP address, it is considered valid and included in the output.
 
+# Filtering
+
+## Gobuster
+- `-s`: Includes only responses with the specified status codes (comma-separated).
+- `-b`: Excludes responses with specified status codes (comma-separated).
+- `--exclude-length`: Excludes responses with specified content lengths (comma-separated, support ranges).
+```
+gobuster dir -u http://example.com/ -w wordlist.txt -s 200,301 --exclude-length 0
+```
+
+## Ffuf
+- `-mc`: Match code. (Include only responses that match the specified status codes. We can give a list or specify ranges.)
+- `-fc`: Filter code.
+- `-fs`: Filter size.
+- 
