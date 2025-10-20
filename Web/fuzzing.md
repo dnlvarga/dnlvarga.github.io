@@ -175,3 +175,21 @@ curl -I http://IP:PORT/backup/password.txt
 ```
 And check the file size in the `Content-Length` value.
 By focusing on headers, we can gather valuable information without directly accessing the file's contents (responsible disclosure practices).
+
+# Identifying endpoints
+## REST API
+Endpoints in REST APIs are structured as URLs representing the resources.
+Examples:
+- /users
+- /users/123
+- /products
+
+Parameters:
+- Query paremters: `/users?limit=10&sort=name`
+- Path parameters: `/products/{id}pen_spark`
+- Request Body Parameters: `{ "name": "New Product", "price": 99.99 }`
+
+Discovering enpoints and paramters:
+- API Documentation. Look for specifications like Swagger (OpenAPI) or RAML
+- Network Traffic Analysis. Tools like Burp Suite or your browser's developer tools allow us to intercept and inspect API requests and responses, revealing endpoints, parameters, and data formats.
+- Parameter Name Fuzzing.
