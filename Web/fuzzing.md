@@ -130,4 +130,39 @@ gobuster dir -u http://example.com/ -w wordlist.txt -s 200,301 --exclude-length 
 - `-mc`: Match code. (Include only responses that match the specified status codes. We can give a list or specify ranges.)
 - `-fc`: Filter code.
 - `-fs`: Filter size.
-- 
+- `-ms`: Match size.
+- `-fw`: Filter number of words.
+- `-mw`: Match word count.
+- `-fl`: Filter line number.
+- `-ml`: Match line count.
+- `-mt`: Match time. E.g. `-mt >500`.
+
+```
+ffuf -u http://example.com/FUZZ -w wordlist.txt -mc 200 -fw 427 -ms >500
+```
+
+## Wenum
+- `--hc`: Hide code.
+- `--sc`: Show code.
+- `--hl`: Hide length.
+- `--sl`: Show length.
+- `--hw`: Hide word.
+- `--sw`: Show word.
+- `--hs`: Hide size.
+- `--ss`: Show size.
+- `--hr`: Hide regex. E.g.: `-hr "Internal Server Error".`
+- `--sr`: Show regex. E.g.: `-sr "admin"`
+- `--filter` or `--hard-filter`: General-purpose filter to show/hide responses or prevent their post-processing using a regular expression. `--filter "Login"` will show only responses containing "Login", while `--hard-filter "Login"` will hide them and prevent any plugins from processing them.
+
+```
+wenum -w wordlist.txt --sc 200,301,302 -u https://example.com/FUZZ
+```
+
+## Feroxbuster
+- `--dont-scan`: Exclude specific URLs or patterns from being scanned. E.g. `--dont-scan /uploads`
+- `-S`, `--filter-size`: Exclude responses based on their size.
+- ...
+
+```
+feroxbuster --url http://example.com -w wordlist.txt -s 200 -S 10240 -X "error" 
+```
