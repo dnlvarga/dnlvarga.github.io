@@ -129,6 +129,7 @@ gobuster dir -u http://example.com/ -w wordlist.txt -s 200,301 --exclude-length 
 ## Ffuf
 *Note: By default, ffuf matches only specific status codes to minimize noise from 404 NOT FOUND.*
 - `-mc`: Match code. (Include only responses that match the specified status codes. We can give a list or specify ranges.)
+  *Note: We can use `-mc all` too.*
 - `-fc`: Filter code.
 - `-fs`: Filter size.
 - `-ms`: Match size.
