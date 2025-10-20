@@ -168,3 +168,10 @@ wenum -w wordlist.txt --sc 200,301,302 -u https://example.com/FUZZ
 ```
 feroxbuster --url http://example.com -w wordlist.txt -s 200 -S 10240 -X "error" 
 ```
+
+## Validating
+```
+curl -I http://IP:PORT/backup/password.txt
+```
+And check the file size in the `Content-Length` value.
+By focusing on headers, we can gather valuable information without directly accessing the file's contents (responsible disclosure practices).
