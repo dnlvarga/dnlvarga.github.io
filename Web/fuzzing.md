@@ -127,6 +127,7 @@ gobuster dir -u http://example.com/ -w wordlist.txt -s 200,301 --exclude-length 
 ```
 
 ## Ffuf
+*Note: By default, ffuf matches only specific status codes.*
 - `-mc`: Match code. (Include only responses that match the specified status codes. We can give a list or specify ranges.)
 - `-fc`: Filter code.
 - `-fs`: Filter size.
