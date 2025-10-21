@@ -241,6 +241,17 @@ Types of API Fuzzing:
 - Data Format Fuzzing
 - Sequence Fuzzing (By manipulating the order, timing, or parameters of API calls, fuzzers can expose weaknesses in the API's logic and state management.)
 
+# Fuzzing API
+```
+git clone https://github.com/PandaSt0rm/webfuzz_api.git
+cd webfuzz_api
+pip3 install -r requirements.txt
+```
+Then:
+```
+python3 api_fuzzer.py http://IP:PORT
+```
+Then you can use `curl` to make API call.
 
 
 
