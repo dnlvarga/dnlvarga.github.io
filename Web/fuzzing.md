@@ -190,7 +190,8 @@ Parameters:
 - Request Body Parameters: `{ "name": "New Product", "price": 99.99 }`
 
 Discovering enpoints and paramters:
-- API Documentation. Look for specifications like Swagger (OpenAPI) or RAML
+- API Documentation. Look for specifications like Swagger (OpenAPI) or RAML.
+  *Note: There could be hidden endpoints missing from the documentation.*
 - Network Traffic Analysis. Tools like Burp Suite or your browser's developer tools allow us to intercept and inspect API requests and responses, revealing endpoints, parameters, and data formats.
 - Parameter Name Fuzzing.
 
