@@ -193,3 +193,57 @@ Discovering enpoints and paramters:
 - API Documentation. Look for specifications like Swagger (OpenAPI) or RAML
 - Network Traffic Analysis. Tools like Burp Suite or your browser's developer tools allow us to intercept and inspect API requests and responses, revealing endpoints, parameters, and data formats.
 - Parameter Name Fuzzing.
+
+## SOAP API
+Unlike REST APIs, which use distinct URLs for each resource, SOAP APIs typically expose a single endpoint. This endpoint is a URL where the SOAP server listens for incoming requests. SOAP parameters are defined within the body of the SOAP message, an XML document.
+
+Discovering SOAP endpoints and parameters:
+- WSDL Analysis. We can also use tools designed to parse and visualize WSDL structures.
+- Network Traffic Analysis. We can intercept and analyze traffic as with REST APIs. We can also use Wireshark or tcpdump.
+- Fuzzing. We can try to send malformed or unexpected values within SOAP requests and see how the server responds.
+
+## GraphQL API
+Example:
+```
+query {
+  user(id: 123) {
+    name
+    email
+    posts(limit: 5) {
+      title
+      body
+    }
+  }
+}
+```
+GraphQL Mutations: Mutations are the counterparts to queries designed to modify data on the server. They encompass operations to create, update, or delete data.
+Example:
+```
+mutation {
+  createPost(title: "New Post", body: "This is the content of the new post") {
+    id
+    title
+  }
+}
+```
+
+Discovering Queries and Mutations:
+- GraphQL's introspection system. By sending an introspection query to the GraphQL endpoint, you can retrieve a complete schema describing the API's capabilities.
+- API Documentation.
+- Network Traffic Analysis.
+
+# API fuzzing
+The goal is to trigger API errors, crashes, or unexpected behavior, revealing potential vulnerabilities like input validation flaws, injection attacks, or authentication issues.
+
+Types of API Fuzzing:
+- Parameter Fuzzing
+- Data Format Fuzzing
+- Sequence Fuzzing (By manipulating the order, timing, or parameters of API calls, fuzzers can expose weaknesses in the API's logic and state management.)
+
+
+
+
+
+
+
+
