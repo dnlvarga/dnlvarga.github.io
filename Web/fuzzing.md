@@ -10,6 +10,8 @@ permalink: /Web/fuzzing/
 ```
 sudo apt update
 sudo apt install -y golang
+```
+```
 sudo apt install -y python3 python3-pip
 ```
 ```
