@@ -7,9 +7,11 @@ permalink: /Web/fuzzing/
 # Tooling
 
 ## Installing Go, Python and PIPX
-```sudo apt update```
-```sudo apt install -y golang```
-```sudo apt install -y python3 python3-pip```
+```
+sudo apt update
+sudo apt install -y golang
+sudo apt install -y python3 python3-pip
+```
 ```
 sudo apt install pipx
 pipx ensurepath
