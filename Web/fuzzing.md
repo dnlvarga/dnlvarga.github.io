@@ -253,6 +253,10 @@ python3 api_fuzzer.py http://IP:PORT
 ```
 Then you can use `curl` to make API call.
 
+Some scenario:
+- Broken Object-Level Authorization: Fuzzing could reveal instances where manipulating parameter values can allow unauthorized access to specific objects or resources.
+- Broken Function Level Authorization: Fuzzing might uncover cases where unauthorized function calls can be made.
+- Server-Side Request Forgery (SSRF): Injections of malicious values into parameters could trick the server into making unintended requests to internal or external resources.
 
 
 
