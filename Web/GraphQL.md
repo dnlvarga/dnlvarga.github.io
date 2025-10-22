@@ -3,3 +3,159 @@ layout: default
 title: GraphQL
 permalink: /Web/graphql/
 ---
+
+# Basics
+
+A GraphQL service typically runs on a single endpoint, most commonly at `/graphql`, `/api/graphql`, or something similar.
+
+For details: [https://graphql.org/learn/](https://graphql.org/learn/)
+
+# graphw00f
+Frist clone the [repository](https://github.com/dolevf/graphw00f), then run the `main.py` script.
+```
+python3 main.py -d -f -t http://$ip
+```
+- `-f`: fingerprint mode
+- `-d`: detect mode
+
+Accessing the GraphQl endpoint in a browser can reveal additional information.
+
+## Introspection
+Introspection is a GraphQL feature to query about the structure of the backend system.
+All GraphQL types supported by the backend:
+```
+{
+  __schema {
+    types {
+      name
+    }
+  }
+}
+```
+After we know a type, we can obtain the name of all of the type's fields with the following introspection query:
+```
+{
+  __type(name: "UserObject") {
+    name
+    fields {
+      name
+      type {
+        name
+        kind
+      }
+    }
+  }
+}
+```
+We can also obtain all the queries supported by the backend:
+```
+{
+  __schema {
+    queryType {
+      fields {
+        name
+        description
+      }
+    }
+  }
+}
+```
+Query that dumps all information about types, fields, and queries supported by the backend:
+```
+query IntrospectionQuery {
+      __schema {
+        queryType { name }
+        mutationType { name }
+        subscriptionType { name }
+        types {
+          ...FullType
+        }
+        directives {
+          name
+          description
+          
+          locations
+          args {
+            ...InputValue
+          }
+        }
+      }
+    }
+
+    fragment FullType on __Type {
+      kind
+      name
+      description
+      
+      fields(includeDeprecated: true) {
+        name
+        description
+        args {
+          ...InputValue
+        }
+        type {
+          ...TypeRef
+        }
+        isDeprecated
+        deprecationReason
+      }
+      inputFields {
+        ...InputValue
+      }
+      interfaces {
+        ...TypeRef
+      }
+      enumValues(includeDeprecated: true) {
+        name
+        description
+        isDeprecated
+        deprecationReason
+      }
+      possibleTypes {
+        ...TypeRef
+      }
+    }
+
+    fragment InputValue on __InputValue {
+      name
+      description
+      type { ...TypeRef }
+      defaultValue
+    }
+
+    fragment TypeRef on __Type {
+      kind
+      name
+      ofType {
+        kind
+        name
+        ofType {
+          kind
+          name
+          ofType {
+            kind
+            name
+            ofType {
+              kind
+              name
+              ofType {
+                kind
+                name
+                ofType {
+                  kind
+                  name
+                  ofType {
+                    kind
+                    name
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+```
+
+We can visualize the schema using tools such as [GraphQL-Voyager](https://github.com/APIs-guru/graphql-voyager).
+
