@@ -91,6 +91,11 @@ Fuzz the "x" GET paramter's value:
 wenum -w /usr/share/seclists/Discovery/Web-Content/common.txt --hc 404 -u "http://IP:PORT/get.php?x=FUZZ"
 ```
 - `--hc 404`: Hides responses with the 404 status code
+
+```
+ffuf -w $common -u "http://$ip_port/admin/panel.php?accessID=FUZZ" -fw 8
+```
+
 Fuzz the "y" POST parameter's value and search for 200 OK status code:
 ```
 ffuf -u http://IP:PORT/post.php -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "y=FUZZ" -w /usr/share/seclists/Discovery/Web-Content/common.txt -mc 200 -v
