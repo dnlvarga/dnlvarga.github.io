@@ -420,3 +420,20 @@ mutation {
 
 ## Exploitation with Mutations
 To identify potential attack vectors through mutations, we need to thoroughly examine all supported mutations and their inputs. In the previous example, we can provide the role argument for newly registered users, which might enable us to create users with a different role than the default role, potentially allowing us to escalate privileges.
+
+# Tools
+## [graphw00f](https://github.com/dolevf/graphw00f)
+## [graphql-voyager](https://github.com/APIs-guru/graphql-voyager)
+## [GraphQL-Cop](https://github.com/dolevf/graphql-cop)
+After cloning and installing the dependencies:
+```
+python3 graphql-cop.py  -v
+```
+```
+python3 graphql-cop/graphql-cop.py -t http://$ip/graphql
+```
+## [InQL](https://github.com/doyensec/inql)
+Burp extension we can install via the BApp Store in Burp.
+- adds GraphQL tabs in the Proxy History and Burp Repeater that enable simple modification of the GraphQL query without having to deal with the encompassing JSON syntax
+- we can right-click on a GraphQL request and select Extensions > InQL - GraphQL Scanner > Generate queries with InQL Scanner - InQL generates introspection information. The information regarding all mutations and queries is provided in the InQL tab for the scanned host
+
