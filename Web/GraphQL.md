@@ -208,3 +208,10 @@ Example:
   }
 }
 ```
+
+## Cross-Site Scripting (XSS)
+XSS vulnerabilities can occur if GraphQL responses are inserted into the HTML page without proper sanitization.
+Potential testing payload:
+```
+<script>alert(1)</script>
+```
