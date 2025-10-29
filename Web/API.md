@@ -48,3 +48,8 @@ Maybe the `/api/v1/supplier-companies PATCH` endpoint allows sending a value for
 ## Unrestricted Resource Consumption
 A web API is vulnerable to Unrestricted Resource Consumption if it fails to limit user-initiated requests that consume resources such as network bandwidth, CPU, memory, and storage. 
 We might be able to upload files without proper limitations or spamming an endpoint uncontrollably.
+
+## Broken Function Level Authorization (BFLA)
+A web API is vulnerable to BFLA if it allows unauthorized or unprivileged users to interact with and invoke privileged endpoints, granting access to sensitive operations or confidential information.
+
+
