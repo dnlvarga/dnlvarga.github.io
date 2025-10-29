@@ -52,4 +52,6 @@ We might be able to upload files without proper limitations or spamming an endpo
 ## Broken Function Level Authorization (BFLA)
 A web API is vulnerable to BFLA if it allows unauthorized or unprivileged users to interact with and invoke privileged endpoints, granting access to sensitive operations or confidential information.
 
+## Unrestricted Access to Sensitive Business Flows
+Example: Access to product discount data which leads to Unrestricted Access to Sensitive Business Flows because it allows us to know the dates when supplier companies will discount their products and the corresponding discount rates. Combined with an Unrestricted Resource Consumption vulnerability, we can purchase all available stock on the day the discount starts and resell the products later.
 
