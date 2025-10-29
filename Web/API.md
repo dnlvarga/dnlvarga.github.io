@@ -44,3 +44,7 @@ It is typical for e-commerce marketplaces to allow customers to view supplier de
 ### Mass Assignment
 Example: Improperly Controlled Modification of Dynamically-Determined Object Attributes. <br>
 Maybe the `/api/v1/supplier-companies PATCH` endpoint allows sending a value for the isExemptedFromMarketplaceFee field, making the a company not get included in the companies required to pay the marketplace fee.
+
+## Unrestricted Resource Consumption
+A web API is vulnerable to Unrestricted Resource Consumption if it fails to limit user-initiated requests that consume resources such as network bandwidth, CPU, memory, and storage. 
+We might be able to upload files without proper limitations or spamming an endpoint uncontrollably.
