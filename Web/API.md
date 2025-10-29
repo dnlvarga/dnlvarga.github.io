@@ -36,3 +36,11 @@ ffuf -u http://$ip:$port/api/v1/authentication/customers/passwords/resets \
 -d '{"Email":"$email","OTP":"FUZZ","NewPassword":"123456"}' \
 -w /opt/useful/seclists/Fuzzing/4-digits-0000-9999.txt
 ```
+## Broken Object Property Level Authorization
+### Excessive Data Exposure
+Example: Exposure of Sensitive Information Due to Incompatible Policies. <br>
+It is typical for e-commerce marketplaces to allow customers to view supplier details. However, if the response after invoking the `/api/v1/suppliers GET` endpoint includes also the email and phoneNumber fields of the suppliers, then costumers can circumvent the marketplace entirely and contact suppliers directly to purchase goods (at a discounted price).
+
+### Mass Assignment
+Example: Improperly Controlled Modification of Dynamically-Determined Object Attributes. <br>
+Maybe the `/api/v1/supplier-companies PATCH` endpoint allows sending a value for the isExemptedFromMarketplaceFee field, making the a company not get included in the companies required to pay the marketplace fee.
