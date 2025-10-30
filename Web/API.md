@@ -59,3 +59,6 @@ Example: Access to product discount data which leads to Unrestricted Access to S
 A web API is vulnerable to Server-Side Request Forgery (SSRF) (also known as Cross-Site Port Attack (XPSA)) if it uses user-controlled input to fetch remote or local resources without validation.
 This vulnerability can be present, if one endpoint let's us modify fields such as File URIs. We can make this value to point to local data, e.g `/etc/passwd`. After setting this value, maybe we can find another endpoint to fetch this data.
 
+## Security Misconfiguration
+
+
