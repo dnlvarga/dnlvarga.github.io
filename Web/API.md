@@ -60,5 +60,29 @@ A web API is vulnerable to Server-Side Request Forgery (SSRF) (also known as Cro
 This vulnerability can be present, if one endpoint let's us modify fields such as File URIs. We can make this value to point to local data, e.g `/etc/passwd`. After setting this value, maybe we can find another endpoint to fetch this data.
 
 ## Security Misconfiguration
+Security misconfigurations occur when web APIs are improperly set up or lack essential security controls. These issues can make APIs vulnerable to classic web attacks, such as SQL Injection, and expose them to risks through insecure HTTP headers or overly permissive configurations. <br>
+Possible payload: `' OR 1=1 --`
+ ### HTTP Headers and Additional Misconfigurations
+
+In addition to SQL injection, the API also demonstrates insecure HTTP header configurations — particularly with CORS (Cross-Origin Resource Sharing).
+
+Using curl, two test requests were performed:
+
+Without Origin header:
+```
+curl -i http://94.237.54.201:41238/api/v1/suppliers/%27%20OR%201%3D%3D1%20--/count
+```
+→ The server treated it as a same-origin request and did not include CORS headers.
+
+With Origin header:
+```
+curl -i -H "Origin: http://94.237.54.201:41238/" http://94.237.54.201:41238/api/v1/suppliers/%27%20OR%201%3D%3D1%20--/count
+```
+→ The server responded with:
+```
+Access-Control-Allow-Origin: *
+```
+This means any origin can send requests to the API, a severe security misconfiguration exposing it to Cross-Site Request Forgery (CSRF) and data exfiltration from malicious domains.
+
 
 
