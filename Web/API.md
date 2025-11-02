@@ -84,5 +84,18 @@ Access-Control-Allow-Origin: *
 ```
 This means any origin can send requests to the API, a severe security misconfiguration exposing it to Cross-Site Request Forgery (CSRF) and data exfiltration from malicious domains.
 
+## Improper Inventory Management
+This can manifest in various ways, such as outdated or incompatible API versions remaining accessible, creating potential entry points for unauthorized users.
+
+## Unsafe Consumption of APIs
+Developers may blindly trust data received from third-party APIs.
+Vulnerabilities can arise from API-to-API communication:
+1. Insecure Data Transmission: APIs communicating over unencrypted channels expose sensitive data to interception, compromising confidentiality and integrity.
+2. Inadequate Data Validation: Failing to properly validate and sanitize data received from external APIs before processing or forwarding it to downstream components can lead to injection attacks, data corruption, or even remote code execution.
+3. Weak Authentication: Neglecting to implement robust authentication methods when communicating with other APIs can result in unauthorized access to sensitive data or critical functionality.
+4. Insufficient Rate-Limiting: An API can overwhelm another API by sending a continuous surge of requests, potentially leading to denial-of-service.
+5. Inadequate Monitoring: Insufficient monitoring of API-to-API interactions can make it difficult to detect and respond to security incidents promptly.
+
+
 
 
