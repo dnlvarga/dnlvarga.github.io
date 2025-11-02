@@ -62,7 +62,8 @@ This vulnerability can be present, if one endpoint let's us modify fields such a
 ## Security Misconfiguration
 Security misconfigurations occur when web APIs are improperly set up or lack essential security controls. These issues can make APIs vulnerable to classic web attacks, such as SQL Injection, and expose them to risks through insecure HTTP headers or overly permissive configurations. <br>
 Possible payload: `' OR 1=1 --`
- ### HTTP Headers and Additional Misconfigurations
+
+### HTTP Headers and Additional Misconfigurations
 
 In addition to SQL injection, the API also demonstrates insecure HTTP header configurations — particularly with CORS (Cross-Origin Resource Sharing).
 
