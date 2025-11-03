@@ -248,6 +248,7 @@ Running a scan:
 python2.7 joomlascan.py -u http://dev.company.local
 ```
 ## Brute-frocing
+We can use [this script](https://github.com/ajnik/joomla-bruteforce):
 ```
 sudo python3 joomla-brute.py -u http://dev.company.local -w /usr/share/metasploit-framework/data/wordlists/http_default_pass.txt -usr admin
 ```
