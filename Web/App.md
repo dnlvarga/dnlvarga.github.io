@@ -217,7 +217,7 @@ curl -s http://dev.company.local/README.txt | head -n 5
 In certain Joomla installs, we may be able to fingerprint the version from JavaScript files in the `media/system/js/` directory or by browsing to `administrator/manifests/files/joomla.xml`.
 
 ```
--s http://dev.company.local/administrator/manifests/files/joomla.xml | xmllint --format -
+curl -s http://dev.company.local/administrator/manifests/files/joomla.xml | xmllint --format -
 ```
 The cache.xml file can help to give us the approximate version. It is located at plugins/system/cache/cache.xml.
 
