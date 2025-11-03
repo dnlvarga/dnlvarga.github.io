@@ -91,5 +91,55 @@ cat web_discovery.xml | ./aquatone -nmap
 ```
 We can open the html report from a browser: `file:///<path_to_report.html>`.
 
+# WordPress
+
+## Discovery & Enumeration
+
+- Browse to the `/robots.txt` file.
+- WordPress stores its plugins in the `wp-content/plugins` directory, and themes in the `wp-content/themes` directory. These should be enumerated as they may lead to RCE.
+
+Types of users on a standard WordPress installation:
+- Administrator
+- Editor
+- Author
+- Contributor
+- Subscriber
+
+Useful commands:
+```
+curl -s http://blog.company.local | grep WordPress
+```
+```
+curl -s http://blog.company.local/ | grep themes
+```
+```
+curl -s http://blog.company.local/ | grep plugins
+```
+
+- After identifying themes and plugins, the next step is to enumerate versions.
+  E.g. if `mail-masta` plugin is installed, visit the specific site, such as `http://blog.company.local/wp-content/plugins/mail-masta/`.
+- Checking the page source of a page can reveal other used plugins.
+  ```
+  curl -s http://blog.company.local/?p=1 | grep plugins
+  ```
+
+*Note: It is important at this stage to not jump ahead of ourselves and start exploiting the first possible flaw we see, as there are many other potential vulnerabilities and misconfigurations possible in WordPress that we don't want to miss.*
+
+## Enumerating Users
+
+The default WordPress login page can be found at /wp-login.php.
+- A valid username and an invalid password may result in different message than an invalid username. This can bes used for username enumeration.
+
+## WPScan
+```
+sudo gem install wpscan
+```
+WPScan is also able to pull in vulnerability information from external sources. We can obtain an API token from WPVulnDB, which is used by WPScan to scan for PoC and reports. The free plan allows up to 75 requests per day. To use the WPVulnDB database, just create an account and copy the API token from the users page. This token can then be supplied to wpscan using the `--api-token parameter`.
+```
+wpscan -h
+```
+```
+sudo wpscan --url http://blog.company.local --enumerate --api-token dEOFB<SNIP>
+```
 
 
