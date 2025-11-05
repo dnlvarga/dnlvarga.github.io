@@ -274,3 +274,29 @@ Once we find the version, we can look for exploits in `exploit-db`.
 ```
 python2.7 joomla_dir_trav.py --url "http://dev.inlanefreight.local/administrator/" --username admin --password admin --dir /
 ```
+
+# Drupal
+## Discovery/Footprinting
+
+A Drupal website can be identified in several ways, including by the header or footer message `Powered by Drupal`, the standard Drupal logo, the presence of a `CHANGELOG.txt` file or `README.txt` file, via the page source, or clues in the robots.txt file such as references to `/node`.
+```
+curl -s http://drupal.company.local | grep Drupal
+```
+In case of Drupal, the page URIs are usually of the form `/node/<nodeid>`.
+
+Drupal supports three types of users by default:
+1. Administrator
+2. Authenticated User
+3. Anonymous
+
+## Enumeration
+```
+curl -s http://drupal-acc.inlanefreight.local/CHANGELOG.txt | grep -m2 ""
+```
+If we get 404 response, there might be a newer version of Drupal in use which blocks access to it.
+
+```
+droopescan scan drupal -u http://drupal.company.local
+```
+
+
