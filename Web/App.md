@@ -409,3 +409,63 @@ show options
 exploit
 ```
 
+# Tomcat
+Apache Tomcat is an open-source web server that hosts applications written in Java.
+## Discovery/Footprinting
+Tomcat servers can be identified by the Server header in the HTTP response. If the server is operating behind a reverse proxy, requesting an invalid page should reveal the server and version. <br>
+Custom error pages may be in use that do not leak this version information. In this case, another method of detecting a Tomcat server and version is through the /docs page.
+```
+curl -s http://app-dev.company.local:8080/docs/ | grep Tomcat
+```
+The general folder structure of a Tomcat installation:
+```
+├── bin
+├── conf
+│   ├── catalina.policy
+│   ├── catalina.properties
+│   ├── context.xml
+│   ├── tomcat-users.xml
+│   ├── tomcat-users.xsd
+│   └── web.xml
+├── lib
+├── logs
+├── temp
+├── webapps
+│   ├── manager
+│   │   ├── images
+│   │   ├── META-INF
+│   │   └── WEB-INF
+|   |       └── web.xml
+│   └── ROOT
+│       └── WEB-INF
+└── work
+    └── Catalina
+        └── localhost
+```
+Each folder inside webapps is expected to have the following structure:
+```
+webapps/customapp
+├── images
+├── index.jsp
+├── META-INF
+│   └── context.xml
+├── status.xsd
+└── WEB-INF
+    ├── jsp
+    |   └── admin.jsp
+    └── web.xml
+    └── lib
+    |    └── jdbc_drivers.jar
+    └── classes
+        └── AdminServlet.class
+```
+The most important file among these is WEB-INF/web.xml, which is known as the deployment descriptor.  This file stores information about the routes used by the application and the classes handling these routes. 
+The web.xml descriptor holds a lot of sensitive information and is an important file to check when leveraging a Local File Inclusion (LFI) vulnerability.
+
+## Enumeration
+After fingerprinting the Tomcat instance, unless it has a known vulnerability, we'll typically want to look for the /manager and the /host-manager pages. We can attempt to locate these with a tool such as Gobuster or just browse directly to them.
+```
+gobuster dir -u http://web01.company.local:8180/ -w /usr/share/dirbuster/wordlists/directory-list-2.3-small.txt
+```
+We may be able to either log in to one of these using weak credentials such as tomcat:tomcat, admin:admin, etc. If these first few tries don't work, we can try a password brute force attack against the login page. If we are successful in logging in, we can upload a Web Application Resource or Web Application ARchive (WAR) file containing a JSP web shell and obtain remote code execution on the Tomcat server.
+
