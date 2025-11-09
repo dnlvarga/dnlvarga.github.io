@@ -723,8 +723,7 @@ To begin, mouse over `Setup` in the top right and then the `Account Settings` me
 Next, click on `Add new notification`.
 Give the notification a name and scroll down and tick the box next to `EXECUTE PROGRAM`. Under `Program File`, select `Demo exe notification - outfile.ps1` from the drop-down. Finally, in the parameter field, enter a command. We can e.g. add a new local admin user by entering `test.txt;net user prtgadm1 Pwn3d_by_PRTG! /add;net localgroup administrators prtgadm1 /add`.
 After clicking `Save`, we will be redirected to the `Notifications` page and see our new notification in the list.
-Now, we could have scheduled the notification to run (and execute our command) at a later time when setting it up. 
-Now we canclick the `Test` button to run our notification and execute the command.
+Now, we could have scheduled the notification to run (and execute our command) at a later time when setting it up to achieve persistence and we can click the `Test` button to run our notification and execute the command.
 After clicking Test we will get a pop-up that says `EXE notification is queued up`. If we receive any sort of error message here, we can go back and double-check the notification settings. <br>
 
 We can use `CrackMapExec` to confirm local admin access. We could also try to RDP to the box, access over WinRM, or use a tool such as evil-winrm or something from the impacket toolkit such as `wmiexec.py` or `psexec.py`.
