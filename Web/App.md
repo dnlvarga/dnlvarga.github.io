@@ -731,3 +731,28 @@ We can use `CrackMapExec` to confirm local admin access. We could also try to RD
 ```
 sudo crackmapexec smb $ip -u prtgadm1 -p Pwn3d_by_PRTG!
 ```
+
+# osTicket
+osTicket is an open-source support ticketing system. It can be compared to Jira.
+
+## Footprinting/Discovery/Enumeration
+We can find osTicket by looking through the screenshots resulted from the EyeWitness scan. An osTicket instance also sets a cookie when visiting the page which is named OSTSESSID.
+Also, most osTicket installs will showcase the osTicket logo with the phrase `powered by` in front of it in the page's footer. The footer may also contain the words `Support Ticket System`. <br>
+An Nmap scan will just show information about the webserver, such as Apache or IIS, and will not help us footprint the application. <br>
+Even if the application is not vulnerable, it can still be used for our purposes. Here we can break down the main functions into the layers:
+1. User input: If our target company uses this or a similar application, we can cause a problem and "play dumb" and contact the company's staff. The simulated "lack of" knowledge about the services offered by the company in combination with a technical problem is a widespread social engineering approach to get more information from the company.
+2. Processing: Suppose staff and administrators suspect that there is an internal bug that may be affecting the business. In that case, they will go into more detail to uncover possible code errors and address more significant issues.
+3. Solution: It is very likely that other staff members from the technical departments will be involved in the email correspondence. This will give us new email addresses to use against the osTicket admin panel (in the worst case) and potential usernames with which we can perform OSINT on or try to apply to other company services.
+
+## Attacks
+If we come across a customer support portal during our assessment and can submit a new ticket, we may be able to obtain a valid company email address.
+Now, if we log in, we may see information about the ticket and ways to post a reply. If the company set up their helpdesk software to correlate ticket numbers with emails, then any email sent to the email we received when registering would show up here. With this setup, if we can find an external portal such as a Wiki, chat service (Slack, Mattermost, Rocket.chat), or a Git repository such as GitLab or Bitbucket, we may be able to use this email to register an account and the help desk support portal to receive a sign-up confirmation email. <br>
+So we should test out the functionality and see if we can do things like creating a ticket and having a legitimate company email address assigned to us. From there, we may be able to use the email address to sign in to other company services and gain access to sensitive data.
+
+### osTicket - Sensitive Data Exposure
+We might discover several user credentials using the tool [Dehashed](https://dehashed.com/)
+```
+sudo python3 dehashed.py -q company.local -p
+```
+
+
