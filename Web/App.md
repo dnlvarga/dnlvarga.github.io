@@ -755,4 +755,17 @@ We might discover several user credentials using the tool [Dehashed](https://deh
 sudo python3 dehashed.py -q company.local -p
 ```
 
-
+# Gitlab
+We may find scripts or configuration files that were accidentally committed containing cleartext secrets. <br>
+If we can obtain user credentials from our OSINT, we may be able to log in to a GitLab instance. Two-factor authentication is disabled by default.
+## Footprinting/Discovery
+We can quickly determine that GitLab is in use in an environment by just browsing to the GitLab URL, and we will be directed to the login page, which displays the GitLab logo.
+The only way to footprint the GitLab version number in use is by browsing to the `/help` page when logged in.
+If the GitLab instance allows us to register an account, we can log in and browse to this page to confirm the version. If we cannot register an account, we may have to try a low-risk exploit such as [this](https://www.exploit-db.com/exploits/49821).
+There have been a few serious exploits against GitLab [12.9.0](https://www.exploit-db.com/exploits/48431) and GitLab [11.4.7](https://www.exploit-db.com/exploits/49257) in the past few years as well as GitLab Community Edition [13.10.3](https://www.exploit-db.com/exploits/49821), [13.9.3](https://www.exploit-db.com/exploits/49944), and [13.10.2](https://www.exploit-db.com/exploits/49951).
+## Enumeration
+The first thing we should try is browsing to /explore and see if there are any public projects that may contain something interesting. <br>
+From here, we can explore each of the pages linked in the top left `groups`, `snippets`, and `help`. <br>
+Then we should check and see if we can register an account and access additional projects. Suppose the organization did not set up GitLab only to allow company emails to register or require an admin to approve a new account. In that case, we may be able to access additional data. <br>
+We can also use the registration form to enumerate valid users. If we can make a list of valid users, we could attempt to guess weak passwords or possibly re-use credentials. <br>
+On this particular instance of GitLab (and likely others), we can also enumerate emails. If we try to register with an email that has already been taken, we will get the error `1 error prohibited this user from being saved: Email has already been taken`.
