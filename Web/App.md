@@ -1077,3 +1077,15 @@ To examine a DLL:
 Get-FileMetaData .\MultimasterAPI.dll
 ```
 If it is a .Net assembly, we can use a debugger and .NET assembly editor [dnSpy](https://github.com/dnSpy/dnSpy) se we can view the source code directly and we might able to find hardcoded credentials.
+
+# Other Notable Applications
+If we can dig through our scan data and filter out all of the noise, we will often find things that scanners miss.
+- Axis2: This can be abused similar to Tomcat. We will often actually see it sitting on top of a Tomcat installation. If we cannot get RCE via Tomcat, it is worth checking for weak/default admin credentials on Axis2. We can then upload a webshell in the form of an AAR file (Axis2 service file). There is also a Metasploit module that can assist with this.
+- Websphere: If we can log in to the administrative console with default credentials such as system:manager we can deploy a WAR file (similar to Tomcat) and gain RCE via a web shell or reverse shell.
+- Elasticsearch: [RCE](https://www.exploit-db.com/exploits/36337).
+- Zabbix: Network monitoring solution. Quite a few vulnerabilities discovered such as SQL injection, authentication bypass, stored XSS, LDAP password disclosure, and remote code execution.
+- Nagios: Another system and network monitoring product. Nagios has had a wide variety of issues over the years, including remote code execution, root privilege escalation, SQL injection, code injection, and stored XSS. If you come across a Nagios instance, it is worth checking for the default credentials `nagiosadmin:PASSW0RD` and fingerprinting the version.
+- WebLogic: WebLogic is a Java EE application server with many unauthenticated RCE exploits.
+- Wikis/Intranets: We may come across internal Wikis (such as MediaWiki), custom intranet pages, SharePoint, etc. These are worth assessing for known vulnerabilities but also searching if there is a document repository. We have run into many intranet pages (both custom and SharePoint) that had a search functionality which led to discovering valid credentials.
+- DotNetNuke: DotNetNuke (DNN) is an open-source CMS written in C# that uses the .NET framework. Had quite a few issues over the years.
+- vCenter: vCenter is often present in large organizations to manage multiple instances of ESXi. It is worth checking for weak credentials and vulnerabilities.
