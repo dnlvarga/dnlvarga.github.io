@@ -1004,3 +1004,29 @@ Then:
 ```
 gobuster dir -u http://$ip/ -w /tmp/list.txt -x .aspx,.asp
 ```
+# LDAP
+LDAP (Lightweight Directory Access Protocol) is a protocol used to access and manage directory information. A directory is a hierarchical data store that contains information about network resources such as users, groups, computers, printers, and other devices. <br>
+Although LDAP and AD are related, they serve different purposes. LDAP is a protocol that specifies the method of accessing and modifying directory services, whereas AD is a directory service that stores and manages user and computer data. <br>
+LDAP requests are messages that clients send to servers to perform operations on data stored in a directory service. An LDAP request is comprised of several components: Session connection, request type, etc.
+
+## ldapsearch
+This tool commonly used to query and retrieve data from an LDAP directory service.
+```
+ldapsearch -H ldap://ldap.example.com:389 -D "cn=admin,dc=example,dc=com" -w secret123 -b "ou=people,dc=example,dc=com" "(mail=john.doe@example.com)"
+```
+This command can be broken down as follows:
+- Connect to the server ldap.example.com on port 389.
+- Bind (authenticate) as cn=admin,dc=example,dc=com with password secret123.
+- Search under the base DN ou=people,dc=example,dc=com.
+- Use the filter (mail=john.doe@example.com) to find entries that have this email address.
+
+## LDAP Injection
+LDAP injection is an attack that exploits web applications that use LDAP (Lightweight Directory Access Protocol) for authentication or storing user information. Goal: access sensitive data. <br>
+To test for LDAP injection, you can use input values that contain special characters or operators (`*`, `( )`, `|`, `&`, `(cn=*)`, etc.). Attempting to log in using a wildcard character (`*`) in the username and password fields can grant access to the system. <br>
+First step:
+```
+nmap -p- -sC -sV --open --min-rate=1000 $ip
+```
+Default ldap port: 389
+
+
