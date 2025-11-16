@@ -1059,7 +1059,11 @@ set disassembly-flavor intel
 ```
 disas main
 ```
-If we can find a call to SQLDriverConnect in the function, we can add breakpoint at this address and running the program once again which could reveal a SQL connection string in the RDX register address, containing the credentials for a local database instance.
+If we can find a call to SQLDriverConnect in the function, we can add breakpoint at this address:
+```
+b *0x5555555551b0
+```
+and running the program once again which could reveal a SQL connection string in the RDX register address, containing the credentials for a local database instance.
 
 ## DLL File Examintaion
 To examine a DLL:
