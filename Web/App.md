@@ -1029,4 +1029,41 @@ nmap -p- -sC -sV --open --min-rate=1000 $ip
 ```
 Default ldap port: 389
 
+# Web Mass Assignment Vulnerabilities
+Example:
+```
+class User < ActiveRecord::Base
+  attr_accessible :username, :email
+end
+```
+This model specifies that only the username and email attributes are allowed to be mass-assigned. However, attackers can modify other attributes by tampering with the parameters sent to the server. Let's assume that the server receives the following parameters:
+```
+{ "user" => { "username" => "hacker", "email" => "hacker@example.com", "admin" => true } }
+```
+Although the User model does not explicitly state that the admin attribute is accessible, the attacker can still change it because it is present in the arguments. Bypassing any access controls that may be in place, the attacker can send this data as part of a POST request to the server to establish a user with admin privileges. <br>
 
+We can use Burp Suite to capture the appropriate request and set the necessary parameters.
+
+# Attacking Applications Connecting to Services
+## ELF Executable Examination
+Example:
+The `octopus_checker` binary is an application which connects to database instances in order to verify that they are available.
+The binary probably connects using a SQL connection string that contains credentials. Using tools like [PEDA](https://github.com/longld/peda) we can further examine the file.
+```
+gdb ./octopus_checker
+```
+Once the binary is loaded, we set the `disassembly-flavor` to define the display style of the code, and we proceed with disassembling the main function of the program.
+```
+set disassembly-flavor intel
+```
+```
+disas main
+```
+If we can find a call to SQLDriverConnect in the function, we can add breakpoint at this address and running the program once again which could reveal a SQL connection string in the RDX register address, containing the credentials for a local database instance.
+
+## DLL File Examintaion
+To examine a DLL:
+```
+Get-FileMetaData .\MultimasterAPI.dll
+```
+If it is a .Net assembly, we can use a debugger and .NET assembly editor [dnSpy](https://github.com/dnSpy/dnSpy) se we can view the source code directly and we might able to find hardcoded credentials.
