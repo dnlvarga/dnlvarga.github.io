@@ -1064,7 +1064,8 @@ If we can find a call to SQLDriverConnect in the function, we can add breakpoint
 b *0x5555555551b0
 ```
 *Note: if we see this `0x0000000000001607 <+433>:   call   0x11b0 <SQLDriverConnect@plt>`, then `b *0x11b0` will fail, since that address is not an absolute virtual address. We have to run the program first so it loads into memory with `start`. Then we can see somthing like this: `0x0000555555555607 <+433>:   call   0x5555555551b0 <SQLDriverConnect@plt>`.*
-and running the program once again:
+*Note: To delet breakpoints: `delete breakpoints`.*
+and then running the program once again:
 ```
 run
 ```
