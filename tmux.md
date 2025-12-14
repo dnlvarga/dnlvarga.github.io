@@ -14,3 +14,7 @@ You can use this [cheat sheat](https://tmuxcheatsheet.com/)
 - Press Space and go to the end of the text you want to copy.
 - Press Enter to put text into tmux clipboard and automatically exits read mode.
 - Paste with Prefix + `]`
+
+# Find&Replace
+
+- to replace 'foo' with 'bar': `:%s/foo/bar/g`
