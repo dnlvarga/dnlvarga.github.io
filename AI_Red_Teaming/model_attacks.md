@@ -164,3 +164,29 @@ Hello <b>World</b>.
 ```
 
 More about indirect prompt injection [here](https://arxiv.org/pdf/2302.12173).
+
+# Jailbreaking
+
+## Do Anything Now (DAN)
+
+[GitHub repository](https://github.com/0xk1h0/ChatGPT_DAN) for a collection of DAN prompts.
+
+## Roleplay
+
+Ask your question indirectly through a roleplay or fictional scenario. Examples [here](https://arxiv.org/pdf/2402.03299).
+
+## Fictional Scenarios
+
+By convincing the LLM that we are only interested in a fictional scenario, an LLM's resilience might be bypassed.
+
+## Token Smuggling
+
+Hide requests for harmful or restricted content by manipulating input tokens, such as splitting words into multiple tokens or using different encodings.
+
+## Suffix & Adversarial Suffix
+
+Adversarial suffixes are designed to coerce LLMs into ignoring restrictions. Examples [here](https://arxiv.org/pdf/2307.15043).
+
+## Opposite/Sudo Mode
+
+
