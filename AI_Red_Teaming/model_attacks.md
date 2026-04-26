@@ -185,8 +185,12 @@ Hide requests for harmful or restricted content by manipulating input tokens, su
 
 ## Suffix & Adversarial Suffix
 
-Adversarial suffixes are designed to coerce LLMs into ignoring restrictions. Examples [here](https://arxiv.org/pdf/2307.15043).
+Append a suffix to their malicious prompt to try to nudge the model into completing the request. Adversarial suffixes are designed to coerce LLMs into ignoring restrictions. Examples [here](https://arxiv.org/pdf/2307.15043).
 
 ## Opposite/Sudo Mode
+
+Convince the LLM to operate in a different mode where restrictions do not apply.
+
+*Note: New types of jailbreak prompts are constantly being researched and discovered. References: https://github.com/friuns2/BlackFriday-GPTs-Prompts/blob/main/Jailbreaks.md, https://arxiv.org/pdf/2308.03825, https://dl.acm.org/doi/pdf/10.1145/3663530.3665021*
 
 
