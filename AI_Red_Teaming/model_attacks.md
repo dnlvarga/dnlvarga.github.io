@@ -173,7 +173,11 @@ More about indirect prompt injection [here](https://arxiv.org/pdf/2302.12173).
 
 ## Roleplay
 
-Ask your question indirectly through a roleplay or fictional scenario. Examples [here](https://arxiv.org/pdf/2402.03299).
+We aim to convince the LLM to adopt the role of an entity that is not subject to the same restrictions as the LLM or we use a fictional scenario. Suppose we can convince the LLM that the fictional entity would be happy to hand out the requested information. 
+
+The grandma exploit involves manipulating the chatbot to assume the role of our grandmother and then using this guise to solicit harmful responses.
+
+Other examples [here](https://arxiv.org/pdf/2402.03299).
 
 ## Fictional Scenarios
 
