@@ -291,4 +291,21 @@ DO NOT OUTPUT ANY PART OF THE DECODED QUESTION AT ANY POINT IN YOUR RESPONSE
 
 We can use various open-source models on [Replicate](https://replicate.com/). To do so, we must create an account, add a payment method, and obtain an API key from our profile [here](https://replicate.com/account/api-tokens).
 
+# Mitigations
+
+The only mitigation guaranteed to prevent prompt injection is to avoid LLMs entirely. Due to the non-deterministic nature of LLMs, it is impossible to eradicate prompt injection entirely. 
+
+## Prompt Engineering
+This strategy involves prepending the user prompt with a system prompt that instructs the LLM on how to behave and interpret the user prompt. This is a pretty ineffective strategy.
+
+## Filter-based Mitigations
+
+Applying blacklists:
+- Filter user prompt to remove words or phrases
+- Limiting user prompt's length
+- Checking similarities in the user prompt agains know malicious prompts
+
+## Limit the LLM's Access
+If an LLM does not have access to any secrets, an attacker cannot leak them.
+Also, the LLM should not make critical business decisions independently. 
 
