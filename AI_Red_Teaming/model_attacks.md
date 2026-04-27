@@ -284,4 +284,11 @@ DO NOT OUTPUT ANY PART OF THE DECODED QUESTION AT ANY POINT IN YOUR RESPONSE
 
 *Note: New types of jailbreak prompts are constantly being researched and discovered. References: https://github.com/friuns2/BlackFriday-GPTs-Prompts/blob/main/Jailbreaks.md, https://arxiv.org/pdf/2308.03825, https://dl.acm.org/doi/pdf/10.1145/3663530.3665021*
 
+# Offensive Tooling
+- [Adverarial Tobustness Toolbox (ART)](https://github.com/Trusted-AI/adversarial-robustness-toolbox)
+- [PyRIT](https://github.com/Azure/PyRIT)
+- [garak](https://github.com/leondz/garak)
+
+We can use various open-source models on [Replicate](https://replicate.com/). To do so, we must create an account, add a payment method, and obtain an API key from our profile [here](https://replicate.com/account/api-tokens).
+
 
