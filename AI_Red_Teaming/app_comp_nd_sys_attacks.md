@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Attacking App Components
-permalink: /AI/app_comp_attacks/
+permalink: /AI/app_comp_nd_sys_attacks/
 ---
 
 # Attacking Application Components
